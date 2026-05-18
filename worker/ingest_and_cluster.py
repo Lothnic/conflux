@@ -33,7 +33,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("conflux.worker")
 
-# --- Config ---
+# Config
 REDDIT_CREDS = {
     "client_id": os.getenv("REDDIT_CLIENT_ID", ""),
     "client_secret": os.getenv("REDDIT_CLIENT_SECRET"),
@@ -43,6 +43,7 @@ REDDIT_CREDS = {
 SUBREDDIT = os.getenv("SUBREDDIT", "delhi")
 HOURS_BACK = int(os.getenv("HOURS_BACK", "4"))
 
+# Database URL from GitHub Actions secrets or local .env
 DB_URL = os.getenv("DATABASE_URL", "postgresql://localhost:5432/conflux")
 
 MODEL_NAME = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")

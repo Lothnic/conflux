@@ -1,0 +1,40 @@
+name: Daily Data Ingestion and Clustering
+
+on:
+  schedule:
+    # Runs every 4 hours at minute 0
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allows manual triggering from the Actions tab
+
+jobs:
+  ingest-and-cluster:
+    runs-on: ubuntu-latest
+    # If you are using Neon or Convex, their services will handle the data persistence.
+    # You will need to add the DATABASE_URL and API keys in your repository Settings -> Secrets.
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+      REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+      SUBREDDIT: 'delhi'
+      HOURS_BACK: 4
+      EMBEDDING_MODEL: 'sentence-transformers/all-MiniLM-L6-v2'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: uv sync
+
+    - name: Run Ingestion and Clustering Job
+      run: uv run worker/ingest_and_cluster.py

@@ -10,7 +10,7 @@ The project is split into two distinct environments to respect Vercel's stateles
   - No background jobs, no GPU, no `uvicorn`.
 
 - **External Worker (Ingestion + ML):**
-  - Runs on a VPS or free-tier PaaS (Fly/Railway/Render).
+  - Runs on **GitHub Actions** (free tier, every 4 hours).
   - Handles `praw`/RSS fetching, `torch` clustering (`umap`/`hdbscan`), and `ollama`.
   - Communicates with the shared Database.
 
