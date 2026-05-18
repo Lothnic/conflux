@@ -4,7 +4,7 @@
 
 **Author:** Lothnic
 
-## 🏙️ What is Conflux?
+## What is Conflux?
 
 Conflux is a civic-tech AI platform that transforms raw, multilingual citizen complaints from social media and public portals into structured, geospatially-aware infrastructure proposals.
 
