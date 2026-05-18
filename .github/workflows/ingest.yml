@@ -4,7 +4,7 @@ on:
   schedule:
     # Runs every 4 hours at minute 0
     - cron: '0 */4 * * *'
-  workflow_dispatch: # Allows manual triggering from the Actions tab
+  workflow_dispatch:
 
 jobs:
   ingest-and-cluster:
@@ -14,23 +14,31 @@ jobs:
       SUBREDDIT: 'delhi'
       HOURS_BACK: 4
       EMBEDDING_MODEL: 'sentence-transformers/all-MiniLM-L6-v2'
+      PATH: $HOME/.cargo/bin:$PATH
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
 
     - name: Install uv
       run: |
         curl -LsSf https://astral.sh/uv/install.sh | sh
-        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Validate env vars
+      run: |
+        echo "DATABASE_URL set: $([ -n "$DATABASE_URL" ] && echo 'YES' || echo 'NO')"
+        echo "SUBREDDIT: $SUBREDDIT"
+        echo "HOURS_BACK: $HOURS_BACK"
 
     - name: Install dependencies
       run: uv sync
 
     - name: Run Ingestion and Clustering Job
-      run: uv run worker/ingest_and_cluster.py
+      run: |
+        set -e
+        uv run worker/ingest_and_cluster.py 2>&1
