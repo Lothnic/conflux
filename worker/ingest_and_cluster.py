@@ -1,14 +1,14 @@
 """
-Render Cron Worker: Daily ingestion and clustering for Conflux.
+GitHub Actions Worker: Daily ingestion and clustering for Conflux.
 
 This script:
-1. Fetches new threads from r/delhi using PRAW
+1. Fetches new threads from r/delhi using Reddit's public JSON endpoint
 2. Runs UMAP + HDBSCAN clustering
 3. Stores results in Neon/Postgres via SQLAlchemy
 4. Deduplicates by Reddit thread_id
 
 Run locally: uv run worker/ingest_and_cluster.py
-Deploy on: Render Cron Job (runs every 4 hours)
+Deploy on: GitHub Actions (cron every 4 hours, see .github/workflows/)
 """
 
 import os
@@ -17,8 +17,8 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-
-import praw
+from urllib.request import urlopen, Request
+from urllib.error import URLError
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
@@ -34,14 +34,9 @@ logging.basicConfig(
 log = logging.getLogger("conflux.worker")
 
 # Config
-REDDIT_CREDS = {
-    "client_id": os.getenv("REDDIT_CLIENT_ID", ""),
-    "client_secret": os.getenv("REDDIT_CLIENT_SECRET"),
-    "user_agent": "Conflux:Cron:1.0",
-}
-
 SUBREDDIT = os.getenv("SUBREDDIT", "delhi")
 HOURS_BACK = int(os.getenv("HOURS_BACK", "4"))
+RATE_LIMIT_DELAY = float(os.getenv("RATE_LIMIT_DELAY", "0.5"))  # between batches
 
 # Database URL from GitHub Actions secrets or local .env
 DB_URL = os.getenv("DATABASE_URL", "postgresql://localhost:5432/conflux")
@@ -93,51 +88,59 @@ with engine.begin() as conn:
     conn.execute(sa.text(CREATE_TABLES_SQL))
 log.info("Database tables ready.")
 
-# --- PRAW Fetcher ---
-def get_praw_client() -> praw.reddit.Reddit:
-    return praw.Reddit(
-        client_id=REDDIT_CREDS["client_id"],
-        client_secret=REDDIT_CREDS["client_secret"],
-        user_agent=REDDIT_CREDS["user_agent"],
-    )
-
+# --- Reddit JSON Fetcher ---
 def fetch_new_threads() -> list[dict]:
-    """Fetch new threads from r/delhi published in the last N hours."""
-    client = get_praw_client()
-    sub = client.subreddit(SUBREDDIT)
+    """Fetch new threads from r/delhi using Reddit's public JSON endpoint."""
     cutoff = datetime.now(timezone.utc).timestamp() - (HOURS_BACK * 3600)
     
     threads = []
+    
+    # Reddit JSON endpoint (no auth required for public data)
+    base_url = f"https://www.reddit.com/r/{SUBREDDIT}/new/.json?limit=100"
+    
     log.info(f"Fetching threads from r/{SUBREDDIT} (last {HOURS_BACK} hours)...")
     
-    for post in sub.new(limit=50):
-        if post.created_utc < cutoff:
+    response = urlopen(f"{base_url}&after=0", timeout=10)
+    data = json.loads(response.read().decode())
+    
+    if 'data' not in data or 'children' not in data['data']:
+        log.warning("No data returned from Reddit JSON endpoint.")
+        return []
+    
+    for post_data in data['data']['children']:
+        post = post_data['data']
+        
+        # Skip if older than cutoff
+        created_utc = post.get('created_utc', 0)
+        if created_utc < cutoff:
             continue
         
-        # Skip self-posts without flairs or already ingested
-        # Check for duplicates in DB
-        already_exists = check_existing(thread_id=post.id)
-        if already_exists:
+        # Check for duplicates
+        thread_id = post.get('id')
+        if not thread_id:
             continue
             
-        thread_id = post.id
-        title = post.title or ""
-        content = post.selftext or ""
-        flair = post.link_flair_text or ""
-        upvotes = post.score or 0
+        already_exists = check_existing(thread_id=thread_id)
+        if already_exists:
+            continue
+        
+        title = post.get('title', '')
+        content = post.get('selftext', '')
+        flair = post.get('link_flair_text', '') or post.get('flair_text', '')
+        upvotes = post.get('score', 0)
         
         threads.append({
             "thread_id": thread_id,
             "subreddit": SUBREDDIT,
             "title": title,
-            "content": content[:50000],  # Truncate very long content
+            "content": content[:50000] if content else "",
             "flair": flair,
             "upvotes": upvotes,
             "coordinates": None,  # Will be filled by geocoder or mock
-            "published_at": datetime.fromtimestamp(post.created_utc, tz=timezone.utc),
+            "published_at": datetime.fromtimestamp(created_utc, tz=timezone.utc),
         })
     
-    log.info(f"Fetched {len(threads)} new threads.")
+    log.info(f"Fetched {len(threads)} new threads from Reddit JSON.")
     return threads
 
 # --- Deduplication ---
@@ -152,6 +155,9 @@ def check_existing(thread_id: str) -> bool:
 def insert_batches(threads: list[dict]):
     """Insert threads in batches to avoid massive single queries."""
     BATCH_SIZE = 20
+    
+    if not threads:
+        return
     
     for i in range(0, len(threads), BATCH_SIZE):
         batch = threads[i:i+BATCH_SIZE]

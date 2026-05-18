@@ -11,7 +11,8 @@ The project is split into two distinct environments to respect Vercel's stateles
 
 - **External Worker (Ingestion + ML):**
   - Runs on **GitHub Actions** (free tier, every 4 hours).
-  - Handles `praw`/RSS fetching, `torch` clustering (`umap`/`hdbscan`), and `ollama`.
+  - Handles fetches via Reddit's public JSON endpoint (no API keys needed),
+    `torch` clustering (`umap`/`hdbscan`), and `ollama`.
   - Communicates with the shared Database.
 
 ## 2. Reddit Ingestion Strategy
