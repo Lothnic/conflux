@@ -1,0 +1,18 @@
+[project]
+name = "newbuilds-delhi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.136.1",
+    "geopy>=2.4.1",
+    "hdbscan>=0.8",
+    "nltk>=3.9.4",
+    "numpy>=2.4.5",
+    "ollama>=0.6.2",
+    "pandas>=3.0.3",
+    "sentence-transformers>=5.5.0",
+    "umap-learn>=0.5.12",
+    "uvicorn[standard]>=0.47.0",
+]
