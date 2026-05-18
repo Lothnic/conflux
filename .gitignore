@@ -9,5 +9,13 @@ wheels/
 # Virtual environments
 .venv
 backend/
-frontend/
+frontend/.venv/
+
+# Secrets
+.env
+
+# Assets to ignore
+data/
+assets/
+logs/
 .venv/
