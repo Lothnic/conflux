@@ -17,8 +17,9 @@ The project is split into two distinct environments to respect Vercel's stateles
 ## 2. Reddit Ingestion Strategy
 
 - **Source:** Public RSS feeds (`/r/{subreddit}/new/.json`) to avoid `praw` credentials/limits.
-- **Frequency:** Every 15 minutes.
-- **Deduplication:** All records are stored by `thread_id` to prevent daily overlaps.
+- **Frequency:** Every 4 hours via **Render Cron Job**.
+- **Deduplication:** All records are stored by `thread_id` (Reddit provides these), so no daily overlap.
+- **Worker:** `worker/ingest_and_cluster.py` runs on Render's free tier.
 
 ## 3. Database Schema
 
