@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Sora } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sora = Sora({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-sora",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Conflux Dashboard",
-  description: "Civic-tech AI platform for clustering citizen complaints into actionable proposals.",
+  title: "Conflux — Urban Intelligence Dashboard",
+  description:
+    "Transform citizen complaints from social media and public portals into structured, geospatially-aware infrastructure proposals.",
+  openGraph: {
+    title: "Conflux",
+    description: "Civic-tech AI platform turning citizen feedback into urban intelligence.",
+  },
 };
 
 export default function RootLayout({
@@ -23,10 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${sora.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -10,10 +10,10 @@ jobs:
   ingest-and-cluster:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL || 'sqlite:///data/conflux.db' }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       SUBREDDIT: 'delhi'
       HOURS_BACK: 4
-      EMBEDDING_MODEL: 'sentence-transformers/all-MiniLM-L6-v2'
       PATH: $HOME/.cargo/bin:$PATH
 
     steps:

@@ -1,185 +1,175 @@
-type Cluster = {
-  cluster_id: string;
-  cluster_label: number;
-  centroid_lat: number;
-  centroid_lng: number;
-  size: number;
-  keywords: string;
-  created_at: string | null;
-};
+"use client";
 
-import MapClient from './MapClient';
+import { useEffect, useState, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import type { ClusterProposal, DashboardData, LoadingState } from "@/lib/types";
+import { getHealth, getProposals, getIngestedThreads } from "@/lib/api";
 
-type ClusterResponse = {
-  clusters: Cluster[];
-};
+const MapSection = dynamic(() => import("@/components/MapSection"), { ssr: false });
 
-type Proposal = {
-  cluster_id: string;
-  issue_type: string;
-  urgency: string;
-  location: {
-    centroid_lat: number;
-    centroid_lng: number;
-  };
-  summary: string;
-  recommendations: string[];
-  funding_sources: string[];
-  estimated_budget: string;
-};
+const ISSUE_TYPES = [
+  "Road & Traffic",
+  "Sanitation",
+  "Water & Drainage",
+  "Public Lighting",
+  "Public Space & Environment",
+  "General Infrastructure",
+];
 
-type ProposalResponse = {
-  proposals: Proposal[];
-};
+export type MapLayer = "satellite" | "street";
 
-type ThreadFeature = {
-  type: 'Feature';
-  geometry: { type: 'Point'; coordinates: [number, number] };
-  properties: {
-    thread_id: string;
-    source: string;
-    created_at: string | null;
-  };
-};
-
-type ThreadGeoJSON = {
-  type: 'FeatureCollection';
-  features: ThreadFeature[];
-};
-
-export const dynamic = 'force-dynamic';
-
-async function fetchClusters(): Promise<ClusterResponse> {
-  const res = await fetch('http://localhost:8000/clusters?limit=50', {
-    cache: 'no-store',
+export default function Home() {
+  const [data, setData] = useState<DashboardData>({
+    health: null,
+    threads: [],
+    ingestSource: "",
+    proposals: [],
   });
-  if (!res.ok) {
-    throw new Error(`Failed to load clusters: ${res.status}`);
-  }
-  return res.json();
-}
+  const [state, setState] = useState<LoadingState>("loading");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedCluster, setSelectedCluster] = useState<ClusterProposal | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mapLayer, setMapLayer] = useState<MapLayer>("satellite");
+  const [filterIssueType, setFilterIssueType] = useState<string | null>(null);
 
-async function fetchProposals(): Promise<ProposalResponse> {
-  const res = await fetch('http://localhost:8000/proposals?limit=20', {
-    cache: 'no-store',
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to load proposals: ${res.status}`);
-  }
-  return res.json();
-}
+  const handleSelectCluster = useCallback((c: ClusterProposal | null) => {
+    setSelectedCluster(c);
+    if (c && sidebarCollapsed) {
+      setSidebarCollapsed(false);
+    }
+  }, [sidebarCollapsed]);
 
-async function fetchThreadsGeojson(): Promise<ThreadGeoJSON> {
-  const res = await fetch('http://localhost:8000/threads/geojson?limit=300', {
-    cache: 'no-store',
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to load thread geojson: ${res.status}`);
-  }
-  return res.json();
-}
+  const handleToggleSidebar = useCallback(() => {
+    setSidebarCollapsed((prev) => !prev);
+    if (!sidebarCollapsed) {
+      setSelectedCluster(null);
+    }
+  }, [sidebarCollapsed]);
 
-export default async function Home() {
-  let data: ClusterResponse | null = null;
-  let proposals: ProposalResponse | null = null;
-  let threadsGeojson: ThreadGeoJSON | null = null;
-  let error: string | null = null;
+  const handleUpdateProposal = useCallback((clusterId: string, updated: ClusterProposal) => {
+    setData((prev) => ({
+      ...prev,
+      proposals: prev.proposals.map((p) =>
+        p.cluster_id === clusterId ? updated : p
+      ),
+    }));
+    setSelectedCluster((prev) =>
+      prev?.cluster_id === clusterId ? updated : prev
+    );
+  }, []);
 
-  try {
-    [data, proposals, threadsGeojson] = await Promise.all([
-      fetchClusters(),
-      fetchProposals(),
-      fetchThreadsGeojson(),
-    ]);
-  } catch (e: any) {
-    error = e?.message || 'Unknown error';
-  }
+  const filteredProposals = useMemo(() => {
+    if (!filterIssueType) return data.proposals;
+    return data.proposals.filter((p) => p.issue_type === filterIssueType);
+  }, [data.proposals, filterIssueType]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const [health, proposals, ingest] = await Promise.all([
+          getHealth(),
+          getProposals().catch(() => []),
+          getIngestedThreads().catch(() => ({
+            threads: [] as never[],
+            source: "",
+            count: 0,
+          })),
+        ]);
+
+        if (!cancelled) {
+          setData({
+            health,
+            threads: ingest.threads,
+            ingestSource: ingest.source,
+            proposals,
+          });
+          setState("loaded");
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setErrorMessage(err instanceof Error ? err.message : "Failed to load data");
+          setState("error");
+        }
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <main className="mx-auto max-w-5xl px-6 py-10">
-        <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">Conflux Hotspots</h1>
-          <p className="mt-2 text-zinc-600">
-            Clustered citizen complaints with geospatial centroids, keywords, and draft proposals.
+    <div className="relative w-full h-screen overflow-hidden" style={{ background: "#0c0c0c" }}>
+      <MapSection
+        proposals={filteredProposals}
+        threads={data.threads}
+        isLoading={state === "loading"}
+        selectedCluster={selectedCluster}
+        onSelectCluster={handleSelectCluster}
+        mapLayer={mapLayer}
+      />
+
+      <Header
+        health={data.health}
+        sidebarCollapsed={sidebarCollapsed}
+        onToggleSidebar={handleToggleSidebar}
+        mapLayer={mapLayer}
+        onMapLayerChange={setMapLayer}
+        filterIssueType={filterIssueType}
+        onFilterChange={setFilterIssueType}
+      />
+
+      <Sidebar
+        proposals={filteredProposals}
+        threads={data.threads}
+        selectedCluster={selectedCluster}
+        health={data.health}
+        ingestSource={data.ingestSource}
+        loading={state === "loading"}
+        onSelectCluster={handleSelectCluster}
+        onToggle={handleToggleSidebar}
+        collapsed={sidebarCollapsed}
+        onUpdateProposal={handleUpdateProposal}
+      />
+
+      {state === "error" && (
+        <div
+          className="fixed top-4 right-4 z-[100] max-w-sm rounded-xl p-4 animate-fade-in-up"
+          style={{
+            background: "rgba(251,113,133,0.08)",
+            border: "1px solid rgba(251,113,133,0.15)",
+            backdropFilter: "blur(16px)",
+          }}
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <svg
+              className="w-4 h-4 flex-shrink-0"
+              style={{ color: "#fb7185" }}
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+              />
+            </svg>
+            <p className="text-sm font-medium" style={{ color: "#fb7185" }}>
+              Connection Error
+            </p>
+          </div>
+          <p className="text-xs" style={{ color: "rgba(251,113,133,0.6)" }}>
+            {errorMessage}. Make sure the backend is running on port 8000.
           </p>
-        </header>
-
-        {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-            {error}
-          </div>
-        )}
-
-        {!error && (!data || data.clusters.length === 0) && (
-          <div className="rounded-lg border border-zinc-200 bg-white px-4 py-3 text-zinc-600">
-            No clusters available yet. Run the worker to ingest and cluster data.
-          </div>
-        )}
-
-        {!error && data && data.clusters.length > 0 && (
-          <section className="mb-10">
-            <h2 className="mb-3 text-xl font-semibold">Hotspot Clusters</h2>
-            <MapClient
-              clusters={data.clusters}
-              proposals={proposals?.proposals || []}
-              threadsGeojson={threadsGeojson}
-            />
-            <div className="mt-6 grid gap-4">
-              {data.clusters.map((c) => (
-                <div key={c.cluster_id} className="rounded-lg border border-zinc-200 bg-white p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-zinc-500">{c.cluster_id}</div>
-                    <div className="text-sm text-zinc-500">size: {c.size}</div>
-                  </div>
-                  <div className="mt-2 text-lg font-medium">{c.keywords || 'No keywords'}</div>
-                  <div className="mt-2 text-sm text-zinc-600">
-                    centroid: {c.centroid_lat?.toFixed(4)}, {c.centroid_lng?.toFixed(4)}
-                  </div>
-                  {c.created_at && (
-                    <div className="mt-1 text-xs text-zinc-400">created: {c.created_at}</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {!error && proposals && proposals.proposals.length > 0 && (
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">Draft Proposals</h2>
-            <div className="grid gap-4">
-              {proposals.proposals.map((p) => (
-                <div key={p.cluster_id} className="rounded-lg border border-zinc-200 bg-white p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-zinc-500">{p.cluster_id}</div>
-                    <div className="text-sm text-zinc-500">urgency: {p.urgency}</div>
-                  </div>
-                  <div className="mt-2 text-lg font-medium">{p.issue_type}</div>
-                  <div className="mt-1 text-sm text-zinc-600">{p.summary}</div>
-                  <div className="mt-2 text-sm text-zinc-600">
-                    centroid: {p.location.centroid_lat?.toFixed(4)}, {p.location.centroid_lng?.toFixed(4)}
-                  </div>
-                  <div className="mt-3">
-                    <div className="text-xs uppercase text-zinc-500">Recommendations</div>
-                    <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-zinc-700">
-                      {p.recommendations.map((r, idx) => (
-                        <li key={idx}>{r}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="mt-3 text-sm text-zinc-600">
-                    Funding: {p.funding_sources.join(', ')}
-                  </div>
-                  <div className="mt-1 text-sm text-zinc-600">
-                    Estimated budget: {p.estimated_budget}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
+        </div>
+      )}
     </div>
   );
 }
