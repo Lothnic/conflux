@@ -530,7 +530,10 @@ def cluster_threads() -> list[dict]:
     text_norm = (text_embeddings - text_embeddings.mean(axis=0)) / (text_embeddings.std(axis=0) + 1e-8)
 
     if has_geo:
-        combined = (TEXT_WEIGHT * text_norm) + (GEO_WEIGHT * geo_norm)
+        combined = np.concatenate(
+            [TEXT_WEIGHT * text_norm, GEO_WEIGHT * geo_norm],
+            axis=1,
+        )
     else:
         combined = text_norm
 
