@@ -20,3 +20,7 @@ assets/
 logs/
 .venv/
 .commandcode/
+.uv-cache/
+.npm-cache/
+.pytest_cache/
+pytest-cache-files-*/

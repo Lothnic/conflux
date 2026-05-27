@@ -9,15 +9,6 @@ import { getHealth, getProposals, getIngestedThreads } from "@/lib/api";
 
 const MapSection = dynamic(() => import("@/components/MapSection"), { ssr: false });
 
-const ISSUE_TYPES = [
-  "Road & Traffic",
-  "Sanitation",
-  "Water & Drainage",
-  "Public Lighting",
-  "Public Space & Environment",
-  "General Infrastructure",
-];
-
 export type MapLayer = "satellite" | "street";
 
 export default function Home() {

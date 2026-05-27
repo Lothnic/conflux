@@ -1,6 +1,6 @@
 # Conflux
 
-> "The flowing together" — where the scattered streams of citizen feedback merge into structured, actionable urban intelligence.
+> "The flowing together" - where the scattered streams of citizen feedback merge into structured, actionable urban intelligence.
 
 **Author:** Lothnic
 
@@ -15,14 +15,15 @@ Conflux is a civic-tech AI platform that transforms raw, multilingual citizen co
 4. **Analyze:** Local LLM agents generate policy proposals, funding sources, and maintenance plans for each cluster.
 5. **Visualize:** A Next.js + Folium dashboard maps "hotspots" of urban decay and infrastructure failure.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Backend:** FastAPI + Uvicorn
-* **ML:** sentence-transformers (xlm-R), UMAP, HDBSCAN, Ollama (local LLM)
-* **Frontend:** Next.js 14 (App Router) + Tailwind CSS
+* **ML:** sentence-transformers, UMAP, HDBSCAN, Groq proposal generation
+* **Frontend:** Next.js 16 (App Router) + Tailwind CSS
 * **Data:** pyproject.toml managed with `uv`
+* **Worker:** GitHub Actions scheduled ingestion
 
-## 🚀 Quick Starts
+## Quick Start
 
 ```bash
 # 1. Install Python deps

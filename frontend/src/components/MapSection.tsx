@@ -24,6 +24,15 @@ function hashString(value: string): number {
   return Math.abs(hash);
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface MapSectionProps {
   proposals: ClusterProposal[];
   threads: RedditThread[];
@@ -166,6 +175,8 @@ export default function MapSection({
 
     threads.forEach((t) => {
       if (t.lat == null || t.lng == null) return;
+      const safeTitle = escapeHtml(t.title);
+      const safeSubreddit = escapeHtml(t.subreddit);
       const dot = L.circleMarker([t.lat, t.lng], {
         radius: 5,
         color: "transparent",
@@ -175,7 +186,7 @@ export default function MapSection({
       });
       dot.bindTooltip(
         `<div style=\"font-family:system-ui,sans-serif;font-size:10px;max-width:180px;color:#fff;background:rgba(30,30,30,0.9);padding:3px 8px;border-radius:5px;line-height:1.3;\">
-          ${t.title}<br><span style="color:#aaa;font-size:9px;">r/${t.subreddit} · ${t.upvotes} upvotes</span>
+          ${safeTitle}<br><span style="color:#aaa;font-size:9px;">r/${safeSubreddit} - ${t.upvotes} upvotes</span>
         </div>`,
         { direction: "top", offset: [0, -8] }
       );
@@ -191,6 +202,7 @@ export default function MapSection({
     if (valid.length === 0) return;
 
     valid.forEach((cluster) => {
+      const safeIssueType = escapeHtml(cluster.issue_type);
       const lat = cluster.location.lat;
       const lon = cluster.location.lon;
       bounds.push([lat, lon]);
@@ -227,7 +239,7 @@ export default function MapSection({
 
       marker.bindTooltip(
         `<div style="font-family:system-ui,sans-serif;font-size:11px;font-weight:600;color:#fff;background:rgba(30,30,30,0.9);padding:4px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
-          ${cluster.issue_type}
+          ${safeIssueType}
         </div>`,
         { direction: "top", offset: [0, -10], className: "" }
       );

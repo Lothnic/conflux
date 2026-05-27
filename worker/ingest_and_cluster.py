@@ -17,7 +17,7 @@ import sys
 import json
 import time
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
@@ -312,7 +312,7 @@ def _fetch_reddit_url(url: str) -> dict | None:
 
 def fetch_new_threads() -> list[dict]:
     """Fetch infra-relevant threads from multiple Delhi NCR subreddits."""
-    cutoff = datetime.now(timezone.utc) - __import__("datetime").timedelta(hours=HOURS_BACK)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=HOURS_BACK)
     all_threads: dict[str, dict] = {}
     seen_ids = set()
 
@@ -450,9 +450,10 @@ def insert_batches(threads: list[dict]) -> int:
             for t in batch:
                 conn.execute(
                     sa.text("""
-                        INSERT OR IGNORE INTO daily_ingest
+                        INSERT INTO daily_ingest
                         (thread_id, subreddit, title, content, flair, upvotes, coordinates, url, published_at)
                         VALUES (:tid, :sub, :title, :content, :flair, :upv, :coords, :url, :pub)
+                        ON CONFLICT (thread_id) DO NOTHING
                     """),
                     {"tid": t["thread_id"], "sub": t["subreddit"], "title": t["title"],
                      "content": t["content"], "flair": t["flair"], "upv": t["upvotes"],
@@ -466,8 +467,9 @@ def insert_batches(threads: list[dict]) -> int:
                 if t.get("lat") is not None and t.get("lng") is not None:
                     conn.execute(
                         sa.text("""
-                            INSERT OR IGNORE INTO thread_geo (thread_id, lat, lng, source)
+                            INSERT INTO thread_geo (thread_id, lat, lng, source)
                             VALUES (:tid, :lat, :lng, :src)
+                            ON CONFLICT (thread_id) DO NOTHING
                         """),
                         {"tid": t["thread_id"], "lat": float(t["lat"]), "lng": float(t["lng"]), "src": "reddit"},
                     )
@@ -484,8 +486,9 @@ def cluster_threads() -> list[dict]:
     with db.engine.connect() as conn:
         recent = conn.execute(
             sa.text("SELECT thread_id, title, content, coordinates FROM daily_ingest "
-                    "WHERE published_at >= datetime('now', '-1 day') "
-                    "ORDER BY published_at DESC")
+                    "ORDER BY published_at DESC "
+                    "LIMIT :lim"),
+            {"lim": 500},
         ).fetchall()
 
     if len(recent) < HDBSCAN_MIN_CLUSTER_SIZE:
@@ -599,9 +602,15 @@ def cluster_threads() -> list[dict]:
         for c in clusters:
             conn.execute(
                 sa.text("""
-                    INSERT OR IGNORE INTO cluster_results
+                    INSERT INTO cluster_results
                     (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords)
                     VALUES (:cid, :clab, :clat, :clng, :sz, :kw)
+                    ON CONFLICT (cluster_id) DO UPDATE SET
+                        cluster_label = EXCLUDED.cluster_label,
+                        centroid_lat = EXCLUDED.centroid_lat,
+                        centroid_lng = EXCLUDED.centroid_lng,
+                        size = EXCLUDED.size,
+                        keywords = EXCLUDED.keywords
                 """),
                 {"cid": c["cluster_id"], "clab": c["cluster_label"], "clat": c["centroid_lat"],
                  "clng": c["centroid_lng"], "sz": c["size"], "kw": c["keywords"]},
@@ -611,8 +620,9 @@ def cluster_threads() -> list[dict]:
                 thread_id = recent[idx][0]
                 conn.execute(
                     sa.text("""
-                        INSERT OR IGNORE INTO thread_cluster_map (thread_id, cluster_id)
+                        INSERT INTO thread_cluster_map (thread_id, cluster_id)
                         VALUES (:tid, :cid)
+                        ON CONFLICT (thread_id, cluster_id) DO NOTHING
                     """),
                     {"tid": thread_id, "cid": c["cluster_id"]},
                 )

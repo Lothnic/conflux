@@ -10,7 +10,6 @@ import json
 from uuid import uuid4
 from pathlib import Path
 import sqlalchemy as sa
-from sqlalchemy.exc import OperationalError
 
 app = FastAPI(
     title="Conflux API",
@@ -207,14 +206,14 @@ def fetch_latest_threads(limit: int = 50):
 
 def infer_issue_type(keywords: str) -> str:
     text = (keywords or "").lower()
+    if any(k in text for k in ["light", "lighting", "streetlight", "dark"]):
+        return "Public Lighting"
     if any(k in text for k in ["pothole", "road", "traffic", "lane", "signal"]):
         return "Road & Traffic"
     if any(k in text for k in ["garbage", "trash", "waste", "dump", "litter"]):
         return "Sanitation"
     if any(k in text for k in ["water", "drain", "sewer", "flood", "pipeline"]):
         return "Water & Drainage"
-    if any(k in text for k in ["light", "lighting", "streetlight", "dark"]):
-        return "Public Lighting"
     if any(k in text for k in ["park", "tree", "green", "noise", "pollution"]):
         return "Public Space & Environment"
     return "General Infrastructure"
@@ -230,10 +229,10 @@ def infer_urgency(size: int) -> str:
 
 def infer_budget(size: int) -> str:
     if size >= 20:
-        return "$250k–$1M"
+        return "$250k-$1M"
     if size >= 8:
-        return "$50k–$250k"
-    return "$10k–$50k"
+        return "$50k-$250k"
+    return "$10k-$50k"
 
 
 def proposal_recommendations(issue_type: str) -> List[str]:
@@ -294,9 +293,10 @@ async def ingest_complaints(data: ComplainList):
             coords = json.dumps({"lat": float(c.lat), "lng": float(c.lon)})
             conn.execute(
                 sa.text("""
-                    INSERT OR IGNORE INTO daily_ingest
+                    INSERT INTO daily_ingest
                     (thread_id, subreddit, title, content, flair, upvotes, coordinates, published_at)
-                    VALUES (:tid, :sub, :title, :content, :flair, :upv, :coords, datetime('now'))
+                    VALUES (:tid, :sub, :title, :content, :flair, :upv, :coords, CURRENT_TIMESTAMP)
+                    ON CONFLICT (thread_id) DO NOTHING
                 """),
                 {
                     "tid": thread_id,
@@ -310,8 +310,9 @@ async def ingest_complaints(data: ComplainList):
             )
             conn.execute(
                 sa.text("""
-                    INSERT OR IGNORE INTO thread_geo (thread_id, lat, lng, source)
+                    INSERT INTO thread_geo (thread_id, lat, lng, source)
                     VALUES (:tid, :lat, :lng, :src)
+                    ON CONFLICT (thread_id) DO NOTHING
                 """),
                 {
                     "tid": thread_id,
@@ -327,8 +328,20 @@ async def ingest_complaints(data: ComplainList):
 @app.post("/cluster")
 async def cluster_complaints():
     """Run clustering on ingested complaints."""
-    # TODO: Load ingested complaints, run sentence-transformers + UMAP + HDBSCAN
-    return {"status": "ok", "message": "Clustering complete — proposals generated"}
+    if not create_tables():
+        raise HTTPException(status_code=503, detail="Database is unavailable")
+
+    try:
+        from worker.ingest_and_cluster import cluster_threads
+
+        clusters = cluster_threads()
+        return {
+            "status": "ok",
+            "message": "Clustering complete",
+            "clusters": len(clusters),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/clusters")
@@ -566,11 +579,6 @@ async def generate_proposal_for_cluster_endpoint(cluster_id: str):
             cluster_data["centroid_lng"],
             member_threads,
         )
-
-        if proposal is None:
-            raise HTTPException(status_code=500, detail="Groq API failed to generate proposal")
-
-        store_proposal(db.engine, proposal)
 
         if proposal is None:
             raise HTTPException(status_code=500, detail="Groq API failed to generate proposal")

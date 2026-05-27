@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
 import "./globals.css";
 
-const sora = Sora({
-  subsets: ["latin"],
-  variable: "--font-sora",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "Conflux — Urban Intelligence Dashboard",
+  title: "Conflux - Urban Intelligence Dashboard",
   description:
     "Transform citizen complaints from social media and public portals into structured, geospatially-aware infrastructure proposals.",
   openGraph: {
@@ -24,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sora.variable} h-full antialiased`}>
+    <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

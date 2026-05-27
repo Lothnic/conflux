@@ -12,15 +12,15 @@ The project is split into two distinct environments to respect Vercel's stateles
 - **External Worker (Ingestion + ML):**
   - Runs on **GitHub Actions** (free tier, every 4 hours).
   - Handles fetches via Reddit's public JSON endpoint (no API keys needed),
-    `torch` clustering (`umap`/`hdbscan`), and `ollama`.
+    `torch` clustering (`umap`/`hdbscan`), and Groq-backed proposal generation.
   - Communicates with the shared Database.
 
 ## 2. Reddit Ingestion Strategy
 
 - **Source:** Public RSS feeds (`/r/{subreddit}/new/.json`) to avoid `praw` credentials/limits.
-- **Frequency:** Every 4 hours via **Render Cron Job**.
+- **Frequency:** Every 4 hours via **GitHub Actions cron**.
 - **Deduplication:** All records are stored by `thread_id` (Reddit provides these), so no daily overlap.
-- **Worker:** `worker/ingest_and_cluster.py` runs on Render's free tier.
+- **Worker:** `worker/ingest_and_cluster.py` runs in `.github/workflows/ingest.yml`.
 
 ## 3. Database Schema
 
@@ -75,7 +75,7 @@ AI-generated solutions for each cluster.
 
 ## 5. Tech Stack Summary
 
-- **Frontend:** Next.js 14, Tailwind, Vercel.
-- **Worker:** Python (uvicorn), PRAW/RSS, Torch, Scipy, Umap/HDScan.
+- **Frontend:** Next.js 16, Tailwind, Vercel.
+- **Worker:** Python, Reddit public JSON, Torch, Scipy, UMAP/HDBSCAN.
 - **Database:** Neon (Postgres) or Turso (SQLite).
-- **Orchestration:** GitHub Actions (Cron) or systemd (VPS).
+- **Orchestration:** GitHub Actions cron.

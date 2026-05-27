@@ -121,8 +121,12 @@ def store_proposal(engine: sa.Engine, proposal: dict) -> bool:
     try:
         with engine.begin() as conn:
             conn.execute(
+                sa.text("DELETE FROM llm_proposals WHERE cluster_id = :cid"),
+                {"cid": proposal["cluster_id"]},
+            )
+            conn.execute(
                 sa.text("""
-                    INSERT OR IGNORE INTO llm_proposals
+                    INSERT INTO llm_proposals
                     (proposal_id, cluster_id, issue_type, urgency, summary, recommendations,
                      funding_sources, estimated_budget, centroid_lat, centroid_lng)
                     VALUES (:pid, :cid, :issue, :urg, :sum, :recs, :funds, :budget, :clat, :clng)

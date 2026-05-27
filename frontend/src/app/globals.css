@@ -1,7 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════
-   Conflux — Urban Intelligence Dashboard
-   Light sidebar · Satellite map · Red scatter markers
-   ═══════════════════════════════════════════════════════════════ */
+/* Conflux urban intelligence dashboard */
 
 @import "tailwindcss";
 
@@ -29,7 +26,7 @@
 @theme inline {
   --color-background: var(--color-ink);
   --color-foreground: var(--sidebar-text);
-  --font-sans: var(--font-sora), system-ui, sans-serif;
+  --font-sans: system-ui, sans-serif;
   --font-mono: "SF Mono", "Fira Code", monospace;
 }
 
@@ -40,7 +37,7 @@ html {
 body {
   background: var(--color-ink);
   color: var(--sidebar-text);
-  font-family: var(--font-sora), system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -96,7 +93,7 @@ body {
 
 .leaflet-container {
   background: #1a1a1a !important;
-  font-family: var(--font-sora), system-ui, sans-serif !important;
+  font-family: system-ui, sans-serif !important;
 }
 
 .leaflet-container:focus { outline: none; }
@@ -165,7 +162,7 @@ body {
   margin: 12px 14px !important;
   font-size: 11px !important;
   line-height: 1.5 !important;
-  font-family: var(--font-sora), system-ui, sans-serif !important;
+  font-family: system-ui, sans-serif !important;
 }
 
 .leaflet-popup-tip {

@@ -19,3 +19,8 @@ dependencies = [
     "umap-learn>=0.5.12",
     "uvicorn[standard]>=0.47.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]

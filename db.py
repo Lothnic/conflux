@@ -4,6 +4,7 @@ Defaults to SQLite (local) with PostgreSQL as optional target.
 """
 
 import os
+from pathlib import Path
 import sqlalchemy as sa
 from dotenv import load_dotenv
 
@@ -11,6 +12,10 @@ load_dotenv(override=True)
 
 DB_URL = os.getenv("DATABASE_URL", "sqlite:///data/conflux.db")
 _is_sqlite = DB_URL.startswith("sqlite")
+
+if _is_sqlite and DB_URL != "sqlite:///:memory:":
+    db_path = DB_URL.removeprefix("sqlite:///")
+    Path(db_path).expanduser().parent.mkdir(parents=True, exist_ok=True)
 
 engine_kwargs: dict = {}
 if _is_sqlite:
@@ -21,7 +26,7 @@ else:
 engine = sa.create_engine(DB_URL, **engine_kwargs)
 _db_available: bool | None = None
 
-CREATE_TABLES_SQL = """
+SQLITE_CREATE_TABLES_SQL = """
 CREATE TABLE IF NOT EXISTS daily_ingest (
     thread_id     TEXT PRIMARY KEY,
     subreddit     TEXT,
@@ -74,6 +79,59 @@ CREATE TABLE IF NOT EXISTS llm_proposals (
 );
 """
 
+POSTGRES_CREATE_TABLES_SQL = """
+CREATE TABLE IF NOT EXISTS daily_ingest (
+    thread_id     TEXT PRIMARY KEY,
+    subreddit     TEXT,
+    title         TEXT,
+    content       TEXT,
+    flair         TEXT,
+    upvotes       INTEGER,
+    coordinates   TEXT,
+    url           TEXT,
+    published_at  TIMESTAMPTZ,
+    created_at    TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS cluster_results (
+    cluster_id    TEXT PRIMARY KEY,
+    cluster_label INTEGER,
+    centroid_lat  DOUBLE PRECISION,
+    centroid_lng  DOUBLE PRECISION,
+    size          INTEGER,
+    keywords      TEXT,
+    created_at    TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS thread_geo (
+    thread_id    TEXT PRIMARY KEY,
+    lat          DOUBLE PRECISION,
+    lng          DOUBLE PRECISION,
+    source       TEXT,
+    created_at   TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS thread_cluster_map (
+    thread_id     TEXT REFERENCES daily_ingest(thread_id),
+    cluster_id    TEXT REFERENCES cluster_results(cluster_id),
+    PRIMARY KEY (thread_id, cluster_id)
+);
+
+CREATE TABLE IF NOT EXISTS llm_proposals (
+    proposal_id      TEXT PRIMARY KEY,
+    cluster_id       TEXT UNIQUE,
+    issue_type       TEXT,
+    urgency          TEXT,
+    summary          TEXT,
+    recommendations  TEXT,
+    funding_sources  TEXT,
+    estimated_budget TEXT,
+    centroid_lat     DOUBLE PRECISION,
+    centroid_lng     DOUBLE PRECISION,
+    created_at       TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+"""
+
 
 def database_available() -> bool:
     global _db_available
@@ -92,6 +150,7 @@ def create_tables():
     with engine.begin() as conn:
         if _is_sqlite:
             conn.execute(sa.text("PRAGMA foreign_keys = ON"))
-        for stmt in CREATE_TABLES_SQL.strip().split(";"):
+        sql = SQLITE_CREATE_TABLES_SQL if _is_sqlite else POSTGRES_CREATE_TABLES_SQL
+        for stmt in sql.strip().split(";"):
             if stmt.strip():
                 conn.execute(sa.text(stmt))
