@@ -19,3 +19,4 @@ data/
 assets/
 logs/
 .venv/
+.commandcode/
