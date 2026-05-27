@@ -3,7 +3,7 @@ GitHub Actions Worker: Daily ingestion and clustering for Conflux.
 
 This script:
 1. Fetches new threads from r/delhi using Reddit's public JSON API (no auth required)
-2. Runs embeddings + UMAP + HDBSCAN clustering on full embedding space
+2. Runs combined text+geo clustering (embeddings + lat/lng features) with UMAP visualization
 3. Stores results in Neon/Postgres via SQLAlchemy
 4. Deduplicates by Reddit thread_id
 5. Validates pipeline outputs
@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
+from urllib.parse import quote_plus
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
@@ -45,6 +46,12 @@ SUBREDDIT = os.getenv("SUBREDDIT", "delhi")
 HOURS_BACK = int(os.getenv("HOURS_BACK", "4"))
 RATE_LIMIT_DELAY = float(os.getenv("RATE_LIMIT_DELAY", "60.0"))  # Public API limit ~1 req/min
 
+# Geocoding (Nominatim)
+GEOCODE_ENABLED = os.getenv("GEOCODE_ENABLED", "1") == "1"
+GEOCODE_CITY = os.getenv("GEOCODE_CITY", "Delhi")
+GEOCODE_RATE_LIMIT = float(os.getenv("GEOCODE_RATE_LIMIT", "1.0"))  # seconds between requests
+GEOCODE_USER_AGENT = os.getenv("GEOCODE_USER_AGENT", "conflux/0.1")
+
 # Reddit OAuth2 (optional, public API works without these)
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")
@@ -67,6 +74,10 @@ UMAP_MIN_DIST = float(os.getenv("UMAP_MIN_DIST", "0.1"))
 # HDBSCAN
 HDBSCAN_MIN_CLUSTER_SIZE = int(os.getenv("HDBSCAN_MIN_CLUSTER_SIZE", "3"))
 HDBSCAN_MIN_SAMPLES = int(os.getenv("HDBSCAN_MIN_SAMPLES", "5"))
+
+# Combined text + geo clustering
+TEXT_WEIGHT = float(os.getenv("TEXT_WEIGHT", "1.0"))
+GEO_WEIGHT = float(os.getenv("GEO_WEIGHT", "0.3"))
 
 # ---- DB Setup ----
 engine = sa.create_engine(DB_URL, pool_pre_ping=True)
@@ -92,6 +103,14 @@ CREATE TABLE IF NOT EXISTS cluster_results (
     size          INT,
     keywords      TEXT,
     created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS thread_geo (
+    thread_id    VARCHAR(32) PRIMARY KEY,
+    lat          FLOAT,
+    lng          FLOAT,
+    source       VARCHAR,
+    created_at   TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS thread_cluster_map (
@@ -164,18 +183,58 @@ def fetch_new_threads() -> list[dict]:
         if not thread_id or check_existing(thread_id):
             continue
 
+        title = post.get("title", "")
+        content = post.get("selftext", "")
+        lat, lng = resolve_coordinates(title, content)
+
         threads.append({
             "thread_id": thread_id,
             "subreddit": SUBREDDIT,
-            "title": post.get("title", ""),
-            "content": post.get("selftext", ""),
+            "title": title,
+            "content": content,
             "flair": post.get("link_flair_text", "") or "",
             "upvotes": post.get("score", 0),
             "published_at": created_dt,
+            "lat": lat,
+            "lng": lng,
         })
         time.sleep(RATE_LIMIT_DELAY)
 
     return threads
+
+
+def geocode_text(query: str) -> tuple[float | None, float | None]:
+    if not GEOCODE_ENABLED:
+        return None, None
+    try:
+        url = (
+            "https://nominatim.openstreetmap.org/search?"
+            f"format=json&q={quote_plus(query)}&limit=1"
+        )
+        req = Request(url, method="GET")
+        req.add_header("User-Agent", GEOCODE_USER_AGENT)
+        resp = urlopen(req, timeout=15)
+        results = json.loads(resp.read().decode())
+        if not results:
+            return None, None
+        lat = float(results[0].get("lat"))
+        lng = float(results[0].get("lon"))
+        return lat, lng
+    except Exception as e:
+        log.warning(f"Geocoding failed for '{query}': {e}")
+        return None, None
+
+
+def resolve_coordinates(title: str, content: str) -> tuple[float | None, float | None]:
+    if not GEOCODE_ENABLED:
+        return None, None
+    query = f"{title} {content} {GEOCODE_CITY}".strip()
+    lat, lng = geocode_text(query)
+    if lat is None or lng is None:
+        fallback = GEOCODE_CITY
+        lat, lng = geocode_text(fallback)
+    time.sleep(GEOCODE_RATE_LIMIT)
+    return lat, lng
 
 
 def _fetch_public_threads() -> list[dict]:
@@ -206,14 +265,20 @@ def _fetch_public_threads() -> list[dict]:
         if not thread_id or check_existing(thread_id):
             continue
 
+        title = post.get("title", "")
+        content = post.get("selftext", "")
+        lat, lng = resolve_coordinates(title, content)
+
         threads.append({
             "thread_id": thread_id,
             "subreddit": SUBREDDIT,
-            "title": post.get("title", ""),
-            "content": post.get("selftext", ""),
+            "title": title,
+            "content": content,
             "flair": post.get("link_flair_text", "") or "",
             "upvotes": post.get("score", 0),
             "published_at": created_dt,
+            "lat": lat,
+            "lng": lng,
         })
 
     log.info(f"Public API fetch returned {len(threads)} new threads.")
@@ -256,14 +321,29 @@ def insert_batches(threads: list[dict]) -> int:
             conn.execute(
                 sa.text("""
                     INSERT INTO daily_ingest
-                    (thread_id, subreddit, title, content, flair, upvotes, published_at)
-                    VALUES (:tid, :sub, :title, :content, :flair, :upv, :pub)
+                    (thread_id, subreddit, title, content, flair, upvotes, coordinates, published_at)
+                    VALUES (:tid, :sub, :title, :content, :flair, :upv, :coords, :pub)
                     ON CONFLICT (thread_id) DO NOTHING
                 """),
                 [{"tid": t["thread_id"], "sub": t["subreddit"], "title": t["title"],
                   "content": t["content"], "flair": t["flair"], "upv": t["upvotes"],
+                  "coords": json.dumps({"lat": float(t["lat"]), "lng": float(t["lng"])}) if t.get("lat") is not None else None,
                   "pub": t["published_at"]} for t in batch],
             )
+
+        conn.execute(
+            sa.text("""
+                INSERT INTO thread_geo (thread_id, lat, lng, source)
+                VALUES (:tid, :lat, :lng, :src)
+                ON CONFLICT (thread_id) DO NOTHING
+            """),
+            [{
+                "tid": t["thread_id"],
+                "lat": float(t["lat"]) if t.get("lat") is not None else None,
+                "lng": float(t["lng"]) if t.get("lng") is not None else None,
+                "src": "reddit",
+            } for t in batch if t.get("lat") is not None and t.get("lng") is not None],
+        )
     log.info(f"Inserted {len(threads)} threads into daily_ingest.")
     return len(threads)
 
@@ -275,7 +355,7 @@ def insert_batches(threads: list[dict]) -> int:
 def cluster_threads() -> list[dict]:
     with engine.connect() as conn:
         recent = conn.execute(
-            sa.text("SELECT thread_id, title, content FROM daily_ingest "
+            sa.text("SELECT thread_id, title, content, coordinates FROM daily_ingest "
                     "WHERE published_at >= NOW() - INTERVAL '24 HOURS' "
                     "ORDER BY published_at DESC")
         ).fetchall()
@@ -284,13 +364,43 @@ def cluster_threads() -> list[dict]:
         log.warning(f"Too few threads ({len(recent)}) found for clustering. Skipping.")
         return []
 
-    log.info(f"Clustering {len(recent)} threads using full embedding space...")
+    log.info(f"Clustering {len(recent)} threads using combined text+geo space...")
 
     encoder = SentenceTransformer(MODEL_NAME)
     texts = [f"{row[1]} {row[2]}".strip() if row[2] else row[1] for row in recent]
-    embeddings = encoder.encode(texts, show_progress_bar=True)
-    embeddings = np.array(embeddings)
-    log.info(f"Generated embeddings: {embeddings.shape}")
+    text_embeddings = encoder.encode(texts, show_progress_bar=True)
+    text_embeddings = np.array(text_embeddings)
+    log.info(f"Generated text embeddings: {text_embeddings.shape}")
+
+    # Build geo features (lat, lng) with normalization
+    geo_features = []
+    for row in recent:
+        coord = row[3]
+        if isinstance(coord, str):
+            try:
+                coord = json.loads(coord)
+            except json.JSONDecodeError:
+                coord = None
+        if isinstance(coord, dict):
+            lat = coord.get("lat")
+            lng = coord.get("lng")
+        else:
+            lat = None
+            lng = None
+        geo_features.append([lat, lng])
+
+    geo_features = np.array(geo_features, dtype=float)
+    # Replace missing with column means
+    if np.isnan(geo_features).any():
+        col_means = np.nanmean(geo_features, axis=0)
+        inds = np.where(np.isnan(geo_features))
+        geo_features[inds] = np.take(col_means, inds[1])
+
+    # Normalize features
+    text_norm = (text_embeddings - text_embeddings.mean(axis=0)) / (text_embeddings.std(axis=0) + 1e-8)
+    geo_norm = (geo_features - geo_features.mean(axis=0)) / (geo_features.std(axis=0) + 1e-8)
+
+    combined = (TEXT_WEIGHT * text_norm) + (GEO_WEIGHT * geo_norm)
 
     clusterer = hdbscan.HDBSCAN(
         min_cluster_size=HDBSCAN_MIN_CLUSTER_SIZE,
@@ -299,7 +409,7 @@ def cluster_threads() -> list[dict]:
         cluster_selection_epsilon=0.0,
         algorithm="best",
     )
-    cluster_labels = clusterer.fit_predict(embeddings)
+    cluster_labels = clusterer.fit_predict(combined)
     log.info(f"HDBSCAN found {len(set(cluster_labels) - {-1})} clusters, {sum(cluster_labels == -1)} noise points.")
 
     unique_labels = set(cluster_labels)
@@ -309,15 +419,35 @@ def cluster_threads() -> list[dict]:
             continue
         mask = cluster_labels == label
         mask_indices = np.where(mask)[0]
-        centroid = embeddings[mask].mean(axis=0)
         member_texts = [texts[i] for i in mask_indices]
         keywords = extract_keywords(member_texts[:20])
+
+        coords = []
+        for idx in mask_indices:
+            coord = recent[idx][3]
+            if isinstance(coord, str):
+                try:
+                    coord = json.loads(coord)
+                except json.JSONDecodeError:
+                    coord = None
+            if isinstance(coord, dict):
+                lat = coord.get("lat")
+                lng = coord.get("lng")
+                if lat is not None and lng is not None:
+                    coords.append((lat, lng))
+
+        if coords:
+            centroid_lat = float(np.mean([pair[0] for pair in coords]))
+            centroid_lng = float(np.mean([pair[1] for pair in coords]))
+        else:
+            centroid_lat = None
+            centroid_lng = None
 
         clusters.append({
             "cluster_id": f"cluster_{label}",
             "cluster_label": label,
-            "centroid_lat": centroid[0],
-            "centroid_lng": centroid[1],
+            "centroid_lat": float(centroid_lat) if centroid_lat is not None else None,
+            "centroid_lng": float(centroid_lng) if centroid_lng is not None else None,
             "size": int(mask.sum()),
             "member_indices": mask_indices.tolist(),
             "keywords": keywords,
@@ -325,7 +455,7 @@ def cluster_threads() -> list[dict]:
 
     log.info("Running UMAP for visualization (2D projection only)...")
     umap_reducer = UMAP(n_components=UMAP_N_COMPONENTS, n_neighbors=UMAP_N_NEIGHBORS, min_dist=UMAP_MIN_DIST, random_state=42)
-    umap_coords = umap_reducer.fit_transform(embeddings)
+    umap_coords = umap_reducer.fit_transform(combined)
 
     cluster_count = 0
     mapping_count = 0
@@ -342,7 +472,6 @@ def cluster_threads() -> list[dict]:
                  "clng": c["centroid_lng"], "sz": c["size"], "kw": c["keywords"]},
             )
             cluster_count += 1
-            umap_centroid = umap_coords[c["member_indices"]].mean(axis=0)
             for idx in c["member_indices"]:
                 thread_id = recent[idx][0]
                 conn.execute(
