@@ -1,4 +1,4 @@
-import type { HealthCheck, RedditThread, ClusterProposal } from "./types";
+import type { AgentRunTrace, HealthCheck, RedditThread, ClusterProposal } from "./types";
 
 const BASE_URL = "/api";
 
@@ -37,4 +37,9 @@ export async function generateProposal(clusterId: string): Promise<ClusterPropos
     { method: "POST" }
   );
   return data.proposal;
+}
+
+export async function getAgentRuns(clusterId: string): Promise<AgentRunTrace[]> {
+  const data = await fetchJSON<{ runs: AgentRunTrace[] }>(`/agent-runs/${clusterId}`);
+  return data.runs;
 }

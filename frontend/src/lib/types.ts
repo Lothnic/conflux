@@ -53,6 +53,23 @@ export interface ClusterProposal {
   size?: number;
 }
 
+export interface AgentStepTrace {
+  step_name: string;
+  tool_name: string;
+  status: string;
+  input: Record<string, unknown>;
+  output: Record<string, unknown>;
+  created_at: string | null;
+}
+
+export interface AgentRunTrace {
+  run_id: string;
+  status: string;
+  started_at: string | null;
+  finished_at: string | null;
+  steps: AgentStepTrace[];
+}
+
 export interface ClusterResult {
   cluster_id: string;
   cluster_label: number;
