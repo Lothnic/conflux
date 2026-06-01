@@ -17,6 +17,28 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;");
 }
 
+function coordinateKey(lat: number, lon: number): string {
+  return `${lat.toFixed(5)},${lon.toFixed(5)}`;
+}
+
+function spreadSharedCoordinate(
+  lat: number,
+  lon: number,
+  occurrence: number,
+  total: number,
+  radiusMeters: number
+): [number, number] {
+  if (total <= 1) return [lat, lon];
+
+  const angle = (Math.PI * 2 * occurrence) / total;
+  const ring = Math.floor(occurrence / 8);
+  const distance = radiusMeters + ring * radiusMeters * 0.65;
+  const latOffset = (Math.cos(angle) * distance) / 111_320;
+  const lonOffset = (Math.sin(angle) * distance) / (111_320 * Math.cos((lat * Math.PI) / 180));
+
+  return [lat + latOffset, lon + lonOffset];
+}
+
 interface MapSectionProps {
   proposals: ClusterProposal[];
   threads: RedditThread[];
@@ -157,11 +179,24 @@ export default function MapSection({
     const bounds: [number, number][] = [];
     const isSelected = (c: ClusterProposal) => selectedCluster?.cluster_id === c.cluster_id;
 
+    const threadCoordinateCounts = new Map<string, number>();
     threads.forEach((t) => {
       if (t.lat == null || t.lng == null) return;
+      const key = coordinateKey(t.lat, t.lng);
+      threadCoordinateCounts.set(key, (threadCoordinateCounts.get(key) ?? 0) + 1);
+    });
+    const threadCoordinateSeen = new Map<string, number>();
+
+    threads.forEach((t) => {
+      if (t.lat == null || t.lng == null) return;
+      const key = coordinateKey(t.lat, t.lng);
+      const occurrence = threadCoordinateSeen.get(key) ?? 0;
+      const total = threadCoordinateCounts.get(key) ?? 1;
+      threadCoordinateSeen.set(key, occurrence + 1);
+      const [displayLat, displayLng] = spreadSharedCoordinate(t.lat, t.lng, occurrence, total, 55);
       const safeTitle = escapeHtml(t.title);
       const safeSubreddit = escapeHtml(t.subreddit);
-      const dot = L.circleMarker([t.lat, t.lng], {
+      const dot = L.circleMarker([displayLat, displayLng], {
         radius: 4,
         color: "transparent",
         fillColor: t.cluster_id ? "#f04438" : "#94a3b8",
@@ -185,11 +220,23 @@ export default function MapSection({
 
     if (valid.length === 0) return;
 
+    const clusterCoordinateCounts = new Map<string, number>();
+    valid.forEach((cluster) => {
+      const key = coordinateKey(cluster.location.lat, cluster.location.lon);
+      clusterCoordinateCounts.set(key, (clusterCoordinateCounts.get(key) ?? 0) + 1);
+    });
+    const clusterCoordinateSeen = new Map<string, number>();
+
     valid.forEach((cluster) => {
       const safeIssueType = escapeHtml(cluster.issue_type);
       const lat = cluster.location.lat;
       const lon = cluster.location.lon;
-      bounds.push([lat, lon]);
+      const key = coordinateKey(lat, lon);
+      const occurrence = clusterCoordinateSeen.get(key) ?? 0;
+      const total = clusterCoordinateCounts.get(key) ?? 1;
+      clusterCoordinateSeen.set(key, occurrence + 1);
+      const [displayLat, displayLon] = spreadSharedCoordinate(lat, lon, occurrence, total, 140);
+      bounds.push([displayLat, displayLon]);
       const selected = isSelected(cluster);
 
       const densityRadius = Math.min(220 + (cluster.size ?? 1) * 45, 680);
@@ -203,7 +250,7 @@ export default function MapSection({
         interactive: false,
       }).addTo(densityLayer);
 
-      const marker = L.circleMarker([lat, lon], {
+      const marker = L.circleMarker([displayLat, displayLon], {
         radius: selected ? 14 : 10,
         color: selected ? "#fff" : MARKER_COLOR,
         fillColor: selected ? MARKER_SELECTED : MARKER_COLOR,
@@ -214,7 +261,7 @@ export default function MapSection({
 
       marker.bindTooltip(
         `<div style="font-family:system-ui,sans-serif;font-size:11px;font-weight:700;color:#fff;background:rgba(15,23,42,0.94);padding:4px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
-          ${safeIssueType}<br><span style="color:#cbd5e1;font-size:9px;font-weight:500;">Estimated geocoded location</span>
+          ${safeIssueType}<br><span style="color:#cbd5e1;font-size:9px;font-weight:500;">${total > 1 ? "Spread from shared estimated locality" : "Estimated geocoded location"}</span>
         </div>`,
         { direction: "top", offset: [0, -10], className: "" }
       );

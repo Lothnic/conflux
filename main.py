@@ -78,7 +78,7 @@ def create_tables() -> bool:
 
 
 def fetch_latest_clusters(limit: int = 50):
-    if LOCAL_CLUSTERS_FILE.exists():
+    if DEMO_MODE and LOCAL_CLUSTERS_FILE.exists():
         with open(LOCAL_CLUSTERS_FILE, "r", encoding="utf-8") as f:
             clusters = json.load(f)
         if clusters:
@@ -92,9 +92,10 @@ def fetch_latest_clusters(limit: int = 50):
             SELECT cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords,
                    created_at, location_confidence, location_precision_meters
             FROM cluster_results
+            WHERE (:include_demo = 1 OR cluster_id NOT LIKE 'demo-%')
             ORDER BY created_at DESC
             LIMIT :lim
-        """), {"lim": limit}).fetchall()
+        """), {"lim": limit, "include_demo": 1 if DEMO_MODE else 0}).fetchall()
     if rows:
         return [
             {
@@ -111,7 +112,7 @@ def fetch_latest_clusters(limit: int = 50):
             for r in rows
         ]
 
-    if LOCAL_CLUSTERS_FILE.exists():
+    if DEMO_MODE and LOCAL_CLUSTERS_FILE.exists():
         with open(LOCAL_CLUSTERS_FILE, "r", encoding="utf-8") as f:
             clusters = json.load(f)
         return clusters[:limit]
@@ -157,7 +158,7 @@ def source_url(thread_id: str, source: str | None, stored_url: str | None = None
 # ─── Proposal Heuristics ─────────────────────────────────────────
 
 def fetch_latest_threads(limit: int = 50):
-    if LOCAL_THREADS_SOURCE_FILE.exists():
+    if DEMO_MODE and LOCAL_THREADS_SOURCE_FILE.exists():
         with open(LOCAL_THREADS_SOURCE_FILE, "r", encoding="utf-8") as f:
             payload = json.load(f)
         threads = payload if isinstance(payload, list) else payload.get("threads", [])
@@ -173,7 +174,7 @@ def fetch_latest_threads(limit: int = 50):
             {
                 "id": t.get("id") or t.get("thread_id", ""),
                 "title": t.get("title", ""),
-            "url": source_url(t.get("id") or t.get("thread_id", ""), t.get("subreddit") or t.get("source") or "delhi", t.get("url", "")),
+                "url": source_url(t.get("id") or t.get("thread_id", ""), t.get("subreddit") or t.get("source") or "delhi", t.get("url", "")),
                 "author": t.get("author", "system"),
                 "created_utc": t.get("created_utc") or t.get("published_at"),
                 "upvotes": int(t.get("upvotes") or 0),
@@ -259,10 +260,10 @@ def infer_urgency(size: int) -> str:
 
 def infer_budget(size: int) -> str:
     if size >= 20:
-        return "$250k-$1M"
+        return "₹2-8 crore"
     if size >= 8:
-        return "$50k-$250k"
-    return "$10k-$50k"
+        return "₹40 lakh-₹2 crore"
+    return "₹8-40 lakh"
 
 
 def proposal_recommendations(issue_type: str) -> List[str]:
@@ -432,7 +433,7 @@ async def get_threads(limit: int = 50):
         threads = fetch_latest_threads(limit)
         return {
             "threads": threads,
-            "source": "local_demo" if LOCAL_THREADS_SOURCE_FILE.exists() else "database",
+            "source": "local_demo" if DEMO_MODE else "database",
             "count": len(threads),
         }
     except Exception as e:
@@ -474,7 +475,7 @@ async def get_clusters_geojson(limit: int = 200):
 @app.get("/threads/geojson")
 async def get_threads_geojson(limit: int = 200):
     """Return ingested thread coordinates as GeoJSON FeatureCollection."""
-    if LOCAL_THREADS_FILE.exists():
+    if DEMO_MODE and LOCAL_THREADS_FILE.exists():
         with open(LOCAL_THREADS_FILE, "r", encoding="utf-8") as f:
             payload = json.load(f)
         features = payload.get("features", [])
@@ -530,39 +531,48 @@ async def get_proposals(limit: int = 50):
         from proposals import fetch_stored_proposals
 
         stored = fetch_stored_proposals(db.engine, limit)
-        if stored:
-            proposals = []
-            for p in stored:
-                sources = fetch_sources_for_cluster(p["cluster_id"])
-                issue = p["issue_type"]
-                proposals.append({
-                    "cluster_id": p["cluster_id"],
-                    "issue_type": issue,
-                    "urgency": p["urgency"],
-                    "location": {
-                        "lat": p.get("centroid_lat") or 0,
-                        "lon": p.get("centroid_lng") or 0,
-                        "confidence": p.get("location_confidence"),
-                        "precision_meters": p.get("location_precision_meters"),
-                        "method": "cluster_centroid",
-                    },
-                    "summary": p["summary"],
-                    "recommendations": p["recommendations"],
-                    "funding_sources": p["funding_sources"],
-                    "estimated_budget": p["estimated_budget"],
-                    # New structured outputs — fall back to heuristics for rows
-                    # generated before these fields existed.
-                    "communication_plan": p.get("communication_plan") or proposal_communication_plan(issue),
-                    "responsible_agencies": p.get("responsible_agencies") or responsible_agencies(issue),
-                    "impact_rationale": p.get("impact_rationale")
-                        or f"{p['urgency'].capitalize()} urgency based on the volume of clustered citizen complaints about this {issue.lower()} issue.",
-                    "sources": sources,
-                })
-            return {"proposals": proposals}
+        if not DEMO_MODE:
+            stored = [p for p in stored if not str(p["cluster_id"]).startswith("demo-")]
 
         clusters = fetch_latest_clusters(limit)
+        if not DEMO_MODE:
+            clusters = [c for c in clusters if not str(c["cluster_id"]).startswith("demo-")]
+        clusters_by_id = {c["cluster_id"]: c for c in clusters}
         proposals = []
+        seen_cluster_ids = set()
+
+        for p in stored:
+            c = clusters_by_id.get(p["cluster_id"], {})
+            sources = fetch_sources_for_cluster(p["cluster_id"])
+            issue = p["issue_type"]
+            seen_cluster_ids.add(p["cluster_id"])
+            proposals.append({
+                "cluster_id": p["cluster_id"],
+                "issue_type": issue,
+                "urgency": p["urgency"],
+                "location": {
+                    "lat": p.get("centroid_lat") if p.get("centroid_lat") is not None else c.get("centroid_lat"),
+                    "lon": p.get("centroid_lng") if p.get("centroid_lng") is not None else c.get("centroid_lng"),
+                    "confidence": p.get("location_confidence") if p.get("location_confidence") is not None else c.get("location_confidence"),
+                    "precision_meters": p.get("location_precision_meters") if p.get("location_precision_meters") is not None else c.get("location_precision_meters"),
+                    "method": "cluster_centroid",
+                },
+                "summary": p["summary"],
+                "recommendations": p["recommendations"],
+                "funding_sources": p["funding_sources"],
+                "estimated_budget": p["estimated_budget"],
+                "communication_plan": p.get("communication_plan") or proposal_communication_plan(issue),
+                "responsible_agencies": p.get("responsible_agencies") or responsible_agencies(issue),
+                "impact_rationale": p.get("impact_rationale")
+                    or f"{p['urgency'].capitalize()} urgency based on the volume of clustered citizen complaints about this {issue.lower()} issue.",
+                "sources": sources,
+                "size": c.get("size"),
+                "generated_by": "llm",
+            })
+
         for c in clusters:
+            if c["cluster_id"] in seen_cluster_ids:
+                continue
             issue_type = infer_issue_type(c["keywords"])
             urgency = infer_urgency(c["size"])
             sources = fetch_sources_for_cluster(c["cluster_id"])
@@ -590,9 +600,10 @@ async def get_proposals(limit: int = 50):
                 "impact_rationale": impact_rationale(issue_type, c["size"]),
                 "sources": sources,
                 "size": c["size"],
+                "generated_by": "heuristic_fallback",
             }
             proposals.append(proposal)
-        return {"proposals": proposals}
+        return {"proposals": proposals[:limit]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

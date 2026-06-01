@@ -57,6 +57,7 @@ GEOCODE_USER_AGENT = os.getenv("GEOCODE_USER_AGENT", "conflux/0.1")
 GEOCODE_MIN_CONFIDENCE = float(os.getenv("GEOCODE_MIN_CONFIDENCE", "0.45"))
 GEOCODE_CITY_FALLBACK_ENABLED = os.getenv("GEOCODE_CITY_FALLBACK_ENABLED", "0") == "1"
 LLM_GEOLOCATION_ENABLED = os.getenv("LLM_GEOLOCATION_ENABLED", "1") == "1"
+LOCAL_GEO_FALLBACK_ENABLED = os.getenv("LOCAL_GEO_FALLBACK_ENABLED", "1") == "1"
 
 # Reddit public API
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "conflux/0.1")
@@ -312,7 +313,8 @@ def write_local_artifacts(threads: list[dict], clusters: list[dict]) -> None:
 TARGET_SUBS = os.getenv(
     "TARGET_SUBS",
     "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai",
-).split(",")
+)
+TARGET_SUBS = [sub.strip() for sub in TARGET_SUBS.split(",") if sub.strip()]
 
 # Infrastructure search queries for Reddit search API
 SEARCH_QUERIES = [
@@ -326,25 +328,34 @@ SEARCH_QUERIES = [
 def _fetch_reddit_url(url: str) -> dict | None:
     """Fetch JSON from a Reddit endpoint with rate limiting."""
     time.sleep(1.2)
-    try:
-        req = Request(url, method="GET")
-        req.add_header("User-Agent", "conflux/0.1 (anonymous)")
-        resp = urlopen(req, timeout=15)
-        return json.loads(resp.read().decode())
-    except (HTTPError, URLError, json.JSONDecodeError) as e:
-        log.warning(f"Reddit fetch failed for {url[:80]}: {e}")
-        return None
+    candidates = [url]
+    if "old.reddit.com" in url:
+        candidates.append(url.replace("old.reddit.com", "www.reddit.com"))
+
+    for candidate in candidates:
+        try:
+            req = Request(candidate, method="GET")
+            req.add_header("User-Agent", REDDIT_USER_AGENT)
+            req.add_header("Accept", "application/json")
+            resp = urlopen(req, timeout=15)
+            return json.loads(resp.read().decode())
+        except (HTTPError, URLError, json.JSONDecodeError) as e:
+            log.warning(f"Reddit fetch failed for {candidate[:80]}: {e}")
+            continue
+    return None
 
 
 def fetch_new_threads() -> list[dict]:
     """Fetch infra-relevant threads from multiple Delhi NCR subreddits."""
+    if not TARGET_SUBS:
+        log.info("Reddit ingestion skipped because TARGET_SUBS is empty.")
+        return []
+
     cutoff = datetime.now(timezone.utc) - timedelta(hours=HOURS_BACK)
     all_threads: dict[str, dict] = {}
     seen_ids = set()
 
     for sub in TARGET_SUBS:
-        sub = sub.strip()
-
         # Fetch new posts
         new_url = f"https://old.reddit.com/r/{sub}/new.json?limit=50"
         log.info(f"Fetching r/{sub}/new...")
@@ -423,11 +434,28 @@ DEFAULT_NEWS_FEEDS = [
     ("toi-india", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms"),
 ]
 
+GOOGLE_NEWS_QUERIES = [
+    "Delhi water contamination OR water supply",
+    "Delhi pothole OR road damage OR traffic signal",
+    "Delhi garbage OR sanitation OR waste",
+    "Delhi waterlogging OR drainage OR sewer",
+    "Gurgaon civic waterlogging OR pothole",
+    "Noida civic water supply OR traffic",
+]
+
 
 def _parse_news_feeds_env() -> list[tuple[str, str]]:
     raw = os.getenv("NEWS_FEEDS", "").strip()
     if not raw:
-        return DEFAULT_NEWS_FEEDS
+        feeds = list(DEFAULT_NEWS_FEEDS)
+        for query in GOOGLE_NEWS_QUERIES:
+            feeds.append((
+                "gnews:" + query[:32].replace(" ", "-"),
+                "https://news.google.com/rss/search?q="
+                + quote_plus(query + " when:30d")
+                + "&hl=en-IN&gl=IN&ceid=IN:en",
+            ))
+        return feeds
     feeds = []
     for part in raw.split(","):
         part = part.strip()
@@ -582,9 +610,63 @@ def fetch_opendata_threads() -> list[dict]:
     return items
 
 
+LOCAL_PLACE_CANDIDATES = [
+    ("Ghazipur", "neighborhood"),
+    ("Bhalswa", "neighborhood"),
+    ("Okhla", "neighborhood"),
+    ("Yamuna", "neighborhood"),
+    ("Chattarpur", "neighborhood"),
+    ("Gulmohar Park", "neighborhood"),
+    ("Janakpuri", "neighborhood"),
+    ("Pitampura", "neighborhood"),
+    ("Rohini", "neighborhood"),
+    ("Dwarka", "neighborhood"),
+    ("Karol Bagh", "neighborhood"),
+    ("Lajpat Nagar", "neighborhood"),
+    ("Saket", "neighborhood"),
+    ("Vasant Kunj", "neighborhood"),
+    ("Mayur Vihar", "neighborhood"),
+    ("Noida", "city"),
+    ("Gurgaon", "city"),
+    ("Gurugram", "city"),
+    ("Delhi", "city"),
+]
+
+
+def extract_location_candidate_locally(title: str, content: str) -> dict | None:
+    """Cheap gazetteer fallback for source titles when the LLM is unavailable."""
+    if not LOCAL_GEO_FALLBACK_ENABLED:
+        return None
+
+    blob = f"{title} {content or ''}".lower()
+    for place, precision in LOCAL_PLACE_CANDIDATES:
+        if place.lower() in blob:
+            return {
+                "location_text": place,
+                "precision": precision,
+                "confidence": 0.7 if precision != "city" else 0.35,
+                "reason": "Matched local place gazetteer",
+            }
+
+    sector_match = __import__("re").search(r"\b(?:sector|sec)\s*[- ]?([0-9]{1,3}[a-z]?)\b", blob)
+    if sector_match:
+        return {
+            "location_text": f"Sector {sector_match.group(1)}",
+            "precision": "neighborhood",
+            "confidence": 0.62,
+            "reason": "Matched sector mention",
+        }
+
+    return None
+
+
 def extract_location_candidate(title: str, content: str) -> dict:
     """Use an OpenAI-compatible LLM to extract the most geocodable place phrase.
     The LLM does not provide coordinates; it only normalizes messy forum text."""
+    local_candidate = extract_location_candidate_locally(title, content)
+    if local_candidate:
+        return local_candidate
+
     if not LLM_GEOLOCATION_ENABLED or not GEO_LLM_API_KEY:
         return {
             "location_text": "",
@@ -783,7 +865,9 @@ def insert_batches(threads: list[dict]) -> int:
                         INSERT INTO daily_ingest
                         (thread_id, subreddit, title, content, flair, upvotes, coordinates, url, published_at)
                         VALUES (:tid, :sub, :title, :content, :flair, :upv, :coords, :url, :pub)
-                        ON CONFLICT (thread_id) DO NOTHING
+                        ON CONFLICT (thread_id) DO UPDATE SET
+                            coordinates = COALESCE(daily_ingest.coordinates, EXCLUDED.coordinates),
+                            url = COALESCE(NULLIF(daily_ingest.url, ''), EXCLUDED.url)
                     """),
                     {"tid": t["thread_id"], "sub": t["subreddit"], "title": t["title"],
                      "content": t["content"], "flair": t["flair"], "upv": t["upvotes"],
