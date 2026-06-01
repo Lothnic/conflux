@@ -59,9 +59,8 @@ GEOCODE_CITY_FALLBACK_ENABLED = os.getenv("GEOCODE_CITY_FALLBACK_ENABLED", "0") 
 LLM_GEOLOCATION_ENABLED = os.getenv("LLM_GEOLOCATION_ENABLED", "1") == "1"
 LOCAL_GEO_FALLBACK_ENABLED = os.getenv("LOCAL_GEO_FALLBACK_ENABLED", "1") == "1"
 
-# Legacy Reddit public JSON adapter. Disabled by default because anonymous
-# Reddit access is unreliable and OAuth is no longer the primary source path.
-REDDIT_INGEST_ENABLED = os.getenv("REDDIT_INGEST_ENABLED", "0") == "1"
+# Reddit public JSON adapter. Uses old/new reddit JSON endpoints without OAuth.
+REDDIT_INGEST_ENABLED = os.getenv("REDDIT_INGEST_ENABLED", "1") == "1"
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "conflux/0.1")
 
 # OpenAI-compatible location extraction. Defaults to Groq because the project
@@ -314,7 +313,7 @@ def write_local_artifacts(threads: list[dict], clusters: list[dict]) -> None:
 # Subreddits to scan for Indian-city infrastructure complaints (Delhi NCR weighted first).
 TARGET_SUBS_RAW = os.getenv(
     "TARGET_SUBS",
-    "",
+    "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai",
 )
 TARGET_SUBS = [sub.strip() for sub in TARGET_SUBS_RAW.split(",") if sub.strip()]
 
@@ -350,7 +349,7 @@ def _fetch_reddit_url(url: str) -> dict | None:
 def fetch_new_threads() -> list[dict]:
     """Fetch infra-relevant threads from multiple Delhi NCR subreddits."""
     if not REDDIT_INGEST_ENABLED:
-        log.info("Reddit ingestion disabled. Using civic/news/open-data sources.")
+        log.info("Reddit JSON ingestion disabled by REDDIT_INGEST_ENABLED=0.")
         return []
     if not TARGET_SUBS:
         log.info("Reddit ingestion skipped because TARGET_SUBS is empty.")

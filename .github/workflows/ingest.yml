@@ -17,7 +17,8 @@ jobs:
       LOCAL_GEO_FALLBACK_ENABLED: "1"
       GEOCODE_CITY_FALLBACK_ENABLED: "0"
       NEWS_INGEST_ENABLED: "1"
-      REDDIT_INGEST_ENABLED: "0"
+      REDDIT_INGEST_ENABLED: "1"
+      TARGET_SUBS: "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai"
       HOURS_BACK: 24
       PATH: $HOME/.cargo/bin:$PATH
 
