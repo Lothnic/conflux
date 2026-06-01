@@ -89,6 +89,25 @@ CREATE TABLE IF NOT EXISTS llm_proposals (
     centroid_lng    REAL,
     created_at      TEXT DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS agent_runs (
+    run_id      TEXT PRIMARY KEY,
+    cluster_id  TEXT,
+    status      TEXT,
+    started_at  TEXT DEFAULT (datetime('now')),
+    finished_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS agent_steps (
+    step_id     TEXT PRIMARY KEY,
+    run_id      TEXT REFERENCES agent_runs(run_id),
+    step_name   TEXT,
+    tool_name   TEXT,
+    status      TEXT,
+    input_json  TEXT,
+    output_json TEXT,
+    created_at  TEXT DEFAULT (datetime('now'))
+);
 """
 
 POSTGRES_CREATE_TABLES_SQL = """
@@ -153,6 +172,25 @@ CREATE TABLE IF NOT EXISTS llm_proposals (
     centroid_lat     DOUBLE PRECISION,
     centroid_lng     DOUBLE PRECISION,
     created_at       TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS agent_runs (
+    run_id      TEXT PRIMARY KEY,
+    cluster_id  TEXT,
+    status      TEXT,
+    started_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    finished_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS agent_steps (
+    step_id     TEXT PRIMARY KEY,
+    run_id      TEXT REFERENCES agent_runs(run_id),
+    step_name   TEXT,
+    tool_name   TEXT,
+    status      TEXT,
+    input_json  TEXT,
+    output_json TEXT,
+    created_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 """
 

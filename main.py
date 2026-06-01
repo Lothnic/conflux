@@ -132,9 +132,26 @@ def fetch_sources_for_cluster(cluster_id: str, limit: int = 8) -> list[dict]:
                 """),
                 {"cid": cluster_id, "lim": limit},
             ).fetchall()
-        return [{"id": r[0], "subreddit": r[1] or "delhi", "title": r[2], "url": r[3] or f"https://reddit.com/r/{r[1]}/comments/{r[0]}"} for r in rows]
+        return [
+            {
+                "id": r[0],
+                "subreddit": r[1] or "delhi",
+                "title": r[2],
+                "url": source_url(r[0], r[1], r[3]),
+            }
+            for r in rows
+        ]
     except Exception:
         return []
+
+
+def source_url(thread_id: str, source: str | None, stored_url: str | None = None) -> str:
+    if stored_url:
+        return stored_url
+    source = source or "delhi"
+    if source.startswith("news:") or source.startswith("gov:"):
+        return ""
+    return f"https://reddit.com/r/{source}/comments/{thread_id}"
 
 
 # ─── Proposal Heuristics ─────────────────────────────────────────
@@ -156,7 +173,7 @@ def fetch_latest_threads(limit: int = 50):
             {
                 "id": t.get("id") or t.get("thread_id", ""),
                 "title": t.get("title", ""),
-                "url": t.get("url", ""),
+            "url": source_url(t.get("id") or t.get("thread_id", ""), t.get("subreddit") or t.get("source") or "delhi", t.get("url", "")),
                 "author": t.get("author", "system"),
                 "created_utc": t.get("created_utc") or t.get("published_at"),
                 "upvotes": int(t.get("upvotes") or 0),
@@ -195,7 +212,7 @@ def fetch_latest_threads(limit: int = 50):
         {
             "id": row[0],
             "title": row[2] or "",
-            "url": row[10] or f"https://reddit.com/r/{row[1]}/comments/{row[0]}",
+            "url": source_url(row[0], row[1], row[10]),
             "author": "system",
             "created_utc": row[6] if row[6] else None,
             "upvotes": int(row[5] or 0),
@@ -702,6 +719,60 @@ async def research_cluster_stream(cluster_id: str):
         yield "data: {\"step\": \"done\"}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+@app.get("/agent-runs/{cluster_id}")
+async def get_agent_runs(cluster_id: str, limit: int = 5):
+    """Return recent persisted agent runs and tool traces for a cluster."""
+    create_tables()
+    try:
+        with db.engine.connect() as conn:
+            runs = conn.execute(
+                sa.text("""
+                    SELECT run_id, status, started_at, finished_at
+                    FROM agent_runs
+                    WHERE cluster_id = :cid
+                    ORDER BY started_at DESC
+                    LIMIT :lim
+                """),
+                {"cid": cluster_id, "lim": limit},
+            ).fetchall()
+            run_ids = [r[0] for r in runs]
+            if not run_ids:
+                return {"runs": []}
+            steps = conn.execute(
+                sa.text("""
+                    SELECT run_id, step_name, tool_name, status, input_json, output_json, created_at
+                    FROM agent_steps
+                    WHERE run_id IN :run_ids
+                    ORDER BY created_at ASC
+                """).bindparams(sa.bindparam("run_ids", expanding=True)),
+                {"run_ids": run_ids},
+            ).fetchall()
+        steps_by_run: dict[str, list[dict]] = {}
+        for step in steps:
+            steps_by_run.setdefault(step[0], []).append({
+                "step_name": step[1],
+                "tool_name": step[2],
+                "status": step[3],
+                "input": json.loads(step[4]) if step[4] else {},
+                "output": json.loads(step[5]) if step[5] else {},
+                "created_at": step[6] if step[6] else None,
+            })
+        return {
+            "runs": [
+                {
+                    "run_id": run[0],
+                    "status": run[1],
+                    "started_at": run[2] if run[2] else None,
+                    "finished_at": run[3] if run[3] else None,
+                    "steps": steps_by_run.get(run[0], []),
+                }
+                for run in runs
+            ]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/research/{cluster_id}/download/{doc_id}")

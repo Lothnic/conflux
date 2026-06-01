@@ -16,6 +16,7 @@ from main import (
     responsible_agencies,
 )
 from proposals import fetch_stored_proposals, store_proposal
+from policy_retriever import retrieve_policy
 from worker import ingest_and_cluster as worker
 
 
@@ -34,6 +35,8 @@ def test_schema_includes_geolocation_quality_columns():
     with engine.connect() as conn:
         thread_geo_cols = {row[1] for row in conn.execute(sa.text("PRAGMA table_info(thread_geo)"))}
         cluster_cols = {row[1] for row in conn.execute(sa.text("PRAGMA table_info(cluster_results)"))}
+        run_cols = {row[1] for row in conn.execute(sa.text("PRAGMA table_info(agent_runs)"))}
+        step_cols = {row[1] for row in conn.execute(sa.text("PRAGMA table_info(agent_steps)"))}
 
     assert "location_method" in thread_geo_cols
     assert "location_confidence" in thread_geo_cols
@@ -41,6 +44,14 @@ def test_schema_includes_geolocation_quality_columns():
     assert "geocoder_query" in thread_geo_cols
     assert "location_confidence" in cluster_cols
     assert "location_precision_meters" in cluster_cols
+    assert {"run_id", "cluster_id", "status"}.issubset(run_cols)
+    assert {"run_id", "step_name", "tool_name", "input_json", "output_json"}.issubset(step_cols)
+
+
+def test_policy_retriever_returns_relevant_docs():
+    hits = retrieve_policy("broken traffic signal pedestrian crossing near school", limit=2)
+    assert hits
+    assert any("Road" in hit.title or "Traffic" in hit.title for hit in hits)
 
 
 def test_geolocation_precision_mapping():

@@ -2,8 +2,8 @@ name: Daily Data Ingestion and Clustering
 
 on:
   schedule:
-    # Runs every 4 hours at minute 0
-    - cron: '0 */4 * * *'
+    # Runs every day at 02:00 UTC
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,8 +12,11 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL || 'sqlite:///data/conflux.db' }}
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GEO_LLM_API_KEY: ${{ secrets.GEO_LLM_API_KEY }}
+      LLM_GEOLOCATION_ENABLED: "1"
+      GEOCODE_CITY_FALLBACK_ENABLED: "0"
       SUBREDDIT: 'delhi'
-      HOURS_BACK: 4
+      HOURS_BACK: 24
       PATH: $HOME/.cargo/bin:$PATH
 
     steps:
@@ -32,6 +35,7 @@ jobs:
     - name: Validate env vars
       run: |
         echo "DATABASE_URL set: $([ -n "$DATABASE_URL" ] && echo 'YES' || echo 'NO')"
+        test -n "$DATABASE_URL" || (echo "DATABASE_URL is required for scheduled ingestion" && exit 1)
         echo "SUBREDDIT: $SUBREDDIT"
         echo "HOURS_BACK: $HOURS_BACK"
 

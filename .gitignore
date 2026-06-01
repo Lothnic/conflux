@@ -13,6 +13,8 @@ frontend/.venv/
 
 # Secrets
 .env
+CLAUDE.md
+**/CLAUDE.md
 
 # Assets to ignore
 data/

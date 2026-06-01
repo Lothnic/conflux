@@ -22,6 +22,8 @@ interface ResearchStep {
   status: string;
   label?: string;
   output?: string;
+  tool?: string;
+  run_id?: string;
   doc_id?: string;
   download_url?: string;
 }
@@ -40,13 +42,16 @@ interface AnalysisState {
   running: boolean;
 }
 
-const STEP_ORDER = ["satellite", "poi", "policy", "document"];
+const STEP_ORDER = ["context", "geolocation", "poi", "policy", "reasoning", "recommendation", "document"];
 
 const STEP_LABELS: Record<string, string> = {
-  satellite: "Context gathering",
-  poi: "Nearby facilities",
+  context: "Issue context",
+  geolocation: "Geolocation",
+  poi: "Nearby context",
   policy: "Policy analysis",
-  document: "Recommendation synthesis",
+  reasoning: "Agent reasoning",
+  recommendation: "Action plan",
+  document: "Report synthesis",
 };
 
 function bullets(items: string[] | undefined, empty: string) {
@@ -70,6 +75,31 @@ function sourceLabel(source: { subreddit: string }) {
   if (provider.startsWith("news:")) return provider.slice(5);
   if (provider.startsWith("gov:")) return provider.slice(4);
   return `r/${provider}`;
+}
+
+function sourceHref(source: { id: string; subreddit: string; url?: string }) {
+  if (source.url) return source.url;
+  if (source.subreddit?.startsWith("news:") || source.subreddit?.startsWith("gov:")) return "";
+  return `https://reddit.com/r/${source.subreddit || "delhi"}/comments/${source.id}`;
+}
+
+function renderMarkdownLinks(text: string) {
+  const parts = text.split(/(\[[^\]]+\]\(https?:\/\/[^)\s]+\))/g);
+  return parts.map((part, index) => {
+    const match = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/);
+    if (!match) return part;
+    return (
+      <a
+        key={index}
+        href={match[2]}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-[#175cd3] underline decoration-slate-300 underline-offset-2 hover:text-[#0b4a9f]"
+      >
+        {match[1]}
+      </a>
+    );
+  });
 }
 
 export default function PlanningAnalysisPanel({ issue, threads, onClose }: PlanningAnalysisPanelProps) {
@@ -119,6 +149,19 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
   const sortedSteps = [...steps].sort((a, b) => STEP_ORDER.indexOf(a.step) - STEP_ORDER.indexOf(b.step));
   const currentStep = sortedSteps.find((step) => step.status === "running");
   const complete = Boolean(report);
+  const citationSources = issue.sources?.length
+    ? issue.sources.slice(0, 4).map((source) => ({
+        id: source.id,
+        label: sourceLabel(source),
+        title: source.title,
+        url: sourceHref(source),
+      }))
+    : linkedThreads.slice(0, 4).map((thread) => ({
+        id: thread.id,
+        label: "Citizen report",
+        title: thread.title,
+        url: thread.url,
+      }));
 
   function startAnalysis() {
     if (!issue || running) return;
@@ -216,6 +259,36 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
             <p className="text-[10px] text-slate-500">estimate</p>
           </div>
         </div>
+
+        {citationSources.length > 0 && (
+          <div className="mt-3 rounded-md border border-slate-200 bg-white">
+            <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Citations</p>
+              <p className="text-[10px] font-medium text-slate-400">{citationSources.length} linked</p>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {citationSources.map((source) =>
+                source.url ? (
+                  <a
+                    key={source.id}
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-3 py-2 hover:bg-slate-50"
+                  >
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{source.label}</p>
+                    <p className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-[#175cd3]">{source.title}</p>
+                  </a>
+                ) : (
+                  <div key={source.id} className="px-3 py-2">
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{source.label}</p>
+                    <p className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-slate-700">{source.title}</p>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 py-4">
@@ -257,6 +330,9 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
                     {done ? "✓" : index + 1}
                   </div>
                   <p className="text-[10px] font-semibold leading-4 text-slate-700">{STEP_LABELS[stepKey]}</p>
+                  {step?.tool && (
+                    <p className="mt-1 truncate text-[9px] font-medium text-slate-400">{step.tool}</p>
+                  )}
                 </div>
               );
             })}
@@ -318,7 +394,7 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
               {issue.sources?.slice(0, 5).map((source, index) => (
                 <a
                   key={`${source.id}-${index}`}
-                  href={source.url || `https://reddit.com/r/${source.subreddit}/comments/${source.id}`}
+                  href={sourceHref(source)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block rounded-md border border-slate-200 bg-white p-3 hover:bg-slate-50"
@@ -348,7 +424,9 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
           <section className="mb-2">
             <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">Generated Report</h3>
             <div className="max-h-72 overflow-y-auto rounded-md border border-slate-200 bg-slate-50 p-3">
-              <pre className="whitespace-pre-wrap text-xs leading-5 text-slate-700">{report}</pre>
+              <div className="whitespace-pre-wrap text-xs leading-5 text-slate-700">
+                {renderMarkdownLinks(report)}
+              </div>
             </div>
           </section>
         )}
