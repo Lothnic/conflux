@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
+import IssueBrowser from "@/components/IssueBrowser";
+import PlanningAnalysisPanel from "@/components/PlanningAnalysisPanel";
 import type { ClusterProposal, DashboardData, LoadingState } from "@/lib/types";
 import { getHealth, getProposals, getIngestedThreads } from "@/lib/api";
 
@@ -38,18 +39,6 @@ export default function Home() {
       setSelectedCluster(null);
     }
   }, [sidebarCollapsed]);
-
-  const handleUpdateProposal = useCallback((clusterId: string, updated: ClusterProposal) => {
-    setData((prev) => ({
-      ...prev,
-      proposals: prev.proposals.map((p) =>
-        p.cluster_id === clusterId ? updated : p
-      ),
-    }));
-    setSelectedCluster((prev) =>
-      prev?.cluster_id === clusterId ? updated : prev
-    );
-  }, []);
 
   const filteredProposals = useMemo(() => {
     if (!filterIssueType) return data.proposals;
@@ -111,21 +100,26 @@ export default function Home() {
         onToggleSidebar={handleToggleSidebar}
         mapLayer={mapLayer}
         onMapLayerChange={setMapLayer}
-        filterIssueType={filterIssueType}
-        onFilterChange={setFilterIssueType}
       />
 
-      <Sidebar
-        proposals={filteredProposals}
+      <IssueBrowser
+        issues={filteredProposals}
         threads={data.threads}
-        selectedCluster={selectedCluster}
+        selectedIssue={selectedCluster}
         health={data.health}
         ingestSource={data.ingestSource}
         loading={state === "loading"}
-        onSelectCluster={handleSelectCluster}
+        filterIssueType={filterIssueType}
+        onFilterChange={setFilterIssueType}
+        onSelectIssue={handleSelectCluster}
         onToggle={handleToggleSidebar}
         collapsed={sidebarCollapsed}
-        onUpdateProposal={handleUpdateProposal}
+      />
+
+      <PlanningAnalysisPanel
+        issue={selectedCluster}
+        threads={data.threads}
+        onClose={() => setSelectedCluster(null)}
       />
 
       {state === "error" && (

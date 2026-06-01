@@ -54,9 +54,18 @@ GEOCODE_ENABLED = os.getenv("GEOCODE_ENABLED", "1") == "1"
 GEOCODE_CITY = os.getenv("GEOCODE_CITY", "Delhi")
 GEOCODE_RATE_LIMIT = float(os.getenv("GEOCODE_RATE_LIMIT", "1.2"))  # seconds between requests
 GEOCODE_USER_AGENT = os.getenv("GEOCODE_USER_AGENT", "conflux/0.1")
+GEOCODE_MIN_CONFIDENCE = float(os.getenv("GEOCODE_MIN_CONFIDENCE", "0.45"))
+GEOCODE_CITY_FALLBACK_ENABLED = os.getenv("GEOCODE_CITY_FALLBACK_ENABLED", "0") == "1"
+LLM_GEOLOCATION_ENABLED = os.getenv("LLM_GEOLOCATION_ENABLED", "1") == "1"
 
 # Reddit public API
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "conflux/0.1")
+
+# OpenAI-compatible location extraction. Defaults to Groq because the project
+# already uses it; override GEO_LLM_* to use OpenAI, Claude proxy, or local LLM.
+GEO_LLM_API_KEY = os.getenv("GEO_LLM_API_KEY") or os.getenv("GROQ_API_KEY", "")
+GEO_LLM_MODEL = os.getenv("GEO_LLM_MODEL") or os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+GEO_LLM_API_URL = os.getenv("GEO_LLM_API_URL", "https://api.groq.com/openai/v1/chat/completions")
 
 # Embedding
 MODEL_NAME = os.getenv("EMBEDDING_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
@@ -99,6 +108,20 @@ LOCAL_DATA_DIR = BASE_DIR / "data"
 LOCAL_CLUSTERS_FILE = LOCAL_DATA_DIR / "local_clusters.json"
 LOCAL_THREADS_FILE = LOCAL_DATA_DIR / "local_threads_geojson.json"
 LOCAL_THREADS_SOURCE_FILE = LOCAL_DATA_DIR / "local_threads.json"
+
+
+def unresolved_geo(method: str = "unresolved", reason: str = "") -> dict:
+    return {
+        "lat": None,
+        "lng": None,
+        "location_text": "",
+        "location_method": method,
+        "location_confidence": 0.0,
+        "location_precision_meters": None,
+        "geocoder_provider": "",
+        "geocoder_query": "",
+        "geocoder_raw": json.dumps({"reason": reason}) if reason else "",
+    }
 
 
 def build_demo_threads() -> list[dict]:
@@ -285,8 +308,11 @@ def write_local_artifacts(threads: list[dict], clusters: list[dict]) -> None:
 # STEP 1: Multi-Source Reddit Fetch
 # ====================================================
 
-# Subreddits to scan for Delhi NCR infrastructure complaints
-TARGET_SUBS = os.getenv("TARGET_SUBS", "delhi,india,NewDelhi").split(",")
+# Subreddits to scan for Indian-city infrastructure complaints (Delhi NCR weighted first).
+TARGET_SUBS = os.getenv(
+    "TARGET_SUBS",
+    "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai",
+).split(",")
 
 # Infrastructure search queries for Reddit search API
 SEARCH_QUERIES = [
@@ -370,7 +396,7 @@ def _make_thread(thread_id: str, post: dict, subreddit: str) -> dict:
     created_dt = datetime.fromtimestamp(created_utc, tz=timezone.utc)
     title = post.get("title", "")
     content = post.get("selftext", "")
-    lat, lng = resolve_coordinates(title, content)
+    geo = resolve_location(title, content)
     return {
         "thread_id": thread_id,
         "subreddit": subreddit,
@@ -379,51 +405,355 @@ def _make_thread(thread_id: str, post: dict, subreddit: str) -> dict:
         "flair": post.get("link_flair_text", "") or "",
         "upvotes": post.get("score", 0),
         "published_at": created_dt,
-        "lat": lat,
-        "lng": lng,
+        **geo,
         "url": f"https://reddit.com/r/{subreddit}/comments/{thread_id}",
     }
 
 
-def geocode_text(query: str) -> tuple[float | None, float | None]:
+# ====================================================
+# STEP 1b: Civic news RSS ingestion (ToS-clean public feeds)
+# ====================================================
+
+NEWS_INGEST_ENABLED = os.getenv("NEWS_INGEST_ENABLED", "1") == "1"
+
+# Public civic/city RSS feeds. Override with NEWS_FEEDS="name|url,name|url".
+DEFAULT_NEWS_FEEDS = [
+    ("toi-delhi", "https://timesofindia.indiatimes.com/rssfeeds/-2128839596.cms"),
+    ("thehindu-delhi", "https://www.thehindu.com/news/cities/delhi/feeder/default.rss"),
+    ("toi-india", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms"),
+]
+
+
+def _parse_news_feeds_env() -> list[tuple[str, str]]:
+    raw = os.getenv("NEWS_FEEDS", "").strip()
+    if not raw:
+        return DEFAULT_NEWS_FEEDS
+    feeds = []
+    for part in raw.split(","):
+        part = part.strip()
+        if not part:
+            continue
+        if "|" in part:
+            name, url = part.split("|", 1)
+            feeds.append((name.strip(), url.strip()))
+        else:
+            feeds.append((part.split("//")[-1].split("/")[0], part))
+    return feeds
+
+
+def fetch_news_threads() -> list[dict]:
+    """Fetch infra-relevant items from public civic news RSS feeds, normalized into
+    the same thread dict shape as Reddit so they flow through the same pipeline."""
+    if not NEWS_INGEST_ENABLED:
+        log.info("News ingestion disabled (NEWS_INGEST_ENABLED=0). Skipping.")
+        return []
+
+    import hashlib
+    import xml.etree.ElementTree as ET
+    from email.utils import parsedate_to_datetime
+
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=HOURS_BACK)
+    threads: dict[str, dict] = {}
+
+    for source, url in _parse_news_feeds_env():
+        log.info(f"Fetching news feed {source}: {url[:70]}...")
+        try:
+            req = Request(url, method="GET")
+            req.add_header("User-Agent", GEOCODE_USER_AGENT)
+            resp = urlopen(req, timeout=15)
+            root = ET.fromstring(resp.read())
+        except (HTTPError, URLError, ET.ParseError, ValueError) as e:
+            log.warning(f"News feed {source} failed: {e}")
+            continue
+
+        for item in root.iter("item"):
+            title = (item.findtext("title") or "").strip()
+            content = (item.findtext("description") or "").strip()
+            link = (item.findtext("link") or "").strip()
+            blob = f"{title} {content}".lower()
+            if not title or not any(kw in blob for kw in INFRA_KEYWORDS):
+                continue
+
+            # Respect HOURS_BACK when a pubDate is available; keep undated items.
+            pub_raw = item.findtext("pubDate")
+            published = datetime.now(timezone.utc)
+            if pub_raw:
+                try:
+                    published = parsedate_to_datetime(pub_raw)
+                    if published.tzinfo is None:
+                        published = published.replace(tzinfo=timezone.utc)
+                    if published < cutoff:
+                        continue
+                except (TypeError, ValueError):
+                    pass
+
+            uid = item.findtext("guid") or link or title
+            tid = "news-" + hashlib.md5(uid.encode("utf-8")).hexdigest()[:16]
+            if tid in threads:
+                continue
+            geo = resolve_location(title, content)
+            threads[tid] = {
+                "thread_id": tid,
+                "subreddit": f"news:{source}",
+                "title": title,
+                "content": content,
+                "flair": "News",
+                "upvotes": 0,
+                "published_at": published,
+                **geo,
+                "url": link or url,
+                "source": "news",
+            }
+
+    items = list(threads.values())
+    log.info(f"News fetch returned {len(items)} infra-relevant items.")
+    return items
+
+
+# ====================================================
+# STEP 1c: data.gov.in open-data ingestion (official, optional)
+# ====================================================
+
+DATA_GOV_API_KEY = os.getenv("DATA_GOV_API_KEY", "")
+DATA_GOV_RESOURCE_ID = os.getenv("DATA_GOV_RESOURCE_ID", "")
+DATA_GOV_LIMIT = int(os.getenv("DATA_GOV_LIMIT", "100"))
+
+
+def fetch_opendata_threads() -> list[dict]:
+    """Pull a civic dataset from India's Open Government Data platform (data.gov.in).
+    Gated on both an API key and a resource id; skips cleanly when either is absent
+    (mirrors the GROQ_API_KEY graceful-skip pattern)."""
+    if not DATA_GOV_API_KEY or not DATA_GOV_RESOURCE_ID:
+        log.info("data.gov.in ingestion skipped (set DATA_GOV_API_KEY and DATA_GOV_RESOURCE_ID to enable).")
+        return []
+
+    import hashlib
+
+    url = (
+        f"https://api.data.gov.in/resource/{DATA_GOV_RESOURCE_ID}"
+        f"?api-key={DATA_GOV_API_KEY}&format=json&limit={DATA_GOV_LIMIT}"
+    )
+    try:
+        req = Request(url, method="GET")
+        req.add_header("User-Agent", GEOCODE_USER_AGENT)
+        resp = urlopen(req, timeout=20)
+        payload = json.loads(resp.read().decode())
+    except (HTTPError, URLError, json.JSONDecodeError) as e:
+        log.warning(f"data.gov.in fetch failed: {e}")
+        return []
+
+    records = payload.get("records", [])
+    # Dataset schemas vary; probe common field names for the text + location.
+    title_keys = ("title", "subject", "complaint", "description", "issue", "grievance")
+    loc_keys = ("location", "area", "address", "ward", "city", "place", "locality")
+    threads: dict[str, dict] = {}
+
+    for rec in records:
+        if not isinstance(rec, dict):
+            continue
+        lower = {k.lower(): v for k, v in rec.items()}
+        title = next((str(lower[k]) for k in title_keys if lower.get(k)), "")
+        if not title:
+            continue
+        blob = " ".join(str(v) for v in rec.values()).lower()
+        if not any(kw in blob for kw in INFRA_KEYWORDS):
+            continue
+        loc_text = next((str(lower[k]) for k in loc_keys if lower.get(k)), GEOCODE_CITY)
+
+        tid = "ogd-" + hashlib.md5((DATA_GOV_RESOURCE_ID + title + loc_text).encode("utf-8")).hexdigest()[:16]
+        if tid in threads:
+            continue
+        geo = resolve_location(title, loc_text)
+        threads[tid] = {
+            "thread_id": tid,
+            "subreddit": "gov:data.gov.in",
+            "title": title,
+            "content": blob[:500],
+            "flair": "OpenData",
+            "upvotes": 0,
+            "published_at": datetime.now(timezone.utc),
+            **geo,
+            "url": f"https://data.gov.in/resource/{DATA_GOV_RESOURCE_ID}",
+            "source": "data.gov.in",
+        }
+
+    items = list(threads.values())
+    log.info(f"data.gov.in fetch returned {len(items)} infra-relevant records.")
+    return items
+
+
+def extract_location_candidate(title: str, content: str) -> dict:
+    """Use an OpenAI-compatible LLM to extract the most geocodable place phrase.
+    The LLM does not provide coordinates; it only normalizes messy forum text."""
+    if not LLM_GEOLOCATION_ENABLED or not GEO_LLM_API_KEY:
+        return {
+            "location_text": "",
+            "confidence": 0.0,
+            "precision": "unresolved",
+            "reason": "LLM geolocation disabled or API key missing",
+        }
+
+    prompt = f"""Extract the most specific real-world location mentioned in this civic complaint.
+Return only JSON with keys:
+- location_text: string, a concise geocoder-ready place in/near {GEOCODE_CITY}, India
+- confidence: number from 0 to 1
+- precision: one of "landmark", "street", "intersection", "neighborhood", "ward", "city", "unresolved"
+- reason: short string
+
+Rules:
+- Do not invent a place. If no specific place is mentioned, use location_text="" and precision="unresolved".
+- Prefer named landmarks, metro stations, markets, intersections, sectors, colonies, roads, wards, or neighborhoods.
+- Do not output latitude or longitude.
+
+Title: {title[:500]}
+Body: {(content or "")[:1000]}"""
+
+    payload = json.dumps({
+        "model": GEO_LLM_MODEL,
+        "messages": [
+            {"role": "system", "content": "You extract location mentions for civic geocoding. Output strict JSON only."},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0,
+        "response_format": {"type": "json_object"},
+    }).encode()
+
+    req = Request(GEO_LLM_API_URL, data=payload, method="POST")
+    req.add_header("Authorization", f"Bearer {GEO_LLM_API_KEY}")
+    req.add_header("Content-Type", "application/json")
+    req.add_header("User-Agent", "Conflux/0.1")
+
+    try:
+        resp = urlopen(req, timeout=45)
+        data = json.loads(resp.read().decode())
+        content_json = json.loads(data["choices"][0]["message"]["content"])
+        location_text = str(content_json.get("location_text") or "").strip()
+        precision = str(content_json.get("precision") or "unresolved").strip().lower()
+        confidence = float(content_json.get("confidence") or 0)
+        return {
+            "location_text": location_text,
+            "precision": precision,
+            "confidence": max(0.0, min(confidence, 1.0)),
+            "reason": str(content_json.get("reason") or ""),
+        }
+    except (HTTPError, URLError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
+        log.warning(f"LLM location extraction failed: {e}")
+        return {
+            "location_text": "",
+            "confidence": 0.0,
+            "precision": "unresolved",
+            "reason": str(e),
+        }
+
+
+def precision_to_meters(precision: str) -> int | None:
+    return {
+        "landmark": 80,
+        "intersection": 120,
+        "street": 250,
+        "neighborhood": 900,
+        "ward": 1800,
+        "city": 8000,
+    }.get(precision)
+
+
+def geocoder_importance_score(raw: dict) -> float:
+    try:
+        importance = float(raw.get("importance") or 0)
+    except (TypeError, ValueError):
+        importance = 0
+    return max(0.0, min(importance, 1.0))
+
+
+def geocode_text(query: str) -> dict | None:
     if not GEOCODE_ENABLED:
-        return None, None
+        return None
     try:
         url = (
             "https://nominatim.openstreetmap.org/search?"
-            f"format=json&q={quote_plus(query)}&limit=1"
+            f"format=json&addressdetails=1&q={quote_plus(query)}&limit=1"
         )
         req = Request(url, method="GET")
         req.add_header("User-Agent", GEOCODE_USER_AGENT)
         resp = urlopen(req, timeout=15)
         results = json.loads(resp.read().decode())
         if not results:
-            return None, None
-        lat = float(results[0].get("lat"))
-        lng = float(results[0].get("lon"))
-        return lat, lng
+            return None
+        raw = results[0]
+        return {
+            "lat": float(raw.get("lat")),
+            "lng": float(raw.get("lon")),
+            "raw": raw,
+        }
     except HTTPError as e:
         if e.code == 429:
             log.warning(f"Geocoding rate-limited, backing off 3s...")
             time.sleep(3)
         else:
             log.warning(f"Geocoding failed for '{query[:60]}...': {e}")
-        return None, None
+        return None
     except Exception as e:
         log.warning(f"Geocoding failed for '{query[:60]}...': {e}")
-        return None, None
+        return None
+
+
+def resolve_location(title: str, content: str) -> dict:
+    """Resolve a complaint to a geolocation with quality metadata.
+    Never silently falls back to city center unless explicitly enabled."""
+    if not GEOCODE_ENABLED:
+        return unresolved_geo("geocoding_disabled")
+
+    candidate = extract_location_candidate(title, content)
+    location_text = candidate.get("location_text", "")
+    precision = candidate.get("precision", "unresolved")
+    llm_confidence = float(candidate.get("confidence", 0) or 0)
+
+    if not location_text or precision in {"unresolved", "city"} or llm_confidence < GEOCODE_MIN_CONFIDENCE:
+        if not GEOCODE_CITY_FALLBACK_ENABLED:
+            return unresolved_geo("ai_place_extraction", candidate.get("reason", "No reliable location mention"))
+        location_text = GEOCODE_CITY
+        precision = "city"
+        llm_confidence = min(llm_confidence, 0.25)
+
+    time.sleep(GEOCODE_RATE_LIMIT)
+    query = location_text if GEOCODE_CITY.lower() in location_text.lower() else f"{location_text}, {GEOCODE_CITY}, India"
+    result = geocode_text(query)
+    if not result:
+        return {
+            **unresolved_geo("geocoder_no_result", candidate.get("reason", "")),
+            "location_text": location_text,
+            "geocoder_query": query,
+        }
+
+    provider_confidence = geocoder_importance_score(result["raw"])
+    confidence = round(max(0.0, min((llm_confidence * 0.72) + (provider_confidence * 0.28), 1.0)), 3)
+    if confidence < GEOCODE_MIN_CONFIDENCE and not GEOCODE_CITY_FALLBACK_ENABLED:
+        return {
+            **unresolved_geo("low_confidence_geocode", candidate.get("reason", "")),
+            "location_text": location_text,
+            "location_confidence": confidence,
+            "geocoder_provider": "nominatim",
+            "geocoder_query": query,
+            "geocoder_raw": json.dumps(result["raw"])[:4000],
+        }
+
+    return {
+        "lat": result["lat"],
+        "lng": result["lng"],
+        "location_text": location_text,
+        "location_method": "ai_extracted_geocoder",
+        "location_confidence": confidence,
+        "location_precision_meters": precision_to_meters(precision),
+        "geocoder_provider": "nominatim",
+        "geocoder_query": query,
+        "geocoder_raw": json.dumps(result["raw"])[:4000],
+    }
 
 
 def resolve_coordinates(title: str, content: str) -> tuple[float | None, float | None]:
-    if not GEOCODE_ENABLED:
-        return None, None
-    time.sleep(GEOCODE_RATE_LIMIT)
-    query = f"{title} {content} {GEOCODE_CITY}".strip()
-    lat, lng = geocode_text(query)
-    if lat is None and lng is None:
-        time.sleep(GEOCODE_RATE_LIMIT)
-        lat, lng = geocode_text(GEOCODE_CITY)
-    return lat, lng
+    """Backward-compatible wrapper for older callers/tests."""
+    geo = resolve_location(title, content)
+    return geo.get("lat"), geo.get("lng")
 
 
 # ====================================================
@@ -457,7 +787,14 @@ def insert_batches(threads: list[dict]) -> int:
                     """),
                     {"tid": t["thread_id"], "sub": t["subreddit"], "title": t["title"],
                      "content": t["content"], "flair": t["flair"], "upv": t["upvotes"],
-                     "coords": json.dumps({"lat": float(t["lat"]), "lng": float(t["lng"])}) if t.get("lat") is not None else None,
+                     "coords": json.dumps({
+                         "lat": float(t["lat"]),
+                         "lng": float(t["lng"]),
+                         "location_text": t.get("location_text", ""),
+                         "location_method": t.get("location_method", ""),
+                         "location_confidence": t.get("location_confidence"),
+                         "location_precision_meters": t.get("location_precision_meters"),
+                     }) if t.get("lat") is not None else None,
                      "url": t.get("url", ""),
                      "pub": t["published_at"].isoformat() if hasattr(t["published_at"], "isoformat") else t["published_at"]},
                 )
@@ -467,11 +804,37 @@ def insert_batches(threads: list[dict]) -> int:
                 if t.get("lat") is not None and t.get("lng") is not None:
                     conn.execute(
                         sa.text("""
-                            INSERT INTO thread_geo (thread_id, lat, lng, source)
-                            VALUES (:tid, :lat, :lng, :src)
-                            ON CONFLICT (thread_id) DO NOTHING
+                            INSERT INTO thread_geo
+                            (thread_id, lat, lng, source, location_text, location_method,
+                             location_confidence, location_precision_meters, geocoder_provider,
+                             geocoder_query, geocoder_raw)
+                            VALUES (:tid, :lat, :lng, :src, :loctext, :method, :conf,
+                                    :precision, :provider, :query, :raw)
+                            ON CONFLICT (thread_id) DO UPDATE SET
+                                lat = EXCLUDED.lat,
+                                lng = EXCLUDED.lng,
+                                source = EXCLUDED.source,
+                                location_text = EXCLUDED.location_text,
+                                location_method = EXCLUDED.location_method,
+                                location_confidence = EXCLUDED.location_confidence,
+                                location_precision_meters = EXCLUDED.location_precision_meters,
+                                geocoder_provider = EXCLUDED.geocoder_provider,
+                                geocoder_query = EXCLUDED.geocoder_query,
+                                geocoder_raw = EXCLUDED.geocoder_raw
                         """),
-                        {"tid": t["thread_id"], "lat": float(t["lat"]), "lng": float(t["lng"]), "src": "reddit"},
+                        {
+                            "tid": t["thread_id"],
+                            "lat": float(t["lat"]),
+                            "lng": float(t["lng"]),
+                            "src": t.get("source", "reddit"),
+                            "loctext": t.get("location_text", ""),
+                            "method": t.get("location_method", "unknown"),
+                            "conf": t.get("location_confidence"),
+                            "precision": t.get("location_precision_meters"),
+                            "provider": t.get("geocoder_provider", ""),
+                            "query": t.get("geocoder_query", ""),
+                            "raw": t.get("geocoder_raw", ""),
+                        },
                     )
         total_inserted += len(batch)
     log.info(f"Inserted {len(threads)} threads into daily_ingest.")
@@ -561,6 +924,8 @@ def cluster_threads() -> list[dict]:
         keywords = extract_keywords(member_texts[:20])
 
         coords = []
+        confidences = []
+        precisions = []
         for idx in mask_indices:
             coord = recent[idx][3]
             if isinstance(coord, str):
@@ -573,14 +938,23 @@ def cluster_threads() -> list[dict]:
                 lng = coord.get("lng")
                 if lat is not None and lng is not None:
                     coords.append((lat, lng))
+                    conf = coord.get("location_confidence")
+                    precision = coord.get("location_precision_meters")
+                    if conf is not None:
+                        confidences.append(float(conf))
+                    if precision is not None:
+                        precisions.append(int(precision))
 
         if coords:
             centroid_lat = float(np.mean([pair[0] for pair in coords]))
             centroid_lng = float(np.mean([pair[1] for pair in coords]))
+            location_confidence = float(np.mean(confidences)) if confidences else None
+            location_precision_meters = int(np.mean(precisions)) if precisions else None
         else:
-            seed = hash(f"cluster_{label}") % 1000 / 1000.0
-            centroid_lat = 28.6139 + (seed - 0.5) * 0.1
-            centroid_lng = 77.2090 + ((seed * 1.3) % 1.0 - 0.5) * 0.1
+            centroid_lat = None
+            centroid_lng = None
+            location_confidence = 0.0
+            location_precision_meters = None
 
         clusters.append({
             "cluster_id": f"cluster_{label}",
@@ -590,6 +964,8 @@ def cluster_threads() -> list[dict]:
             "size": int(mask.sum()),
             "member_indices": mask_indices.tolist(),
             "keywords": keywords,
+            "location_confidence": location_confidence,
+            "location_precision_meters": location_precision_meters,
         })
 
     log.info("Running UMAP for visualization (2D projection only)...")
@@ -603,17 +979,21 @@ def cluster_threads() -> list[dict]:
             conn.execute(
                 sa.text("""
                     INSERT INTO cluster_results
-                    (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords)
-                    VALUES (:cid, :clab, :clat, :clng, :sz, :kw)
+                    (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords,
+                     location_confidence, location_precision_meters)
+                    VALUES (:cid, :clab, :clat, :clng, :sz, :kw, :conf, :precision)
                     ON CONFLICT (cluster_id) DO UPDATE SET
                         cluster_label = EXCLUDED.cluster_label,
                         centroid_lat = EXCLUDED.centroid_lat,
                         centroid_lng = EXCLUDED.centroid_lng,
                         size = EXCLUDED.size,
-                        keywords = EXCLUDED.keywords
+                        keywords = EXCLUDED.keywords,
+                        location_confidence = EXCLUDED.location_confidence,
+                        location_precision_meters = EXCLUDED.location_precision_meters
                 """),
                 {"cid": c["cluster_id"], "clab": c["cluster_label"], "clat": c["centroid_lat"],
-                 "clng": c["centroid_lng"], "sz": c["size"], "kw": c["keywords"]},
+                 "clng": c["centroid_lng"], "sz": c["size"], "kw": c["keywords"],
+                 "conf": c.get("location_confidence"), "precision": c.get("location_precision_meters")},
             )
             cluster_count += 1
             for idx in c["member_indices"]:
@@ -692,11 +1072,17 @@ def main():
             return
 
         db.create_tables()
-        log.info("--- Step 1: Fetching threads ---")
+        log.info("--- Step 1: Fetching threads (Reddit + civic news + open data) ---")
         threads = fetch_new_threads()
+        threads += fetch_news_threads()
+        threads += fetch_opendata_threads()
         if not threads:
             log.info("No new threads (already seen or fetch failed). Skipping pipeline.")
             return
+        by_source: dict[str, int] = {}
+        for t in threads:
+            by_source[t.get("source", "reddit")] = by_source.get(t.get("source", "reddit"), 0) + 1
+        log.info(f"Fetched {len(threads)} threads across sources: {by_source}")
 
         log.info("--- Step 2: Inserting threads ---")
         inserted = insert_batches(threads)

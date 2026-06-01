@@ -17,6 +17,10 @@ export interface RedditThread {
   lat?: number;
   lng?: number;
   cluster_id?: string;
+  location_text?: string | null;
+  location_method?: string | null;
+  location_confidence?: number | null;
+  location_precision_meters?: number | null;
 }
 
 export interface IngestResponse {
@@ -33,12 +37,18 @@ export interface ClusterProposal {
   location: {
     lat: number;
     lon: number;
+    confidence?: number | null;
+    precision_meters?: number | null;
+    method?: string | null;
     bounds?: { lat_min: number; lat_max: number; lon_min: number; lon_max: number };
   };
   summary: string;
   recommendations: string[];
   funding_sources: string[];
-  sources?: { id: string; subreddit: string; title: string }[];
+  communication_plan: string[];
+  responsible_agencies: string[];
+  impact_rationale: string;
+  sources?: { id: string; subreddit: string; title: string; url?: string }[];
   estimated_budget: string;
   size?: number;
 }
@@ -51,6 +61,8 @@ export interface ClusterResult {
   size: number;
   keywords: string;
   created_at: string | null;
+  location_confidence?: number | null;
+  location_precision_meters?: number | null;
 }
 
 export interface DashboardData {

@@ -9,11 +9,11 @@
 Conflux is a civic-tech AI platform that transforms raw, multilingual citizen complaints from social media and public portals into structured, geospatially-aware infrastructure proposals.
 
 **The Pipeline:**
-1. **Ingest:** Scrape Reddit, Nextdoor, and government feedback.
+1. **Ingest:** Pull citizen complaints from public, ToS-clean Indian-city sources — Reddit (Delhi NCR + major metros via the public JSON API), civic **news RSS** feeds (Times of India / The Hindu city desks), and optionally India's official **data.gov.in** open-data API.
 2. **Align:** Use multilingual embedding models to map complaints into a shared semantic space.
 3. **Cluster:** HDBSCAN groups complaints by geospatial location and semantic meaning.
-4. **Analyze:** Local LLM agents generate policy proposals, funding sources, and maintenance plans for each cluster.
-5. **Visualize:** A Next.js + Folium dashboard maps "hotspots" of urban decay and infrastructure failure.
+4. **Analyze:** LLM agents generate per-cluster proposals — summary, recommendations, **funding sources**, **responsible agencies**, a sequenced **communication & outreach plan**, an **impact/urgency rationale**, and an INR budget.
+5. **Visualize:** A Next.js + Leaflet dashboard maps "hotspots" of urban decay, with a deep-dive research engine (satellite context, nearby POIs, policy analysis) that exports a downloadable report.
 
 ## Tech Stack
 

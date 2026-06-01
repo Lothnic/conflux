@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Conflux - Urban Intelligence Dashboard",
+  title: "Conflux - AI Urban Planning Assistant",
   description:
-    "Transform citizen complaints from social media and public portals into structured, geospatially-aware infrastructure proposals.",
+    "Investigate civic issues on a geospatial operations map and generate evidence-backed urban planning recommendations.",
   openGraph: {
     title: "Conflux",
-    description: "Civic-tech AI platform turning citizen feedback into urban intelligence.",
+    description: "AI urban planning assistant for civic issue analysis and recommendations.",
   },
 };
 

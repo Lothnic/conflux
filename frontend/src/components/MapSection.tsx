@@ -8,22 +8,6 @@ import type { ClusterProposal, RedditThread } from "@/lib/types";
 const MARKER_COLOR = "#e63946";
 const MARKER_SELECTED = "#ff1a2d";
 
-function seededRandom(seed: number): () => number {
-  let s = seed;
-  return () => {
-    s = (s * 16807 + 0) % 2147483647;
-    return s / 2147483647;
-  };
-}
-
-function hashString(value: string): number {
-  let hash = 0;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = (hash * 31 + value.charCodeAt(i)) | 0;
-  }
-  return Math.abs(hash);
-}
-
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -53,7 +37,7 @@ export default function MapSection({
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
-  const scatterLayerRef = useRef<L.LayerGroup | null>(null);
+  const densityLayerRef = useRef<L.LayerGroup | null>(null);
   const markerMapRef = useRef<Map<string, L.CircleMarker>>(new Map());
   const onSelectClusterRef = useRef(onSelectCluster);
   const threadMarkersLayerRef = useRef<L.LayerGroup | null>(null);
@@ -109,10 +93,10 @@ export default function MapSection({
       )
       .addTo(map);
 
-    const scatterLayer = L.layerGroup().addTo(map);
+    const densityLayer = L.layerGroup().addTo(map);
     const clusterLayer = L.layerGroup().addTo(map);
     const threadLayer = L.layerGroup().addTo(map);
-    scatterLayerRef.current = scatterLayer;
+    densityLayerRef.current = densityLayer;
     markersLayerRef.current = clusterLayer;
     threadMarkersLayerRef.current = threadLayer;
     mapInstanceRef.current = map;
@@ -151,12 +135,12 @@ export default function MapSection({
   useEffect(() => {
     const map = mapInstanceRef.current;
     const clusterLayer = markersLayerRef.current;
-    const scatterLayer = scatterLayerRef.current;
+    const densityLayer = densityLayerRef.current;
     const threadLayer = threadMarkersLayerRef.current;
-    if (!map || !clusterLayer || !scatterLayer || !threadLayer) return;
+    if (!map || !clusterLayer || !densityLayer || !threadLayer) return;
 
     clusterLayer.clearLayers();
-    scatterLayer.clearLayers();
+    densityLayer.clearLayers();
     threadLayer.clearLayers();
     markerMapRef.current.clear();
 
@@ -178,15 +162,15 @@ export default function MapSection({
       const safeTitle = escapeHtml(t.title);
       const safeSubreddit = escapeHtml(t.subreddit);
       const dot = L.circleMarker([t.lat, t.lng], {
-        radius: 5,
+        radius: 4,
         color: "transparent",
-        fillColor: t.cluster_id ? "#e63946" : "#888888",
-        fillOpacity: t.cluster_id ? 0.8 : 0.4,
+        fillColor: t.cluster_id ? "#f04438" : "#94a3b8",
+        fillOpacity: t.cluster_id ? 0.55 : 0.35,
         weight: 0,
       });
       dot.bindTooltip(
-        `<div style=\"font-family:system-ui,sans-serif;font-size:10px;max-width:180px;color:#fff;background:rgba(30,30,30,0.9);padding:3px 8px;border-radius:5px;line-height:1.3;\">
-          ${safeTitle}<br><span style="color:#aaa;font-size:9px;">r/${safeSubreddit} - ${t.upvotes} upvotes</span>
+        `<div style=\"font-family:system-ui,sans-serif;font-size:10px;max-width:180px;color:#fff;background:rgba(15,23,42,0.94);padding:3px 8px;border-radius:5px;line-height:1.3;\">
+          ${safeTitle}<br><span style="color:#cbd5e1;font-size:9px;">Citizen report - r/${safeSubreddit} - ${t.upvotes} upvotes</span>
         </div>`,
         { direction: "top", offset: [0, -8] }
       );
@@ -206,28 +190,19 @@ export default function MapSection({
       const lat = cluster.location.lat;
       const lon = cluster.location.lon;
       bounds.push([lat, lon]);
-
-      const rng = seededRandom(hashString(String(cluster.cluster_id)) + 42);
-      const scatterRadius = 0.015 + (cluster.cluster_id.length % 3) * 0.008;
-      const dotCount = Math.max(8, Math.min((cluster.size ?? 1) * 7 + 12, 35));
-
-      for (let i = 0; i < dotCount; i += 1) {
-        const angle = rng() * Math.PI * 2;
-        const dist = rng() * scatterRadius;
-        const dLat = lat + Math.cos(angle) * dist;
-        const dLon = lon + Math.sin(angle) * dist * 1.2;
-
-        L.circleMarker([dLat, dLon], {
-          radius: 4 + rng() * 3,
-          color: "transparent",
-          fillColor: MARKER_COLOR,
-          fillOpacity: 0.7 + rng() * 0.3,
-          weight: 0,
-          interactive: false,
-        }).addTo(scatterLayer);
-      }
-
       const selected = isSelected(cluster);
+
+      const densityRadius = Math.min(220 + (cluster.size ?? 1) * 45, 680);
+      L.circle([lat, lon], {
+        radius: densityRadius,
+        color: MARKER_COLOR,
+        fillColor: MARKER_COLOR,
+        fillOpacity: selected ? 0.16 : 0.08,
+        opacity: selected ? 0.35 : 0.2,
+        weight: 1,
+        interactive: false,
+      }).addTo(densityLayer);
+
       const marker = L.circleMarker([lat, lon], {
         radius: selected ? 14 : 10,
         color: selected ? "#fff" : MARKER_COLOR,
@@ -238,8 +213,8 @@ export default function MapSection({
       });
 
       marker.bindTooltip(
-        `<div style="font-family:system-ui,sans-serif;font-size:11px;font-weight:600;color:#fff;background:rgba(30,30,30,0.9);padding:4px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
-          ${safeIssueType}
+        `<div style="font-family:system-ui,sans-serif;font-size:11px;font-weight:700;color:#fff;background:rgba(15,23,42,0.94);padding:4px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
+          ${safeIssueType}<br><span style="color:#cbd5e1;font-size:9px;font-weight:500;">Estimated geocoded location</span>
         </div>`,
         { direction: "top", offset: [0, -10], className: "" }
       );

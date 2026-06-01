@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { ClusterProposal, RedditThread, HealthCheck } from "@/lib/types";
-import { generateProposal } from "@/lib/api";
 
 const URGENCY_CONFIG: Record<string, { color: string; bg: string; label: string; pct: number }> = {
   high: { color: "#e63946", bg: "#e6394615", label: "High Priority", pct: 90 },
@@ -21,6 +20,7 @@ interface SidebarProps {
   onToggle: () => void;
   collapsed: boolean;
   onUpdateProposal: (clusterId: string, updated: ClusterProposal) => void;
+  onResearch: (clusterId: string, issueType: string) => void;
 }
 
 function shortClusterId(clusterId: string): string {
@@ -38,11 +38,9 @@ export default function Sidebar({
   onSelectCluster,
   onToggle,
   collapsed,
-  onUpdateProposal,
+  onResearch,
 }: SidebarProps) {
   const [sourcesOpen, setSourcesOpen] = useState(false);
-  const [generating, setGenerating] = useState(false);
-  const [genError, setGenError] = useState("");
 
   const validProposals = proposals.filter(
     (p) => p.location && typeof p.location.lat === "number" && typeof p.location.lon === "number"
@@ -175,11 +173,13 @@ export default function Sidebar({
               />
             </div>
             <p className="text-[12px] leading-[1.6] mt-3" style={{ color: "var(--sidebar-text-secondary)" }}>
-              {c.urgency === "high"
-                ? "This issue poses an immediate risk to public safety and wellbeing, requiring swift intervention and resource allocation."
-                : c.urgency === "medium"
-                  ? "Moderate concern requiring planned intervention within the near term to prevent escalation."
-                  : "Lower priority issue that should be monitored and addressed during routine maintenance cycles."}
+              {c.impact_rationale
+                ? c.impact_rationale
+                : c.urgency === "high"
+                  ? "This issue poses an immediate risk to public safety and wellbeing, requiring swift intervention and resource allocation."
+                  : c.urgency === "medium"
+                    ? "Moderate concern requiring planned intervention within the near term to prevent escalation."
+                    : "Lower priority issue that should be monitored and addressed during routine maintenance cycles."}
             </p>
           </div>
 
@@ -207,21 +207,30 @@ export default function Sidebar({
               <div className="mt-4 grid grid-cols-2 gap-2 animate-fade-in">
                 {c.sources && c.sources.length > 0 ? (
                   c.sources.slice(0, 4).map((s, i) => (
-                    <a
-                      key={i}
-                      href={`https://reddit.com/r/${s.subreddit}/comments/${s.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 rounded-lg flex flex-col justify-between h-[76px] transition-colors hover:bg-gray-50"
-                      style={{ background: "#ffffff", border: "1px solid var(--sidebar-card-border)" }}
-                    >
-                      <div>
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center mb-1.5" style={{ background: "#ff4500" }}>
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.274-.029-.544-.075-.81.832-.447 1.405-1.312 1.405-2.318zm-17.224 1.816c0-.868.71-1.575 1.582-1.575.872 0 1.581.707 1.581 1.575s-.709 1.574-1.581 1.574-1.582-.706-1.582-1.574zm9.061 4.669c-1.797 1.768-4.698 1.768-6.495 0-.171-.168-.171-.439 0-.608.172-.169.45-.169.622 0 1.455 1.434 3.821 1.434 5.273 0 .172-.169.45-.169.622 0 .172.169.172.44 0 .608zm-.525-3.095c-.872 0-1.582-.706-1.582-1.574 0-.868.71-1.575 1.582-1.575.871 0 1.581.707 1.581 1.575s-.71 1.574-1.581 1.574z"/></svg>
-                        </div>
-                      </div>
-                      <span className="text-[11px] font-medium leading-[1.2] line-clamp-2" style={{ color: "var(--sidebar-text-secondary)" }}>{s.title}</span>
-                    </a>
+                    (() => {
+                      const sub = s.subreddit || "delhi";
+                      const isNews = sub.startsWith("news:");
+                      const isGov = sub.startsWith("gov:");
+                      const provLabel = isNews ? sub.slice(5) : isGov ? sub.slice(4) : `r/${sub}`;
+                      const provColor = isNews ? "#1a73e8" : isGov ? "#2d9a5c" : "#ff4500";
+                      const href = s.url || `https://reddit.com/r/${sub}/comments/${s.id}`;
+                      return (
+                        <a
+                          key={i}
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-3 rounded-lg flex flex-col justify-between h-[76px] transition-colors hover:bg-gray-50"
+                          style={{ background: "#ffffff", border: "1px solid var(--sidebar-card-border)" }}
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: provColor }} />
+                            <span className="text-[8px] font-semibold uppercase tracking-wider truncate" style={{ color: "var(--sidebar-text-muted)" }}>{provLabel}</span>
+                          </div>
+                          <span className="text-[11px] font-medium leading-[1.2] line-clamp-2" style={{ color: "var(--sidebar-text-secondary)" }}>{s.title}</span>
+                        </a>
+                      );
+                    })()
                   ))
                 ) : (
                   <div className="col-span-2 text-center py-4">
@@ -250,6 +259,80 @@ export default function Sidebar({
               ))}
             </ul>
           </div>
+
+          {c.responsible_agencies && c.responsible_agencies.length > 0 && (
+            <>
+              <div className="mx-5 h-px" style={{ background: "var(--sidebar-border)" }} />
+              <div className="px-5 py-4">
+                <div className="flex items-center gap-1.5 mb-3">
+                  <svg className="w-3.5 h-3.5" style={{ color: "var(--sidebar-text-muted)" }} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                  </svg>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--sidebar-text-muted)" }}>Responsible Agencies</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {c.responsible_agencies.map((a, i) => (
+                    <span
+                      key={i}
+                      className="text-[10.5px] font-medium px-2 py-1 rounded-md"
+                      style={{ background: "var(--sidebar-card-bg)", color: "var(--sidebar-text-secondary)", border: "1px solid var(--sidebar-card-border)" }}
+                    >
+                      {a}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {c.communication_plan && c.communication_plan.length > 0 && (
+            <>
+              <div className="mx-5 h-px" style={{ background: "var(--sidebar-border)" }} />
+              <div className="px-5 py-4">
+                <div className="flex items-center gap-1.5 mb-3">
+                  <svg className="w-3.5 h-3.5" style={{ color: "var(--sidebar-text-muted)" }} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                  </svg>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--sidebar-text-muted)" }}>Communication Plan</span>
+                </div>
+                <ol className="space-y-2.5">
+                  {c.communication_plan.map((step, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-[12px] leading-[1.55]" style={{ color: "var(--sidebar-text-secondary)" }}>
+                      <span
+                        className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold mt-px"
+                        style={{ background: "#1a73e815", color: "#1a73e8" }}
+                      >
+                        {i + 1}
+                      </span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </>
+          )}
+
+          {c.funding_sources && c.funding_sources.length > 0 && (
+            <>
+              <div className="mx-5 h-px" style={{ background: "var(--sidebar-border)" }} />
+              <div className="px-5 py-4">
+                <div className="flex items-center gap-1.5 mb-3">
+                  <svg className="w-3.5 h-3.5" style={{ color: "var(--sidebar-text-muted)" }} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--sidebar-text-muted)" }}>Funding Sources</span>
+                </div>
+                <ul className="space-y-2">
+                  {c.funding_sources.map((f, i) => (
+                    <li key={i} className="flex items-start gap-2 text-[12px] leading-[1.55]" style={{ color: "var(--sidebar-text-secondary)" }}>
+                      <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full mt-1.5" style={{ background: "#2d9a5c" }} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="px-5 py-3.5" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
@@ -258,34 +341,16 @@ export default function Sidebar({
             <span className="text-[14px] font-bold" style={{ color: "var(--sidebar-text)" }}>{c.estimated_budget}</span>
           </div>
           <button
-            onClick={async () => {
-              setGenerating(true);
-              setGenError("");
-              try {
-                const proposal = await generateProposal(c.cluster_id);
-                onUpdateProposal(c.cluster_id, proposal);
-              } catch (e) {
-                setGenError(e instanceof Error ? e.message : "Failed to generate proposal");
-              } finally {
-                setGenerating(false);
-              }
-            }}
-            disabled={generating}
+            onClick={() => onResearch(c.cluster_id, c.issue_type)}
             className="w-full py-2.5 rounded-lg text-[12px] font-semibold transition-all duration-200"
             style={{
-              background: generating ? "#c0392b" : "#e63946",
+              background: "#1a73e8",
               color: "#fff",
-              boxShadow: "0 2px 8px rgba(230,57,70,0.25)",
-              opacity: generating ? 0.7 : 1,
+              boxShadow: "0 2px 8px rgba(26,115,232,0.25)",
             }}
           >
-            {generating ? "⏳ Generating..." : "📋 Generate Proposal"}
+            🔬 Research & Report
           </button>
-          {genError && (
-            <p className="text-[10px] mt-1 text-center" style={{ color: "#e63946" }}>
-              {genError}
-            </p>
-          )}
         </div>
       </aside>
     );

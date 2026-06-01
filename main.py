@@ -3,10 +3,12 @@ Conflux Backend — Civic-tech AI Platform
 Author: Lothnic
 """
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse, Response
 from pydantic import BaseModel
-from typing import List
+from typing import List, AsyncGenerator
 import os
 import json
+import asyncio
 from uuid import uuid4
 from pathlib import Path
 import sqlalchemy as sa
@@ -37,6 +39,9 @@ class ClusterProposal(BaseModel):
     recommendations: List[str]
     funding_sources: List[str]
     estimated_budget: str
+    communication_plan: List[str] = []
+    responsible_agencies: List[str] = []
+    impact_rationale: str = ""
 
 
 class ComplainList(BaseModel):
@@ -84,7 +89,8 @@ def fetch_latest_clusters(limit: int = 50):
 
     with db.engine.connect() as conn:
         rows = conn.execute(sa.text("""
-            SELECT cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords, created_at
+            SELECT cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords,
+                   created_at, location_confidence, location_precision_meters
             FROM cluster_results
             ORDER BY created_at DESC
             LIMIT :lim
@@ -99,6 +105,8 @@ def fetch_latest_clusters(limit: int = 50):
                 "size": r[4],
                 "keywords": r[5],
                 "created_at": r[6] if r[6] else None,
+                "location_confidence": r[7],
+                "location_precision_meters": r[8],
             }
             for r in rows
         ]
@@ -172,7 +180,8 @@ def fetch_latest_threads(limit: int = 50):
         rows = conn.execute(
             sa.text("""
                 SELECT d.thread_id, d.subreddit, d.title, d.content, d.flair, d.upvotes, d.published_at,
-                       tg.lat, tg.lng, tcm.cluster_id, d.url
+                       tg.lat, tg.lng, tcm.cluster_id, d.url, tg.location_text, tg.location_method,
+                       tg.location_confidence, tg.location_precision_meters
                 FROM daily_ingest d
                 LEFT JOIN thread_geo tg ON d.thread_id = tg.thread_id
                 LEFT JOIN thread_cluster_map tcm ON d.thread_id = tcm.thread_id
@@ -197,6 +206,10 @@ def fetch_latest_threads(limit: int = 50):
             "lat": row[7],
             "lng": row[8],
             "cluster_id": row[9],
+            "location_text": row[11],
+            "location_method": row[12],
+            "location_confidence": row[13],
+            "location_precision_meters": row[14],
         }
         for row in rows
     ]
@@ -271,6 +284,43 @@ def proposal_recommendations(issue_type: str) -> List[str]:
         "Engage local stakeholders",
         "Create phased repair plan",
     ]
+
+
+# Delhi bodies that own each category of fix. Used as the no-LLM fallback so the
+# UI never shows blank "Responsible Agencies".
+_AGENCY_MAP = {
+    "Road & Traffic": ["Public Works Department (PWD)", "Delhi Traffic Police", "Municipal Corporation of Delhi (MCD)"],
+    "Sanitation": ["Municipal Corporation of Delhi (MCD)", "Department of Urban Development", "Swachh Bharat Mission (Urban)"],
+    "Water & Drainage": ["Delhi Jal Board (DJB)", "Public Works Department (PWD)", "Irrigation & Flood Control Department"],
+    "Public Lighting": ["Municipal Corporation of Delhi (MCD)", "BSES/Tata Power-DDL (DISCOMs)", "Public Works Department (PWD)"],
+    "Public Space & Environment": ["Delhi Development Authority (DDA)", "Delhi Pollution Control Committee (DPCC)", "Forest Department, GNCTD"],
+}
+
+
+def responsible_agencies(issue_type: str) -> List[str]:
+    return _AGENCY_MAP.get(issue_type, ["Municipal Corporation of Delhi (MCD)", "Office of the District Magistrate"])
+
+
+def proposal_communication_plan(issue_type: str) -> List[str]:
+    """Sequenced stakeholder-outreach steps (heuristic fallback)."""
+    lead = responsible_agencies(issue_type)[0]
+    return [
+        f"Week 1: File a consolidated grievance with {lead} via the Delhi PGMS portal, citing the clustered citizen reports",
+        "Week 1: Brief the local Resident Welfare Association (RWA) and ward councillor to build community backing",
+        "Week 2: Submit a formal representation to the area MLA for MLA-LAD fund consideration",
+        "Week 3: Issue a press note to local Delhi dailies to raise public visibility",
+        "Week 4: Escalate to the LG / DDC office if no acknowledgement is received within the PGMS SLA",
+    ]
+
+
+def impact_rationale(issue_type: str, size: int) -> str:
+    """One-line justification for the assigned urgency with a rough reach estimate."""
+    affected = max(size, 1) * 75  # rough per-complaint catchment of affected residents
+    level = infer_urgency(size)
+    return (
+        f"{level.capitalize()} urgency: {size} clustered complaints indicate a recurring {issue_type.lower()} "
+        f"problem affecting an estimated {affected:,}+ residents in the surrounding area."
+    )
 
 
 # ─── Endpoints ───────────────────────────────────────────────────
@@ -394,6 +444,8 @@ async def get_clusters_geojson(limit: int = 200):
                         "size": c.get("size"),
                         "keywords": c.get("keywords"),
                         "created_at": c.get("created_at"),
+                        "location_confidence": c.get("location_confidence"),
+                        "location_precision_meters": c.get("location_precision_meters"),
                     },
                 }
             )
@@ -419,7 +471,9 @@ async def get_threads_geojson(limit: int = 200):
         with db.engine.connect() as conn:
             rows = conn.execute(
                 sa.text("""
-                    SELECT tg.thread_id, tg.lat, tg.lng, tg.source, tg.created_at, tcm.cluster_id
+                    SELECT tg.thread_id, tg.lat, tg.lng, tg.source, tg.created_at, tcm.cluster_id,
+                           tg.location_text, tg.location_method, tg.location_confidence,
+                           tg.location_precision_meters
                     FROM thread_geo tg
                     LEFT JOIN thread_cluster_map tcm ON tg.thread_id = tcm.thread_id
                     ORDER BY tg.created_at DESC
@@ -438,6 +492,10 @@ async def get_threads_geojson(limit: int = 200):
                         "source": r[3],
                         "created_at": r[4] if r[4] else None,
                         "cluster_id": r[5],
+                        "location_text": r[6],
+                        "location_method": r[7],
+                        "location_confidence": r[8],
+                        "location_precision_meters": r[9],
                     },
                 }
             )
@@ -459,18 +517,28 @@ async def get_proposals(limit: int = 50):
             proposals = []
             for p in stored:
                 sources = fetch_sources_for_cluster(p["cluster_id"])
+                issue = p["issue_type"]
                 proposals.append({
                     "cluster_id": p["cluster_id"],
-                    "issue_type": p["issue_type"],
+                    "issue_type": issue,
                     "urgency": p["urgency"],
                     "location": {
                         "lat": p.get("centroid_lat") or 0,
                         "lon": p.get("centroid_lng") or 0,
+                        "confidence": p.get("location_confidence"),
+                        "precision_meters": p.get("location_precision_meters"),
+                        "method": "cluster_centroid",
                     },
                     "summary": p["summary"],
                     "recommendations": p["recommendations"],
                     "funding_sources": p["funding_sources"],
                     "estimated_budget": p["estimated_budget"],
+                    # New structured outputs — fall back to heuristics for rows
+                    # generated before these fields existed.
+                    "communication_plan": p.get("communication_plan") or proposal_communication_plan(issue),
+                    "responsible_agencies": p.get("responsible_agencies") or responsible_agencies(issue),
+                    "impact_rationale": p.get("impact_rationale")
+                        or f"{p['urgency'].capitalize()} urgency based on the volume of clustered citizen complaints about this {issue.lower()} issue.",
                     "sources": sources,
                 })
             return {"proposals": proposals}
@@ -488,6 +556,9 @@ async def get_proposals(limit: int = 50):
                 "location": {
                     "lat": c["centroid_lat"],
                     "lon": c["centroid_lng"],
+                    "confidence": c.get("location_confidence"),
+                    "precision_meters": c.get("location_precision_meters"),
+                    "method": "cluster_centroid",
                 },
                 "summary": f"{issue_type} issues clustered from citizen complaints (size: {c['size']}).",
                 "recommendations": proposal_recommendations(issue_type),
@@ -497,6 +568,9 @@ async def get_proposals(limit: int = 50):
                     "Public-private partnerships",
                 ],
                 "estimated_budget": infer_budget(c["size"]),
+                "communication_plan": proposal_communication_plan(issue_type),
+                "responsible_agencies": responsible_agencies(issue_type),
+                "impact_rationale": impact_rationale(issue_type, c["size"]),
                 "sources": sources,
                 "size": c["size"],
             }
@@ -594,14 +668,60 @@ async def generate_proposal_for_cluster_endpoint(cluster_id: str):
                 "location": {
                     "lat": cluster_data["centroid_lat"] or 0,
                     "lon": cluster_data["centroid_lng"] or 0,
+                    "method": "cluster_centroid",
                 },
                 "summary": proposal.get("summary", ""),
                 "recommendations": proposal.get("recommendations", []),
                 "funding_sources": proposal.get("funding_sources", []),
                 "estimated_budget": proposal.get("estimated_budget", ""),
+                "communication_plan": proposal.get("communication_plan")
+                    or proposal_communication_plan(proposal.get("issue_type", "")),
+                "responsible_agencies": proposal.get("responsible_agencies")
+                    or responsible_agencies(proposal.get("issue_type", "")),
+                "impact_rationale": proposal.get("impact_rationale")
+                    or impact_rationale(proposal.get("issue_type", ""), cluster_data["size"]),
                 "sources": sources,
             }
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/research/{cluster_id}")
+async def research_cluster_stream(cluster_id: str):
+    """Stream research pipeline steps as SSE."""
+    create_tables()
+
+    async def event_stream():
+        from research import run_research
+        for step in run_research(cluster_id, db.engine):
+            yield f"data: {json.dumps(step)}\n\n"
+            await asyncio.sleep(0.1)
+        yield "data: {\"step\": \"done\"}\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+@app.get("/research/{cluster_id}/download/{doc_id}")
+async def download_research_report(cluster_id: str, doc_id: str):
+    """Download the generated research report as markdown."""
+    create_tables()
+    try:
+        from research import run_research
+        doc = None
+        for step in run_research(cluster_id, db.engine):
+            if step.get("step") == "document" and step["status"] == "done":
+                doc = step["output"]
+                break
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document found")
+        return Response(
+            content=doc,
+            media_type="text/markdown",
+            headers={"Content-Disposition": f"attachment; filename=conflux-report-{cluster_id}.md"},
+        )
     except HTTPException:
         raise
     except Exception as e:

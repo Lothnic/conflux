@@ -31,6 +31,9 @@ Output MUST be valid JSON with these exact keys:
 - recommendations: array of strings (4-6 concrete, actionable recommendations with specific Delhi-relevant context — mention areas, agencies like MCD/PWD/DJB, timelines)
 - funding_sources: array of strings (3-5 realistic funding sources: "MCD Annual Budget", "Delhi Urban Development Fund", "AMRUT 2.0 Scheme", "Smart Cities Mission", "MLA-LAD Fund", "Public-Private Partnership", "NCR Planning Board Grant")
 - estimated_budget: string (detailed INR breakdown like "₹12.5 lakhs (Survey: ₹1.5L, Repairs: ₹8L, Drainage: ₹2L, Contingency: ₹1L)")
+- responsible_agencies: array of strings (the specific Delhi bodies/departments that own this fix, e.g. "Municipal Corporation of Delhi (MCD)", "Public Works Department (PWD)", "Delhi Jal Board (DJB)", "Delhi Traffic Police", "DDA")
+- communication_plan: array of strings (3-5 SEQUENCED stakeholder-outreach steps, each stating WHO to notify, the CHANNEL, and TIMING — e.g. "Week 1: File formal grievance with MCD ward office via PGMS portal", "Week 2: Brief the local RWA and area councillor", "Week 3: Issue press note to local Delhi dailies; escalate to LG office if unaddressed")
+- impact_rationale: string (1-2 sentences justifying the assigned urgency, including a rough estimate of citizens affected)
 - sources: array of objects with {id, subreddit, title} from the input threads provided
 
 CRITICAL RULES:
@@ -128,8 +131,10 @@ def store_proposal(engine: sa.Engine, proposal: dict) -> bool:
                 sa.text("""
                     INSERT INTO llm_proposals
                     (proposal_id, cluster_id, issue_type, urgency, summary, recommendations,
-                     funding_sources, estimated_budget, centroid_lat, centroid_lng)
-                    VALUES (:pid, :cid, :issue, :urg, :sum, :recs, :funds, :budget, :clat, :clng)
+                     funding_sources, estimated_budget, communication_plan, responsible_agencies,
+                     impact_rationale, centroid_lat, centroid_lng)
+                    VALUES (:pid, :cid, :issue, :urg, :sum, :recs, :funds, :budget, :complan,
+                            :agencies, :rationale, :clat, :clng)
                 """),
                 {
                     "pid": proposal_id,
@@ -140,6 +145,9 @@ def store_proposal(engine: sa.Engine, proposal: dict) -> bool:
                     "recs": json.dumps(proposal.get("recommendations", [])),
                     "funds": json.dumps(proposal.get("funding_sources", [])),
                     "budget": proposal.get("estimated_budget", ""),
+                    "complan": json.dumps(proposal.get("communication_plan", [])),
+                    "agencies": json.dumps(proposal.get("responsible_agencies", [])),
+                    "rationale": proposal.get("impact_rationale", ""),
                     "clat": proposal.get("centroid_lat"),
                     "clng": proposal.get("centroid_lng"),
                 },
@@ -156,10 +164,14 @@ def fetch_stored_proposals(engine: sa.Engine, limit: int = 50) -> list[dict]:
         with engine.connect() as conn:
             rows = conn.execute(
                 sa.text("""
-                    SELECT proposal_id, cluster_id, issue_type, urgency, summary,
-                           recommendations, funding_sources, estimated_budget, centroid_lat, centroid_lng
-                    FROM llm_proposals
-                    ORDER BY created_at DESC
+                    SELECT lp.proposal_id, lp.cluster_id, lp.issue_type, lp.urgency, lp.summary,
+                           lp.recommendations, lp.funding_sources, lp.estimated_budget,
+                           lp.communication_plan, lp.responsible_agencies, lp.impact_rationale,
+                           lp.centroid_lat, lp.centroid_lng,
+                           cr.location_confidence, cr.location_precision_meters
+                    FROM llm_proposals lp
+                    LEFT JOIN cluster_results cr ON lp.cluster_id = cr.cluster_id
+                    ORDER BY lp.created_at DESC
                     LIMIT :lim
                 """),
                 {"lim": limit},
@@ -180,8 +192,13 @@ def fetch_stored_proposals(engine: sa.Engine, limit: int = 50) -> list[dict]:
                 "recommendations": json.loads(r[5]) if r[5] else [],
                 "funding_sources": json.loads(r[6]) if r[6] else [],
                 "estimated_budget": r[7],
-                "centroid_lat": r[8],
-                "centroid_lng": r[9],
+                "communication_plan": json.loads(r[8]) if r[8] else [],
+                "responsible_agencies": json.loads(r[9]) if r[9] else [],
+                "impact_rationale": r[10] or "",
+                "centroid_lat": r[11],
+                "centroid_lng": r[12],
+                "location_confidence": r[13],
+                "location_precision_meters": r[14],
             })
         return proposals
     except Exception as e:
