@@ -2,14 +2,14 @@
 GitHub Actions Worker: Daily ingestion and clustering for Conflux.
 
 This script:
-1. Fetches new threads from r/delhi using Reddit's public JSON API (no auth required)
+1. Fetches civic reports from news RSS, Google News RSS, and optional open-data sources
 2. Runs combined text+geo clustering (embeddings + lat/lng features) with UMAP visualization
 3. Stores results in Neon/Postgres via SQLAlchemy
-4. Deduplicates by Reddit thread_id
+4. Deduplicates by source item id
 5. Validates pipeline outputs
 
 Run locally: uv run worker/ingest_and_cluster.py
-Deploy on: GitHub Actions (cron every 4 hours, see .github/workflows/)
+Deploy on: GitHub Actions (daily cron, see .github/workflows/)
 """
 
 import os
@@ -59,7 +59,9 @@ GEOCODE_CITY_FALLBACK_ENABLED = os.getenv("GEOCODE_CITY_FALLBACK_ENABLED", "0") 
 LLM_GEOLOCATION_ENABLED = os.getenv("LLM_GEOLOCATION_ENABLED", "1") == "1"
 LOCAL_GEO_FALLBACK_ENABLED = os.getenv("LOCAL_GEO_FALLBACK_ENABLED", "1") == "1"
 
-# Reddit public API
+# Legacy Reddit public JSON adapter. Disabled by default because anonymous
+# Reddit access is unreliable and OAuth is no longer the primary source path.
+REDDIT_INGEST_ENABLED = os.getenv("REDDIT_INGEST_ENABLED", "0") == "1"
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "conflux/0.1")
 
 # OpenAI-compatible location extraction. Defaults to Groq because the project
@@ -310,11 +312,11 @@ def write_local_artifacts(threads: list[dict], clusters: list[dict]) -> None:
 # ====================================================
 
 # Subreddits to scan for Indian-city infrastructure complaints (Delhi NCR weighted first).
-TARGET_SUBS = os.getenv(
+TARGET_SUBS_RAW = os.getenv(
     "TARGET_SUBS",
-    "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai",
+    "",
 )
-TARGET_SUBS = [sub.strip() for sub in TARGET_SUBS.split(",") if sub.strip()]
+TARGET_SUBS = [sub.strip() for sub in TARGET_SUBS_RAW.split(",") if sub.strip()]
 
 # Infrastructure search queries for Reddit search API
 SEARCH_QUERIES = [
@@ -347,6 +349,9 @@ def _fetch_reddit_url(url: str) -> dict | None:
 
 def fetch_new_threads() -> list[dict]:
     """Fetch infra-relevant threads from multiple Delhi NCR subreddits."""
+    if not REDDIT_INGEST_ENABLED:
+        log.info("Reddit ingestion disabled. Using civic/news/open-data sources.")
+        return []
     if not TARGET_SUBS:
         log.info("Reddit ingestion skipped because TARGET_SUBS is empty.")
         return []
@@ -1156,7 +1161,7 @@ def main():
             return
 
         db.create_tables()
-        log.info("--- Step 1: Fetching threads (Reddit + civic news + open data) ---")
+        log.info("--- Step 1: Fetching civic reports (news RSS + Google News + open data; Reddit optional) ---")
         threads = fetch_new_threads()
         threads += fetch_news_threads()
         threads += fetch_opendata_threads()
