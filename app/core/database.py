@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import sqlalchemy as sa
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
@@ -22,13 +23,33 @@ DEMO_MODE = settings.demo_mode
 
 # ─── Synchronous engine (worker scripts, legacy code) ───────────
 
+def _postgres_url_with_driver(url: str, driver: str) -> str:
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", f"postgresql+{driver}://", 1)
+    return url
+
+
+def _strip_query_keys(url: str, keys: set[str]) -> str:
+    parts = urlsplit(url)
+    query = urlencode(
+        [(key, value) for key, value in parse_qsl(parts.query, keep_blank_values=True) if key not in keys]
+    )
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, query, parts.fragment))
+
+
+def _has_required_ssl(url: str) -> bool:
+    params = dict(parse_qsl(urlsplit(url).query, keep_blank_values=True))
+    return params.get("sslmode") in {"require", "verify-ca", "verify-full"}
+
+
 def create_sync_engine() -> sa.Engine:
+    sync_url = _postgres_url_with_driver(settings.database_url, "psycopg")
     engine_kwargs: dict = {}
     if settings.is_sqlite:
         engine_kwargs["connect_args"] = {"check_same_thread": False}
     else:
         engine_kwargs["pool_pre_ping"] = True
-    return sa.create_engine(settings.database_url, **engine_kwargs)
+    return sa.create_engine(sync_url, **engine_kwargs)
 
 
 engine = create_sync_engine()
@@ -40,13 +61,16 @@ def create_async_engine_instance() -> AsyncEngine:
     if async_url.startswith("sqlite:///"):
         async_url = async_url.replace("sqlite:///", "sqlite+aiosqlite:///")
     elif async_url.startswith("postgresql://"):
-        async_url = async_url.replace("postgresql://", "postgresql+asyncpg://")
+        async_url = _postgres_url_with_driver(async_url, "asyncpg")
 
     engine_kwargs: dict = {}
     if settings.is_sqlite:
         engine_kwargs["connect_args"] = {"check_same_thread": False}
     else:
         engine_kwargs["pool_pre_ping"] = True
+        if async_url.startswith("postgresql+asyncpg://") and _has_required_ssl(async_url):
+            engine_kwargs["connect_args"] = {"ssl": True}
+        async_url = _strip_query_keys(async_url, {"sslmode", "channel_binding"})
 
     return create_async_engine(async_url, **engine_kwargs)
 

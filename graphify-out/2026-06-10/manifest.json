@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "tests/test_core.py": {
-    "mtime": 1781089155.7010124,
-    "ast_hash": "b4976d98f02ad5948fb47444b1baa5af",
+    "mtime": 1781095282.6396744,
+    "ast_hash": "16d2ebe65ab5c84c1c67029fe6addadb",
     "semantic_hash": ""
   },
   "worker/ingest_and_cluster.py": {
@@ -245,8 +245,8 @@
     "semantic_hash": ""
   },
   "app/api/routes/proposals.py": {
-    "mtime": 1781089363.7554412,
-    "ast_hash": "94b3f62bd5df1df47824cb704d2162eb",
+    "mtime": 1781094763.6507766,
+    "ast_hash": "3ddcbc13c7b8f6fc6f7edacbb1ded964",
     "semantic_hash": ""
   },
   "app/api/routes/research.py": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "app/services/cluster_service.py": {
-    "mtime": 1781089441.5029943,
-    "ast_hash": "ccbf9f03261de7c273578160e9c5bbc8",
+    "mtime": 1781094764.0750277,
+    "ast_hash": "a7a78da4392bfb0f30c9515a1c56ac13",
     "semantic_hash": ""
   },
   "app/services/proposal_heuristics.py": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "app/services/thread_service.py": {
-    "mtime": 1781089342.7151535,
-    "ast_hash": "c857001617537760fcc5effebca00072",
+    "mtime": 1781094945.2328782,
+    "ast_hash": "05932219c5ab445396eb26b561516d7f",
     "semantic_hash": ""
   },
   "app/services/utils.py": {

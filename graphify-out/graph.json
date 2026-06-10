@@ -220,7 +220,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_health",
-      "community": 8,
+      "community": 16,
       "norm_label": "health.py"
     },
     {
@@ -230,7 +230,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "routes_health_health_check",
-      "community": 8,
+      "community": 16,
       "norm_label": "health_check()"
     },
     {
@@ -240,7 +240,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_health_rationale_1",
-      "community": 8,
+      "community": 16,
       "norm_label": "health check endpoint."
     },
     {
@@ -250,7 +250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_ingest",
-      "community": 16,
+      "community": 0,
       "norm_label": "ingest.py"
     },
     {
@@ -260,7 +260,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "routes_ingest_ingest_complaints",
-      "community": 16,
+      "community": 0,
       "norm_label": "ingest_complaints()"
     },
     {
@@ -270,7 +270,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "complainlist",
-      "community": 16,
+      "community": 0,
       "norm_label": "complainlist"
     },
     {
@@ -280,7 +280,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "routes_ingest_cluster_complaints",
-      "community": 16,
+      "community": 0,
       "norm_label": "cluster_complaints()"
     },
     {
@@ -290,7 +290,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_ingest_rationale_1",
-      "community": 16,
+      "community": 0,
       "norm_label": "ingestion and clustering trigger endpoints."
     },
     {
@@ -300,7 +300,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "routes_ingest_rationale_21",
-      "community": 16,
+      "community": 0,
       "norm_label": "ingest a batch of multilingual citizen complaints."
     },
     {
@@ -310,7 +310,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "routes_ingest_rationale_66",
-      "community": 16,
+      "community": 0,
       "norm_label": "run clustering on ingested complaints."
     },
     {
@@ -634,10 +634,40 @@
       "norm_label": "database.py"
     },
     {
+      "label": "_postgres_url_with_driver()",
+      "file_type": "code",
+      "source_file": "app/core/database.py",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "core_database_postgres_url_with_driver",
+      "community": 28,
+      "norm_label": "_postgres_url_with_driver()"
+    },
+    {
+      "label": "_strip_query_keys()",
+      "file_type": "code",
+      "source_file": "app/core/database.py",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "core_database_strip_query_keys",
+      "community": 28,
+      "norm_label": "_strip_query_keys()"
+    },
+    {
+      "label": "_has_required_ssl()",
+      "file_type": "code",
+      "source_file": "app/core/database.py",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "core_database_has_required_ssl",
+      "community": 28,
+      "norm_label": "_has_required_ssl()"
+    },
+    {
       "label": "create_sync_engine()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L25",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "core_database_create_sync_engine",
       "community": 28,
@@ -647,7 +677,7 @@
       "label": "Engine",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L25",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "app_core_database_py_engine",
       "community": 28,
@@ -657,7 +687,7 @@
       "label": "create_async_engine_instance()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L38",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "core_database_create_async_engine_instance",
       "community": 28,
@@ -667,7 +697,7 @@
       "label": "AsyncEngine",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L38",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "asyncengine",
       "community": 28,
@@ -677,7 +707,7 @@
       "label": "get_async_session()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L62",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "core_database_get_async_session",
       "community": 28,
@@ -687,7 +717,7 @@
       "label": "AsyncSession",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L62",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "asyncsession",
       "community": 28,
@@ -697,7 +727,7 @@
       "label": "get_sync_session()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L71",
+      "source_location": "L95",
       "_origin": "ast",
       "id": "core_database_get_sync_session",
       "community": 28,
@@ -707,7 +737,7 @@
       "label": "_existing_columns()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L273",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "core_database_existing_columns",
       "community": 28,
@@ -717,7 +747,7 @@
       "label": "Connection",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L273",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "connection",
       "community": 28,
@@ -727,7 +757,7 @@
       "label": "_ensure_columns()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L284",
+      "source_location": "L308",
       "_origin": "ast",
       "id": "core_database_ensure_columns",
       "community": 28,
@@ -737,17 +767,17 @@
       "label": "database_available()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L299",
+      "source_location": "L323",
       "_origin": "ast",
       "id": "core_database_database_available",
-      "community": 8,
+      "community": 16,
       "norm_label": "database_available()"
     },
     {
       "label": "create_tables()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L312",
+      "source_location": "L336",
       "_origin": "ast",
       "id": "core_database_create_tables",
       "community": 28,
@@ -757,7 +787,7 @@
       "label": "init_db_sync()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L324",
+      "source_location": "L348",
       "_origin": "ast",
       "id": "core_database_init_db_sync",
       "community": 16,
@@ -767,7 +797,7 @@
       "label": "init_db()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L336",
+      "source_location": "L360",
       "_origin": "ast",
       "id": "core_database_init_db",
       "community": 28,
@@ -777,7 +807,7 @@
       "label": "lifespan()",
       "file_type": "code",
       "source_file": "app/core/database.py",
-      "source_location": "L351",
+      "source_location": "L375",
       "_origin": "ast",
       "id": "core_database_lifespan",
       "community": 28,
@@ -797,9 +827,9 @@
       "label": "FastAPI dependency for async database sessions.",
       "file_type": "rationale",
       "source_file": "app/core/database.py",
-      "source_location": "L63",
+      "source_location": "L87",
       "_origin": "ast",
-      "id": "core_database_rationale_63",
+      "id": "core_database_rationale_87",
       "community": 28,
       "norm_label": "fastapi dependency for async database sessions."
     },
@@ -807,9 +837,9 @@
       "label": "Dependency for synchronous database sessions.",
       "file_type": "rationale",
       "source_file": "app/core/database.py",
-      "source_location": "L72",
+      "source_location": "L96",
       "_origin": "ast",
-      "id": "core_database_rationale_72",
+      "id": "core_database_rationale_96",
       "community": 28,
       "norm_label": "dependency for synchronous database sessions."
     },
@@ -817,9 +847,9 @@
       "label": "Add any missing columns to existing tables.",
       "file_type": "rationale",
       "source_file": "app/core/database.py",
-      "source_location": "L285",
+      "source_location": "L309",
       "_origin": "ast",
-      "id": "core_database_rationale_285",
+      "id": "core_database_rationale_309",
       "community": 28,
       "norm_label": "add any missing columns to existing tables."
     },
@@ -827,9 +857,9 @@
       "label": "Create schema and apply idempotent column additions.",
       "file_type": "rationale",
       "source_file": "app/core/database.py",
-      "source_location": "L313",
+      "source_location": "L337",
       "_origin": "ast",
-      "id": "core_database_rationale_313",
+      "id": "core_database_rationale_337",
       "community": 28,
       "norm_label": "create schema and apply idempotent column additions."
     },
@@ -837,9 +867,9 @@
       "label": "Create tables if the database is available. Returns False otherwise.",
       "file_type": "rationale",
       "source_file": "app/core/database.py",
-      "source_location": "L325",
+      "source_location": "L349",
       "_origin": "ast",
-      "id": "core_database_rationale_325",
+      "id": "core_database_rationale_349",
       "community": 16,
       "norm_label": "create tables if the database is available. returns false otherwise."
     },
@@ -847,9 +877,9 @@
       "label": "Initialize database tables on startup (async, for lifespan).",
       "file_type": "rationale",
       "source_file": "app/core/database.py",
-      "source_location": "L337",
+      "source_location": "L361",
       "_origin": "ast",
-      "id": "core_database_rationale_337",
+      "id": "core_database_rationale_361",
       "community": 28,
       "norm_label": "initialize database tables on startup (async, for lifespan)."
     },
@@ -857,9 +887,9 @@
       "label": "Application lifespan manager.",
       "file_type": "rationale",
       "source_file": "app/core/database.py",
-      "source_location": "L352",
+      "source_location": "L376",
       "_origin": "ast",
-      "id": "core_database_rationale_352",
+      "id": "core_database_rationale_376",
       "community": 28,
       "norm_label": "application lifespan manager."
     },
@@ -870,7 +900,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_models",
-      "community": 16,
+      "community": 0,
       "norm_label": "models.py"
     },
     {
@@ -880,7 +910,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "core_models_complaint",
-      "community": 16,
+      "community": 0,
       "norm_label": "complaint"
     },
     {
@@ -890,7 +920,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "basemodel",
-      "community": 16,
+      "community": 0,
       "norm_label": "basemodel"
     },
     {
@@ -900,7 +930,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "core_models_complainlist",
-      "community": 16,
+      "community": 0,
       "norm_label": "complainlist"
     },
     {
@@ -910,7 +940,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "core_models_clusterproposal",
-      "community": 16,
+      "community": 0,
       "norm_label": "clusterproposal"
     },
     {
@@ -920,7 +950,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "core_models_proposalresponse",
-      "community": 16,
+      "community": 0,
       "norm_label": "proposalresponse"
     },
     {
@@ -930,7 +960,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_models_rationale_1",
-      "community": 16,
+      "community": 0,
       "norm_label": "conflux api models \u2014 pydantic schemas for request/response validation."
     },
     {
@@ -950,7 +980,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_cluster_service",
-      "community": 8,
+      "community": 16,
       "norm_label": "cluster_service.py"
     },
     {
@@ -960,7 +990,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "services_cluster_service_load_local_clusters",
-      "community": 8,
+      "community": 16,
       "norm_label": "_load_local_clusters()"
     },
     {
@@ -970,7 +1000,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "services_cluster_service_fetch_latest_clusters",
-      "community": 8,
+      "community": 16,
       "norm_label": "fetch_latest_clusters()"
     },
     {
@@ -990,7 +1020,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_cluster_service_rationale_1",
-      "community": 8,
+      "community": 16,
       "norm_label": "service layer for cluster-related database queries."
     },
     {
@@ -1120,7 +1150,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_thread_service",
-      "community": 8,
+      "community": 16,
       "norm_label": "thread_service.py"
     },
     {
@@ -1130,7 +1160,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "services_thread_service_load_local_threads",
-      "community": 8,
+      "community": 16,
       "norm_label": "_load_local_threads()"
     },
     {
@@ -1140,7 +1170,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "services_thread_service_fetch_latest_threads",
-      "community": 8,
+      "community": 16,
       "norm_label": "fetch_latest_threads()"
     },
     {
@@ -1150,7 +1180,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_thread_service_rationale_1",
-      "community": 8,
+      "community": 16,
       "norm_label": "service layer for thread-related database queries."
     },
     {
@@ -1160,7 +1190,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_utils",
-      "community": 8,
+      "community": 16,
       "norm_label": "utils.py"
     },
     {
@@ -1170,7 +1200,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "services_utils_source_url",
-      "community": 8,
+      "community": 16,
       "norm_label": "source_url()"
     },
     {
@@ -1180,7 +1210,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_utils_rationale_1",
-      "community": 8,
+      "community": 16,
       "norm_label": "shared utility functions used across services."
     },
     {
@@ -1820,7 +1850,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_localitypreviewmap",
-      "community": 33,
+      "community": 2,
       "norm_label": "localitypreviewmap.tsx"
     },
     {
@@ -1830,7 +1860,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_localitypreviewmap_localitypreviewmapprops",
-      "community": 33,
+      "community": 2,
       "norm_label": "localitypreviewmapprops"
     },
     {
@@ -1840,7 +1870,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "components_localitypreviewmap_localitypreviewmap",
-      "community": 33,
+      "community": 2,
       "norm_label": "localitypreviewmap()"
     },
     {
@@ -2800,7 +2830,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "policy_retriever",
-      "community": 0,
+      "community": 3,
       "norm_label": "policy_retriever.py"
     },
     {
@@ -2810,7 +2840,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "policy_retriever_policyhit",
-      "community": 0,
+      "community": 3,
       "norm_label": "policyhit"
     },
     {
@@ -2820,7 +2850,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "policy_retriever_load_docs",
-      "community": 0,
+      "community": 3,
       "norm_label": "_load_docs()"
     },
     {
@@ -2830,7 +2860,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "policy_retriever_tokens",
-      "community": 0,
+      "community": 3,
       "norm_label": "_tokens()"
     },
     {
@@ -2840,7 +2870,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "policy_retriever_tf",
-      "community": 0,
+      "community": 3,
       "norm_label": "_tf()"
     },
     {
@@ -2850,7 +2880,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "counter",
-      "community": 0,
+      "community": 3,
       "norm_label": "counter"
     },
     {
@@ -2860,7 +2890,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "policy_retriever_cosine",
-      "community": 0,
+      "community": 3,
       "norm_label": "_cosine()"
     },
     {
@@ -2870,7 +2900,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "policy_retriever_retrieve_policy",
-      "community": 0,
+      "community": 3,
       "norm_label": "retrieve_policy()"
     },
     {
@@ -2880,7 +2910,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "policy_retriever_rationale_1",
-      "community": 0,
+      "community": 3,
       "norm_label": "lightweight local policy retrieval for the planning agent.  this is intentionall"
     },
     {
@@ -3280,7 +3310,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "tests_test_core_test_policy_retriever_returns_relevant_docs",
-      "community": 0,
+      "community": 3,
       "norm_label": "test_policy_retriever_returns_relevant_docs()"
     },
     {
@@ -3460,7 +3490,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "worker_geocoding",
-      "community": 34,
+      "community": 1,
       "norm_label": "geocoding.py"
     },
     {
@@ -3470,7 +3500,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "worker_geocoding_extract_location_candidate_locally",
-      "community": 34,
+      "community": 1,
       "norm_label": "extract_location_candidate_locally()"
     },
     {
@@ -3480,7 +3510,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "worker_geocoding_extract_location_candidate",
-      "community": 34,
+      "community": 1,
       "norm_label": "extract_location_candidate()"
     },
     {
@@ -3490,7 +3520,7 @@
       "source_location": "L163",
       "_origin": "ast",
       "id": "worker_geocoding_precision_to_meters",
-      "community": 34,
+      "community": 1,
       "norm_label": "precision_to_meters()"
     },
     {
@@ -3500,7 +3530,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "worker_geocoding_geocoder_importance_score",
-      "community": 34,
+      "community": 1,
       "norm_label": "geocoder_importance_score()"
     },
     {
@@ -3510,7 +3540,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "worker_geocoding_geocode_text",
-      "community": 34,
+      "community": 1,
       "norm_label": "geocode_text()"
     },
     {
@@ -3520,7 +3550,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "worker_geocoding_unresolved_geo",
-      "community": 34,
+      "community": 1,
       "norm_label": "unresolved_geo()"
     },
     {
@@ -3530,7 +3560,7 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "worker_geocoding_resolve_location",
-      "community": 34,
+      "community": 1,
       "norm_label": "resolve_location()"
     },
     {
@@ -3540,7 +3570,7 @@
       "source_location": "L282",
       "_origin": "ast",
       "id": "worker_geocoding_resolve_coordinates",
-      "community": 34,
+      "community": 1,
       "norm_label": "resolve_coordinates()"
     },
     {
@@ -3550,7 +3580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "worker_geocoding_rationale_1",
-      "community": 34,
+      "community": 1,
       "norm_label": "geocoding and location resolution for civic complaints.  uses an llm to extract"
     },
     {
@@ -3560,7 +3590,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "worker_geocoding_rationale_66",
-      "community": 34,
+      "community": 1,
       "norm_label": "cheap gazetteer fallback for source titles when the llm is unavailable."
     },
     {
@@ -3570,7 +3600,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "worker_geocoding_rationale_95",
-      "community": 34,
+      "community": 1,
       "norm_label": "use an openai-compatible llm to extract the most geocodable place phrase."
     },
     {
@@ -3580,7 +3610,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "worker_geocoding_rationale_231",
-      "community": 34,
+      "community": 1,
       "norm_label": "resolve a complaint to a geolocation with quality metadata."
     },
     {
@@ -3590,7 +3620,7 @@
       "source_location": "L283",
       "_origin": "ast",
       "id": "worker_geocoding_rationale_283",
-      "community": 34,
+      "community": 1,
       "norm_label": "backward-compatible wrapper for older callers/tests."
     },
     {
@@ -5073,9 +5103,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals_rationale_114",
-      "target": "routes_proposals_generate_proposal_for_cluster_endpoint",
-      "confidence_score": 1.0
+      "target": "routes_proposals_generate_proposal_for_cluster_endpoint"
     },
     {
       "relation": "imports",
@@ -5558,6 +5588,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "core_database",
+      "target": "core_database_has_required_ssl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
       "source_location": "L336",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5585,6 +5625,26 @@
       "target": "core_database_lifespan"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "core_database",
+      "target": "core_database_postgres_url_with_driver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "core_database",
+      "target": "core_database_strip_query_keys",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
@@ -5593,6 +5653,50 @@
       "confidence_score": 1.0,
       "source": "core_database_rationale_1",
       "target": "core_database"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "core_database_create_async_engine_instance",
+      "target": "core_database_postgres_url_with_driver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "core_database_create_sync_engine",
+      "target": "core_database_postgres_url_with_driver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "core_database_create_async_engine_instance",
+      "target": "core_database_strip_query_keys",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "core_database_create_async_engine_instance",
+      "target": "core_database_has_required_ssl",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -5631,21 +5735,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
-      "source_location": "L63",
+      "source_location": "L87",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_database_rationale_63",
-      "target": "core_database_get_async_session"
+      "source": "core_database_rationale_87",
+      "target": "core_database_get_async_session",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
-      "source_location": "L72",
+      "source_location": "L96",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_database_rationale_72",
-      "target": "core_database_get_sync_session"
+      "source": "core_database_rationale_96",
+      "target": "core_database_get_sync_session",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5706,11 +5810,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
-      "source_location": "L285",
+      "source_location": "L309",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_database_rationale_285",
-      "target": "core_database_ensure_columns"
+      "source": "core_database_rationale_309",
+      "target": "core_database_ensure_columns",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -5804,11 +5908,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
-      "source_location": "L313",
+      "source_location": "L337",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_database_rationale_313",
-      "target": "core_database_create_tables"
+      "source": "core_database_rationale_337",
+      "target": "core_database_create_tables",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -5825,11 +5929,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
-      "source_location": "L325",
+      "source_location": "L349",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_database_rationale_325",
-      "target": "core_database_init_db_sync"
+      "source": "core_database_rationale_349",
+      "target": "core_database_init_db_sync",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5856,11 +5960,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/core/database.py",
-      "source_location": "L352",
+      "source_location": "L361",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_database_rationale_352",
-      "target": "core_database_lifespan"
+      "source": "core_database_rationale_361",
+      "target": "core_database_init_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app/core/database.py",
+      "source_location": "L376",
+      "weight": 1.0,
+      "source": "core_database_rationale_376",
+      "target": "core_database_lifespan",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -5989,9 +6103,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service",
-      "target": "services_cluster_service_load_local_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_load_local_clusters"
     },
     {
       "relation": "imports",
@@ -6021,9 +6135,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L156",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_cluster_service",
-      "confidence_score": 1.0
+      "target": "services_cluster_service"
     },
     {
       "relation": "calls",
@@ -6032,9 +6146,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service_fetch_latest_clusters",
-      "target": "services_cluster_service_load_local_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_load_local_clusters"
     },
     {
       "relation": "imports",
@@ -6065,9 +6179,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_load_local_threads",
-      "target": "services_cluster_service_fetch_latest_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_latest_clusters"
     },
     {
       "relation": "calls",
@@ -6086,9 +6200,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service_rationale_69",
-      "target": "services_cluster_service_fetch_sources_for_cluster",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_sources_for_cluster"
     },
     {
       "relation": "contains",
@@ -6199,9 +6313,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_load_local_threads",
-      "target": "services_proposal_heuristics_infer_issue_type",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_issue_type"
     },
     {
       "relation": "imports",
@@ -6393,9 +6507,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service",
-      "target": "services_thread_service_load_local_threads",
-      "confidence_score": 1.0
+      "target": "services_thread_service_load_local_threads"
     },
     {
       "relation": "imports",
@@ -6425,9 +6539,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L156",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_thread_service",
-      "confidence_score": 1.0
+      "target": "services_thread_service"
     },
     {
       "relation": "calls",
@@ -6436,9 +6550,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_fetch_latest_threads",
-      "target": "services_thread_service_load_local_threads",
-      "confidence_score": 1.0
+      "target": "services_thread_service_load_local_threads"
     },
     {
       "relation": "calls",
@@ -6447,9 +6561,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_load_local_threads",
-      "target": "services_utils_source_url",
-      "confidence_score": 1.0
+      "target": "services_utils_source_url"
     },
     {
       "relation": "calls",
@@ -10244,9 +10358,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "tests_test_core_test_services_fallback_to_local_sample_data_without_database",
-      "confidence_score": 1.0
+      "target": "tests_test_core_test_services_fallback_to_local_sample_data_without_database"
     },
     {
       "relation": "contains",
@@ -11480,5 +11594,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "05e5b98dcb80c2840ac7ac309957b976028be08f"
+  "built_at_commit": "6dccdddb1b2c8b4a0e73155087fe7d6995c5a467"
 }
