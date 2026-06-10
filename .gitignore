@@ -29,3 +29,6 @@ logs/
 .npm-cache/
 .pytest_cache/
 pytest-cache-files-*/
+
+# Generated code graph
+graphify-out/
