@@ -168,3 +168,31 @@ def test_services_fallback_to_local_sample_data_without_database(monkeypatch):
 
     assert threads
     assert any(thread.get("cluster_id") for thread in threads)
+
+
+def test_create_tables_adds_new_daily_ingest_columns_to_existing_schema(monkeypatch):
+    engine = sa.create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    with engine.begin() as conn:
+        conn.execute(sa.text("""
+            CREATE TABLE daily_ingest (
+                thread_id TEXT PRIMARY KEY,
+                subreddit TEXT,
+                title TEXT,
+                content TEXT,
+                flair TEXT,
+                upvotes INTEGER,
+                created_at TEXT DEFAULT (datetime('now'))
+            )
+        """))
+
+    import app.core.database as database
+
+    monkeypatch.setattr(database, "engine", engine)
+    monkeypatch.setattr(database.settings, "database_url", "sqlite://:memory:")
+
+    database.create_tables()
+
+    with engine.connect() as conn:
+        columns = {row[1] for row in conn.execute(sa.text("PRAGMA table_info(daily_ingest)"))}
+
+    assert {"coordinates", "url", "published_at"}.issubset(columns)

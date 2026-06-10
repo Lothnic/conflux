@@ -273,6 +273,11 @@ CREATE TABLE IF NOT EXISTS agent_steps (
 
 # Columns added after the initial schema shipped.
 _ADDED_COLUMNS: dict[str, list[tuple[str, str]]] = {
+    "daily_ingest": [
+        ("coordinates", "TEXT"),
+        ("url", "TEXT"),
+        ("published_at", "TEXT" if settings.is_sqlite else "TIMESTAMPTZ"),
+    ],
     "thread_geo": [
         ("location_text", "TEXT"),
         ("location_method", "TEXT"),
