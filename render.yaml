@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: conflux-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.13
+      - key: CONFLUX_DEMO
+        value: "1"
+      - key: CORS_ALLOWED_ORIGINS
+        value: http://localhost:3000,http://127.0.0.1:3000

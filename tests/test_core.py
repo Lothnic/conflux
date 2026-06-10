@@ -7,7 +7,7 @@ import sqlalchemy as sa
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import db
-from main import (
+from app.services.proposal_heuristics import (
     impact_rationale,
     infer_budget,
     infer_issue_type,
@@ -17,7 +17,7 @@ from main import (
 )
 from proposals import fetch_stored_proposals, store_proposal
 from policy_retriever import retrieve_policy
-from worker import ingest_and_cluster as worker
+from worker import geocoding as worker
 
 
 def create_sqlite_test_engine():
@@ -95,9 +95,9 @@ def test_priority_and_budget_thresholds():
     assert infer_urgency(20) == "high"
     assert infer_urgency(8) == "medium"
     assert infer_urgency(7) == "low"
-    assert infer_budget(20) == "$250k-$1M"
-    assert infer_budget(8) == "$50k-$250k"
-    assert infer_budget(7) == "$10k-$50k"
+    assert infer_budget(20) == "₹2-8 crore"
+    assert infer_budget(8) == "₹40 lakh-₹2 crore"
+    assert infer_budget(7) == "₹8-40 lakh"
 
 
 def test_new_structured_output_heuristics():

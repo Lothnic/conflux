@@ -39,3 +39,8 @@ npm run dev
 
 * **Backend API:** http://localhost:8000
 * **Frontend Dashboard:** http://localhost:3000
+
+
+## Deployment
+
+See `docs/deployment.md` for the Render backend and Vercel frontend setup. The backend has a Render blueprint in `render.yaml` and a lightweight API dependency file in `requirements-render.txt`.

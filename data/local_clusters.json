@@ -1,0 +1,29 @@
+[
+  {
+    "cluster_id": "demo-cluster-0",
+    "cluster_label": 0,
+    "centroid_lat": 28.593816666666665,
+    "centroid_lng": 77.2117,
+    "size": 6,
+    "keywords": "road potholes near traffic broken",
+    "created_at": "2026-05-27T12:46:35.776708+00:00"
+  },
+  {
+    "cluster_id": "demo-cluster-1",
+    "cluster_label": 1,
+    "centroid_lat": 28.6196,
+    "centroid_lng": 77.11765,
+    "size": 2,
+    "keywords": "garbage overflow near karol bagh",
+    "created_at": "2026-05-27T12:46:35.776756+00:00"
+  },
+  {
+    "cluster_id": "demo-cluster-2",
+    "cluster_label": 2,
+    "centroid_lat": 28.6776,
+    "centroid_lng": 77.291,
+    "size": 1,
+    "keywords": "drain sewer smell overflow near",
+    "created_at": "2026-05-27T12:46:35.776782+00:00"
+  }
+]

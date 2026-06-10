@@ -25,9 +25,6 @@ from urllib.request import Request, urlopen
 
 import sqlalchemy as sa
 from dotenv import load_dotenv
-from langgraph.graph import END, StateGraph
-from typing_extensions import TypedDict
-
 from policy_retriever import retrieve_policy
 
 load_dotenv()
@@ -58,10 +55,6 @@ class AgentState:
     outputs: dict[str, str] = field(default_factory=dict)
     doc: str = ""
     run_id: str = ""
-
-
-class GraphState(TypedDict):
-    agent: AgentState
 
 
 def _event(step: str, status: str, label: str, output: str = "", **extra: Any) -> dict[str, Any]:
@@ -544,57 +537,31 @@ def _fallback_agencies(issue_type: str) -> list[str]:
 AgentNode = tuple[str, str, str, Callable[[AgentState], str]]
 
 
-def _make_graph_node(
+def _run_step(
     engine: sa.Engine,
+    state: AgentState,
     step_name: str,
     tool_name: str,
     fn: Callable[[AgentState], str],
-) -> Callable[[GraphState], GraphState]:
-    def node(graph_state: GraphState) -> GraphState:
-        agent = graph_state["agent"]
-        input_payload = {
-            "cluster_id": agent.cluster_id,
-            "issue_type": agent.issue_type,
-            "lat": agent.lat,
-            "lng": agent.lng,
-            "keywords": agent.keywords,
-        }
-        output = fn(agent)
-        _persist_step(
-            engine,
-            agent.run_id,
-            step_name,
-            tool_name,
-            "done",
-            input_payload,
-            {"output": output},
-        )
-        return {"agent": agent}
-
-    return node
-
-
-def _build_agent_graph(engine: sa.Engine) -> Any:
-    graph = StateGraph(GraphState)
-    graph.add_node("context", _make_graph_node(engine, "context", "load_issue_context", lambda s: load_issue_context(s, engine)))
-    graph.add_node("geolocation", _make_graph_node(engine, "geolocation", "assess_geolocation_confidence", assess_geolocation))
-    graph.add_node("poi", _make_graph_node(engine, "poi", "nearby_context_tool", gather_nearby_context))
-    graph.add_node("policy", _make_graph_node(engine, "policy", "policy_rag_retriever", retrieve_policy_context))
-    graph.add_node("reasoning", _make_graph_node(engine, "reasoning", "urban_reasoning_llm", reason_about_intervention))
-    graph.add_node("recommendation", _make_graph_node(engine, "recommendation", "recommendation_generator", generate_recommendation))
-
-    graph.set_entry_point("context")
-    graph.add_edge("context", "geolocation")
-    graph.add_conditional_edges(
-        "geolocation",
-        lambda state: "poi" if state["agent"].lat is not None and state["agent"].lng is not None else "policy",
-        {"poi": "poi", "policy": "policy"},
+) -> str:
+    input_payload = {
+        "cluster_id": state.cluster_id,
+        "issue_type": state.issue_type,
+        "lat": state.lat,
+        "lng": state.lng,
+        "keywords": state.keywords,
+    }
+    output = fn(state)
+    _persist_step(
+        engine,
+        state.run_id,
+        step_name,
+        tool_name,
+        "done",
+        input_payload,
+        {"output": output},
     )
-    graph.add_edge("poi", "policy")
-    graph.add_edge("policy", "reasoning")
-    graph.add_edge("reasoning", "recommendation")
-    graph.add_edge("recommendation", END)
-    return graph.compile()
+    return output
 
 
 def run_research(cluster_id: str, engine: sa.Engine) -> Iterable[dict[str, Any]]:
@@ -618,51 +585,80 @@ def run_research(cluster_id: str, engine: sa.Engine) -> Iterable[dict[str, Any]]
         "recommendation": "recommendation_generator",
     }
 
-    app = _build_agent_graph(engine)
-    previous: set[str] = set()
-    final_graph_state: GraphState = {"agent": state}
+    base_steps: list[AgentNode] = [
+        ("context", "load_issue_context", "context", lambda s: load_issue_context(s, engine)),
+        ("geolocation", "assess_geolocation_confidence", "geolocation", assess_geolocation),
+    ]
+    follow_up_steps: list[AgentNode] = [
+        ("policy", "policy_rag_retriever", "policy", retrieve_policy_context),
+        ("reasoning", "urban_reasoning_llm", "reasoning", reason_about_intervention),
+        ("recommendation", "recommendation_generator", "recommendation", generate_recommendation),
+    ]
 
     try:
-        for update in app.stream({"agent": state}, stream_mode="updates"):
-            for step, graph_state in update.items():
-                if step == "__end__":
-                    continue
-                yield _event(
-                    step,
-                    "running",
-                    labels.get(step, f"Running {step}..."),
-                    tool=tools.get(step, step),
-                    run_id=state.run_id,
-                )
-                agent = graph_state["agent"]
-                output = agent.outputs.get(step, "")
-                previous.add(step)
-                final_graph_state = graph_state
-                yield _event(
-                    step,
-                    "done",
-                    labels.get(step, step).replace("...", " complete"),
-                    output,
-                    tool=tools.get(step, step),
-                    run_id=state.run_id,
-                )
+        for step, tool_name, output_key, fn in base_steps:
+            yield _event(
+                step,
+                "running",
+                labels.get(step, f"Running {step}..."),
+                tool=tools.get(step, tool_name),
+                run_id=state.run_id,
+            )
+            output = _run_step(engine, state, step, tool_name, fn)
+            yield _event(
+                step,
+                "done",
+                labels.get(step, step).replace("...", " complete"),
+                output or state.outputs.get(output_key, ""),
+                tool=tools.get(step, tool_name),
+                run_id=state.run_id,
+            )
+
+        if state.lat is not None and state.lng is not None:
+            step, tool_name, output_key, fn = ("poi", "nearby_context_tool", "poi", gather_nearby_context)
+            yield _event(step, "running", labels[step], tool=tools[step], run_id=state.run_id)
+            output = _run_step(engine, state, step, tool_name, fn)
+            yield _event(
+                step,
+                "done",
+                labels[step].replace("...", " complete"),
+                output or state.outputs.get(output_key, ""),
+                tool=tools[step],
+                run_id=state.run_id,
+            )
+        else:
+            state.outputs["poi"] = "Skipped because location is unresolved."
+            yield _event(
+                "poi",
+                "done",
+                "Skipped due to unresolved location",
+                state.outputs["poi"],
+                tool=tools.get("poi", "nearby_context_tool"),
+                run_id=state.run_id,
+            )
+
+        for step, tool_name, output_key, fn in follow_up_steps:
+            yield _event(
+                step,
+                "running",
+                labels.get(step, f"Running {step}..."),
+                tool=tools.get(step, tool_name),
+                run_id=state.run_id,
+            )
+            output = _run_step(engine, state, step, tool_name, fn)
+            yield _event(
+                step,
+                "done",
+                labels.get(step, step).replace("...", " complete"),
+                output or state.outputs.get(output_key, ""),
+                tool=tools.get(step, tool_name),
+                run_id=state.run_id,
+            )
     except Exception as exc:
         _finish_run(engine, state.run_id, "error")
-        log.exception("Agent graph failed")
+        log.exception("Agent run failed")
         yield _event("agent", "error", "Agent run failed", str(exc), run_id=state.run_id)
         return
-
-    state = final_graph_state["agent"]
-    skipped = [name for name in ("poi",) if name not in previous]
-    for step in skipped:
-        yield _event(
-            step,
-            "done",
-            "Skipped due to unresolved location",
-            state.outputs.get(step, "Skipped because location is unresolved."),
-            tool=tools.get(step, step),
-            run_id=state.run_id,
-        )
 
     yield _event("document", "running", "Writing agent report...", tool="agent_report_writer", run_id=state.run_id)
     try:

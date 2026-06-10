@@ -8,12 +8,15 @@ authors = [
   { name = "Lothnic" }
 ]
 dependencies = [
+    "aiosqlite>=0.22.1",
+    "asyncpg>=0.30.0",
     "fastapi>=0.136.1",
     "geopy>=2.4.1",
     "hdbscan>=0.8",
     "langgraph>=1.2.2",
     "nltk>=3.9.4",
     "numpy>=2.2.6",
+    "pydantic-settings>=2.14.1",
     "python-dotenv>=1.0.0",
     "scikit-learn>=1.8.0",
     "sentence-transformers>=5.5.0",

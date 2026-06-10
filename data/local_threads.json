@@ -1,0 +1,101 @@
+[
+  {
+    "thread_id": "demo-road-1",
+    "subreddit": "delhi",
+    "title": "Potholes on Ring Road near AIIMS are getting worse",
+    "content": "Multiple lanes have deep potholes and traffic is crawling every evening.",
+    "flair": "Roads",
+    "upvotes": 125,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.5665,
+    "lng": 77.21
+  },
+  {
+    "thread_id": "demo-road-2",
+    "subreddit": "delhi",
+    "title": "Traffic light at Lajpat Nagar intersection is broken",
+    "content": "Cars are blocking the crossing and pedestrians cannot safely cross.",
+    "flair": "Traffic",
+    "upvotes": 88,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.5678,
+    "lng": 77.2432
+  },
+  {
+    "thread_id": "demo-road-3",
+    "subreddit": "delhi",
+    "title": "Road repair needed near Connaught Place outer circle",
+    "content": "The surface is uneven and two wheelers are swerving around damaged patches.",
+    "flair": "Roads",
+    "upvotes": 97,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.6315,
+    "lng": 77.2167
+  },
+  {
+    "thread_id": "demo-sanitation-1",
+    "subreddit": "delhi",
+    "title": "Garbage overflow near Karol Bagh market",
+    "content": "Bins are full and the street smells bad after noon.",
+    "flair": "Sanitation",
+    "upvotes": 142,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.6519,
+    "lng": 77.1909
+  },
+  {
+    "thread_id": "demo-sanitation-2",
+    "subreddit": "delhi",
+    "title": "Trash collection missed again in Dwarka sector 10",
+    "content": "Residents report bags piling up for the third day.",
+    "flair": "Waste",
+    "upvotes": 76,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.5873,
+    "lng": 77.0444
+  },
+  {
+    "thread_id": "demo-sanitation-3",
+    "subreddit": "delhi",
+    "title": "Illegal dumping behind the park in Janakpuri",
+    "content": "Construction debris and waste are blocking the back lane.",
+    "flair": "Waste",
+    "upvotes": 64,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.6216,
+    "lng": 77.091
+  },
+  {
+    "thread_id": "demo-water-1",
+    "subreddit": "delhi",
+    "title": "Severe waterlogging after rain in East Delhi",
+    "content": "Drainage is clogged and the road stays flooded for hours.",
+    "flair": "Drainage",
+    "upvotes": 133,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.651,
+    "lng": 77.3027
+  },
+  {
+    "thread_id": "demo-water-2",
+    "subreddit": "delhi",
+    "title": "Sewer smell and drain overflow near Shahdara",
+    "content": "Residents say the drain has not been cleaned in weeks.",
+    "flair": "Drainage",
+    "upvotes": 91,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.6776,
+    "lng": 77.291
+  },
+  {
+    "thread_id": "demo-water-3",
+    "subreddit": "delhi",
+    "title": "Water pipeline leak causing road damage in Saket",
+    "content": "The broken pipe has created puddles and a slippery road surface.",
+    "flair": "Water",
+    "upvotes": 58,
+    "published_at": "2026-05-27T12:46:35.776439+00:00",
+    "lat": 28.5245,
+    "lng": 77.2066
+  }
+]

@@ -17,7 +17,10 @@ CLAUDE.md
 **/CLAUDE.md
 
 # Assets to ignore
-data/
+data/*
+!data/local_clusters.json
+!data/local_threads.json
+!data/local_threads_geojson.json
 assets/
 logs/
 .venv/

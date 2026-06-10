@@ -1,0 +1,140 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.21,
+          28.5665
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-road-1",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2432,
+          28.5678
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-road-2",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2167,
+          28.6315
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-road-3",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1909,
+          28.6519
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-sanitation-1",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.0444,
+          28.5873
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-sanitation-2",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.091,
+          28.6216
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-sanitation-3",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3027,
+          28.651
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-water-1",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.291,
+          28.6776
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-water-2",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2066,
+          28.5245
+        ]
+      },
+      "properties": {
+        "thread_id": "demo-water-3",
+        "source": "delhi",
+        "created_at": "2026-05-27T12:46:35.776439+00:00"
+      }
+    }
+  ]
+}
