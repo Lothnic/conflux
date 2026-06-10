@@ -16,15 +16,22 @@ BASE_DIR_LOCAL = Path(__file__).resolve().parent.parent.parent
 LOCAL_CLUSTERS_FILE = BASE_DIR_LOCAL / "data" / "local_clusters.json"
 
 
+def _load_local_clusters(limit: int) -> list[dict]:
+    if not LOCAL_CLUSTERS_FILE.exists():
+        return []
+    with open(LOCAL_CLUSTERS_FILE, "r", encoding="utf-8") as f:
+        clusters = json.load(f)
+    return clusters[:limit] if clusters else []
+
+
 def fetch_latest_clusters(limit: int = 50) -> list[dict]:
-    if DEMO_MODE and LOCAL_CLUSTERS_FILE.exists():
-        with open(LOCAL_CLUSTERS_FILE, "r", encoding="utf-8") as f:
-            clusters = json.load(f)
+    if DEMO_MODE:
+        clusters = _load_local_clusters(limit)
         if clusters:
-            return clusters[:limit]
+            return clusters
 
     if not database_available():
-        return []
+        return _load_local_clusters(limit)
 
     with engine.connect() as conn:
         rows = conn.execute(
@@ -55,11 +62,7 @@ def fetch_latest_clusters(limit: int = 50) -> list[dict]:
             for r in rows
         ]
 
-    if DEMO_MODE and LOCAL_CLUSTERS_FILE.exists():
-        with open(LOCAL_CLUSTERS_FILE, "r", encoding="utf-8") as f:
-            clusters = json.load(f)
-        return clusters[:limit]
-    return []
+    return _load_local_clusters(limit)
 
 
 def fetch_sources_for_cluster(cluster_id: str, limit: int = 8) -> list[dict]:

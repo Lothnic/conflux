@@ -18,8 +18,8 @@ LOCAL_THREADS_FILE = BASE_DIR_LOCAL / "data" / "local_threads_geojson.json"
 LOCAL_THREADS_SOURCE_FILE = BASE_DIR_LOCAL / "data" / "local_threads.json"
 
 
-def fetch_latest_threads(limit: int = 50) -> list[dict]:
-    if DEMO_MODE and LOCAL_THREADS_SOURCE_FILE.exists():
+def _load_local_threads(limit: int) -> list[dict]:
+    if LOCAL_THREADS_SOURCE_FILE.exists():
         with open(LOCAL_THREADS_SOURCE_FILE, "r", encoding="utf-8") as f:
             payload = json.load(f)
         threads = payload if isinstance(payload, list) else payload.get("threads", [])
@@ -61,8 +61,17 @@ def fetch_latest_threads(limit: int = 50) -> list[dict]:
             for t in threads[:limit]
         ]
 
+    return []
+
+
+def fetch_latest_threads(limit: int = 50) -> list[dict]:
+    if DEMO_MODE:
+        threads = _load_local_threads(limit)
+        if threads:
+            return threads
+
     if not database_available():
-        return []
+        return _load_local_threads(limit)
 
     with engine.connect() as conn:
         rows = conn.execute(
@@ -79,7 +88,7 @@ def fetch_latest_threads(limit: int = 50) -> list[dict]:
             {"lim": limit},
         ).fetchall()
 
-    return [
+    db_threads = [
         {
             "id": row[0],
             "title": row[2] or "",
@@ -101,3 +110,4 @@ def fetch_latest_threads(limit: int = 50) -> list[dict]:
         }
         for row in rows
     ]
+    return db_threads if db_threads else _load_local_threads(limit)

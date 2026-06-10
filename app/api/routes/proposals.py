@@ -38,8 +38,6 @@ async def get_proposals(limit: int = 50):
             stored = [p for p in stored if not str(p["cluster_id"]).startswith("demo-")]
 
         clusters = fetch_latest_clusters(limit)
-        if not DEMO_MODE:
-            clusters = [c for c in clusters if not str(c["cluster_id"]).startswith("demo-")]
         clusters_by_id = {c["cluster_id"]: c for c in clusters}
         proposals = []
         seen_cluster_ids: set[str] = set()

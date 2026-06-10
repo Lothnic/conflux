@@ -150,3 +150,21 @@ def test_store_proposal_replaces_existing_cluster_proposal():
             {"cid": "cluster-1"},
         ).scalar_one()
     assert json.loads(stored_json) == ["Survey road"]
+
+
+def test_services_fallback_to_local_sample_data_without_database(monkeypatch):
+    from app.services import cluster_service, thread_service
+
+    monkeypatch.setattr(cluster_service, "DEMO_MODE", False)
+    monkeypatch.setattr(cluster_service, "database_available", lambda: False)
+    clusters = cluster_service.fetch_latest_clusters()
+
+    assert clusters
+    assert clusters[0]["cluster_id"].startswith("demo-")
+
+    monkeypatch.setattr(thread_service, "DEMO_MODE", False)
+    monkeypatch.setattr(thread_service, "database_available", lambda: False)
+    threads = thread_service.fetch_latest_threads()
+
+    assert threads
+    assert any(thread.get("cluster_id") for thread in threads)
