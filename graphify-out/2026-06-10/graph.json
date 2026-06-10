@@ -1164,6 +1164,56 @@
       "norm_label": "shared utility functions used across services."
     },
     {
+      "label": "local_clusters.json",
+      "file_type": "code",
+      "source_file": "data/local_clusters.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "data_local_clusters",
+      "community": 30,
+      "norm_label": "local_clusters.json"
+    },
+    {
+      "label": "local_threads.json",
+      "file_type": "code",
+      "source_file": "data/local_threads.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "data_local_threads",
+      "community": 31,
+      "norm_label": "local_threads.json"
+    },
+    {
+      "label": "local_threads_geojson.json",
+      "file_type": "code",
+      "source_file": "data/local_threads_geojson.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "data_local_threads_geojson",
+      "community": 29,
+      "norm_label": "local_threads_geojson.json"
+    },
+    {
+      "label": "type",
+      "file_type": "code",
+      "source_file": "data/local_threads_geojson.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "data_local_threads_geojson_type",
+      "community": 29,
+      "norm_label": "type"
+    },
+    {
+      "label": "features",
+      "file_type": "code",
+      "source_file": "data/local_threads_geojson.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "data_local_threads_geojson_features",
+      "community": 29,
+      "norm_label": "features"
+    },
+    {
       "label": "db.py",
       "file_type": "code",
       "source_file": "db.py",
@@ -2630,37 +2680,77 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "policy_retriever",
-      "community": 3,
+      "community": 28,
       "norm_label": "policy_retriever.py"
     },
     {
       "label": "PolicyHit",
       "file_type": "code",
       "source_file": "policy_retriever.py",
-      "source_location": "L21",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "policy_retriever_policyhit",
-      "community": 3,
+      "community": 28,
       "norm_label": "policyhit"
     },
     {
       "label": "_load_docs()",
       "file_type": "code",
       "source_file": "policy_retriever.py",
-      "source_location": "L28",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "policy_retriever_load_docs",
-      "community": 3,
+      "community": 28,
       "norm_label": "_load_docs()"
+    },
+    {
+      "label": "_tokens()",
+      "file_type": "code",
+      "source_file": "policy_retriever.py",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "policy_retriever_tokens",
+      "community": 28,
+      "norm_label": "_tokens()"
+    },
+    {
+      "label": "_tf()",
+      "file_type": "code",
+      "source_file": "policy_retriever.py",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "policy_retriever_tf",
+      "community": 28,
+      "norm_label": "_tf()"
+    },
+    {
+      "label": "Counter",
+      "file_type": "code",
+      "source_file": "policy_retriever.py",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "counter",
+      "community": 28,
+      "norm_label": "counter"
+    },
+    {
+      "label": "_cosine()",
+      "file_type": "code",
+      "source_file": "policy_retriever.py",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "policy_retriever_cosine",
+      "community": 28,
+      "norm_label": "_cosine()"
     },
     {
       "label": "retrieve_policy()",
       "file_type": "code",
       "source_file": "policy_retriever.py",
-      "source_location": "L37",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "policy_retriever_retrieve_policy",
-      "community": 3,
+      "community": 28,
       "norm_label": "retrieve_policy()"
     },
     {
@@ -2670,7 +2760,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "policy_retriever_rationale_1",
-      "community": 3,
+      "community": 28,
       "norm_label": "lightweight local policy retrieval for the planning agent.  this is intentionall"
     },
     {
@@ -2767,37 +2857,17 @@
       "label": "AgentState",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L45",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "research_agentstate",
       "community": 3,
       "norm_label": "agentstate"
     },
     {
-      "label": "GraphState",
-      "file_type": "code",
-      "source_file": "research.py",
-      "source_location": "L63",
-      "_origin": "ast",
-      "id": "research_graphstate",
-      "community": 3,
-      "norm_label": "graphstate"
-    },
-    {
-      "label": "TypedDict",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "typeddict",
-      "community": 3,
-      "norm_label": "typeddict"
-    },
-    {
       "label": "_event()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L67",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "research_event",
       "community": 3,
@@ -2807,7 +2877,7 @@
       "label": "Any",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L67",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "any",
       "community": 3,
@@ -2817,7 +2887,7 @@
       "label": "_start_run()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L71",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "research_start_run",
       "community": 3,
@@ -2827,7 +2897,7 @@
       "label": "Engine",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L71",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "research_py_engine",
       "community": 3,
@@ -2837,7 +2907,7 @@
       "label": "_finish_run()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L84",
+      "source_location": "L77",
       "_origin": "ast",
       "id": "research_finish_run",
       "community": 3,
@@ -2847,7 +2917,7 @@
       "label": "_persist_step()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L96",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "research_persist_step",
       "community": 3,
@@ -2857,7 +2927,7 @@
       "label": "_safe_json_loads()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L124",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "research_safe_json_loads",
       "community": 3,
@@ -2867,7 +2937,7 @@
       "label": "_source_markdown()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L134",
+      "source_location": "L127",
       "_origin": "ast",
       "id": "research_source_markdown",
       "community": 3,
@@ -2877,7 +2947,7 @@
       "label": "_citation_url()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L145",
+      "source_location": "L138",
       "_origin": "ast",
       "id": "research_citation_url",
       "community": 3,
@@ -2887,7 +2957,7 @@
       "label": "_source_tool_output()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L156",
+      "source_location": "L149",
       "_origin": "ast",
       "id": "research_source_tool_output",
       "community": 3,
@@ -2897,7 +2967,7 @@
       "label": "_call_llm()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L162",
+      "source_location": "L155",
       "_origin": "ast",
       "id": "research_call_llm",
       "community": 3,
@@ -2907,7 +2977,7 @@
       "label": "load_issue_context()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L188",
+      "source_location": "L181",
       "_origin": "ast",
       "id": "research_load_issue_context",
       "community": 3,
@@ -2917,7 +2987,7 @@
       "label": "_load_local_cluster_fallback()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L278",
+      "source_location": "L271",
       "_origin": "ast",
       "id": "research_load_local_cluster_fallback",
       "community": 3,
@@ -2927,7 +2997,7 @@
       "label": "assess_geolocation()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L297",
+      "source_location": "L290",
       "_origin": "ast",
       "id": "research_assess_geolocation",
       "community": 3,
@@ -2937,7 +3007,7 @@
       "label": "gather_nearby_context()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L322",
+      "source_location": "L315",
       "_origin": "ast",
       "id": "research_gather_nearby_context",
       "community": 3,
@@ -2947,7 +3017,7 @@
       "label": "_query_overpass_pois()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L349",
+      "source_location": "L342",
       "_origin": "ast",
       "id": "research_query_overpass_pois",
       "community": 3,
@@ -2957,7 +3027,7 @@
       "label": "_rough_distance_m()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L390",
+      "source_location": "L383",
       "_origin": "ast",
       "id": "research_rough_distance_m",
       "community": 3,
@@ -2967,7 +3037,7 @@
       "label": "retrieve_policy_context()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L394",
+      "source_location": "L387",
       "_origin": "ast",
       "id": "research_retrieve_policy_context",
       "community": 3,
@@ -2977,7 +3047,7 @@
       "label": "reason_about_intervention()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L423",
+      "source_location": "L416",
       "_origin": "ast",
       "id": "research_reason_about_intervention",
       "community": 3,
@@ -2987,7 +3057,7 @@
       "label": "generate_recommendation()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L448",
+      "source_location": "L441",
       "_origin": "ast",
       "id": "research_generate_recommendation",
       "community": 3,
@@ -2997,7 +3067,7 @@
       "label": "write_agent_report()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L469",
+      "source_location": "L462",
       "_origin": "ast",
       "id": "research_write_agent_report",
       "community": 3,
@@ -3007,37 +3077,27 @@
       "label": "_fallback_agencies()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L533",
+      "source_location": "L526",
       "_origin": "ast",
       "id": "research_fallback_agencies",
       "community": 3,
       "norm_label": "_fallback_agencies()"
     },
     {
-      "label": "_make_graph_node()",
+      "label": "_run_step()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L547",
+      "source_location": "L540",
       "_origin": "ast",
-      "id": "research_make_graph_node",
+      "id": "research_run_step",
       "community": 3,
-      "norm_label": "_make_graph_node()"
-    },
-    {
-      "label": "_build_agent_graph()",
-      "file_type": "code",
-      "source_file": "research.py",
-      "source_location": "L577",
-      "_origin": "ast",
-      "id": "research_build_agent_graph",
-      "community": 3,
-      "norm_label": "_build_agent_graph()"
+      "norm_label": "_run_step()"
     },
     {
       "label": "run_research()",
       "file_type": "code",
       "source_file": "research.py",
-      "source_location": "L600",
+      "source_location": "L567",
       "_origin": "ast",
       "id": "research_run_research",
       "community": 3,
@@ -3057,9 +3117,9 @@
       "label": "Run the agentic research workflow and yield SSE-compatible step events.",
       "file_type": "rationale",
       "source_file": "research.py",
-      "source_location": "L601",
+      "source_location": "L568",
       "_origin": "ast",
-      "id": "research_rationale_601",
+      "id": "research_rationale_568",
       "community": 3,
       "norm_label": "run the agentic research workflow and yield sse-compatible step events."
     },
@@ -3100,7 +3160,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "tests_test_core_test_policy_retriever_returns_relevant_docs",
-      "community": 3,
+      "community": 28,
       "norm_label": "test_policy_retriever_returns_relevant_docs()"
     },
     {
@@ -3634,6 +3694,16 @@
       "norm_label": "quick start"
     },
     {
+      "label": "Deployment",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L44",
+      "_origin": "ast",
+      "id": "readme_deployment",
+      "community": 9,
+      "norm_label": "deployment"
+    },
+    {
       "label": "ARCHITECTURE_AND_DATA_DESIGN.md",
       "file_type": "document",
       "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
@@ -3774,10 +3844,20 @@
       "norm_label": "fastapi backend"
     },
     {
+      "label": "FastAPI Backend on Render",
+      "file_type": "document",
+      "source_file": "docs/deployment.md",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "docs_deployment_fastapi_backend_on_render",
+      "community": 17,
+      "norm_label": "fastapi backend on render"
+    },
+    {
       "label": "Worker",
       "file_type": "document",
       "source_file": "docs/deployment.md",
-      "source_location": "L52",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "docs_deployment_worker",
       "community": 17,
@@ -3787,7 +3867,7 @@
       "label": "Vercel Services Option",
       "file_type": "document",
       "source_file": "docs/deployment.md",
-      "source_location": "L62",
+      "source_location": "L101",
       "_origin": "ast",
       "id": "docs_deployment_vercel_services_option",
       "community": 17,
@@ -4039,9 +4119,9 @@
       "source_file": ".opencode/opencode.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "opencode_opencode",
-      "target": "opencode_opencode_plugin",
-      "confidence_score": 1.0
+      "target": "opencode_opencode_plugin"
     },
     {
       "relation": "contains",
@@ -4049,9 +4129,9 @@
       "source_file": ".opencode/opencode.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "opencode_opencode",
-      "target": "opencode_opencode_schema",
-      "confidence_score": 1.0
+      "target": "opencode_opencode_schema"
     },
     {
       "relation": "contains",
@@ -4059,9 +4139,9 @@
       "source_file": ".opencode/package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "opencode_package",
-      "target": "opencode_package_dependencies",
-      "confidence_score": 1.0
+      "target": "opencode_package_dependencies"
     },
     {
       "relation": "contains",
@@ -4069,9 +4149,9 @@
       "source_file": ".opencode/package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "opencode_package_dependencies",
-      "target": "opencode_package_dependencies_opencode_ai_plugin",
-      "confidence_score": 1.0
+      "target": "opencode_package_dependencies_opencode_ai_plugin"
     },
     {
       "relation": "imports_from",
@@ -4080,9 +4160,9 @@
       "source_file": ".opencode/plugins/graphify.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plugins_graphify",
-      "target": "path",
-      "confidence_score": 1.0
+      "target": "path"
     },
     {
       "relation": "contains",
@@ -4090,9 +4170,9 @@
       "source_file": ".opencode/plugins/graphify.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plugins_graphify",
-      "target": "plugins_graphify_graphifyplugin",
-      "confidence_score": 1.0
+      "target": "plugins_graphify_graphifyplugin"
     },
     {
       "relation": "re_exports",
@@ -4101,9 +4181,9 @@
       "source_file": "app/__init__.py",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_init",
-      "target": "core_config",
-      "confidence_score": 1.0
+      "target": "core_config"
     },
     {
       "relation": "rationale_for",
@@ -4111,9 +4191,9 @@
       "source_file": "app/__init__.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_init_rationale_1",
-      "target": "app_init",
-      "confidence_score": 1.0
+      "target": "app_init"
     },
     {
       "relation": "imports",
@@ -4122,9 +4202,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "imports",
@@ -4133,9 +4213,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters",
-      "target": "core_database_init_db_sync",
-      "confidence_score": 1.0
+      "target": "core_database_init_db_sync"
     },
     {
       "relation": "contains",
@@ -4143,9 +4223,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters",
-      "target": "routes_clusters_get_clusters",
-      "confidence_score": 1.0
+      "target": "routes_clusters_get_clusters"
     },
     {
       "relation": "contains",
@@ -4153,9 +4233,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters",
-      "target": "routes_clusters_get_clusters_geojson",
-      "confidence_score": 1.0
+      "target": "routes_clusters_get_clusters_geojson"
     },
     {
       "relation": "imports",
@@ -4164,9 +4244,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters",
-      "target": "services_cluster_service_fetch_latest_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_latest_clusters"
     },
     {
       "relation": "rationale_for",
@@ -4174,9 +4254,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters_rationale_1",
-      "target": "routes_clusters",
-      "confidence_score": 1.0
+      "target": "routes_clusters"
     },
     {
       "relation": "calls",
@@ -4206,9 +4286,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters_rationale_15",
-      "target": "routes_clusters_get_clusters",
-      "confidence_score": 1.0
+      "target": "routes_clusters_get_clusters"
     },
     {
       "relation": "calls",
@@ -4238,9 +4318,9 @@
       "source_file": "app/api/routes/clusters.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_clusters_rationale_26",
-      "target": "routes_clusters_get_clusters_geojson",
-      "confidence_score": 1.0
+      "target": "routes_clusters_get_clusters_geojson"
     },
     {
       "relation": "imports",
@@ -4249,9 +4329,9 @@
       "source_file": "app/api/routes/health.py",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_health",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "contains",
@@ -4259,9 +4339,9 @@
       "source_file": "app/api/routes/health.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_health",
-      "target": "routes_health_health_check",
-      "confidence_score": 1.0
+      "target": "routes_health_health_check"
     },
     {
       "relation": "rationale_for",
@@ -4269,9 +4349,9 @@
       "source_file": "app/api/routes/health.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_health_rationale_1",
-      "target": "routes_health",
-      "confidence_score": 1.0
+      "target": "routes_health"
     },
     {
       "relation": "calls",
@@ -4291,9 +4371,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest",
-      "target": "core_database_init_db_sync",
-      "confidence_score": 1.0
+      "target": "core_database_init_db_sync"
     },
     {
       "relation": "imports",
@@ -4302,9 +4382,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest",
-      "target": "core_models_complainlist",
-      "confidence_score": 1.0
+      "target": "core_models_complainlist"
     },
     {
       "relation": "contains",
@@ -4312,9 +4392,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest",
-      "target": "routes_ingest_cluster_complaints",
-      "confidence_score": 1.0
+      "target": "routes_ingest_cluster_complaints"
     },
     {
       "relation": "contains",
@@ -4322,9 +4402,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest",
-      "target": "routes_ingest_ingest_complaints",
-      "confidence_score": 1.0
+      "target": "routes_ingest_ingest_complaints"
     },
     {
       "relation": "imports",
@@ -4333,9 +4413,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest",
-      "target": "worker_clustering_cluster_threads",
-      "confidence_score": 1.0
+      "target": "worker_clustering_cluster_threads"
     },
     {
       "relation": "rationale_for",
@@ -4343,9 +4423,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest_rationale_1",
-      "target": "routes_ingest",
-      "confidence_score": 1.0
+      "target": "routes_ingest"
     },
     {
       "relation": "references",
@@ -4354,9 +4434,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest_ingest_complaints",
-      "target": "complainlist",
-      "confidence_score": 1.0
+      "target": "complainlist"
     },
     {
       "relation": "calls",
@@ -4375,9 +4455,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest_rationale_21",
-      "target": "routes_ingest_ingest_complaints",
-      "confidence_score": 1.0
+      "target": "routes_ingest_ingest_complaints"
     },
     {
       "relation": "uses",
@@ -4385,9 +4465,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L14",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "complainlist",
-      "target": "core_models_complainlist",
-      "confidence_score": 0.5
+      "target": "core_models_complainlist"
     },
     {
       "relation": "calls",
@@ -4417,9 +4497,9 @@
       "source_file": "app/api/routes/ingest.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ingest_rationale_66",
-      "target": "routes_ingest_cluster_complaints",
-      "confidence_score": 1.0
+      "target": "routes_ingest_cluster_complaints"
     },
     {
       "relation": "imports",
@@ -4428,9 +4508,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "imports",
@@ -4439,9 +4519,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "core_database_init_db_sync",
-      "confidence_score": 1.0
+      "target": "core_database_init_db_sync"
     },
     {
       "relation": "imports",
@@ -4450,9 +4530,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "proposals_fetch_stored_proposals",
-      "confidence_score": 1.0
+      "target": "proposals_fetch_stored_proposals"
     },
     {
       "relation": "imports",
@@ -4461,9 +4541,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "proposals_generate_proposal_for_cluster",
-      "confidence_score": 1.0
+      "target": "proposals_generate_proposal_for_cluster"
     },
     {
       "relation": "imports",
@@ -4472,9 +4552,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "proposals_store_proposal",
-      "confidence_score": 1.0
+      "target": "proposals_store_proposal"
     },
     {
       "relation": "contains",
@@ -4482,9 +4562,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "routes_proposals_generate_proposal_for_cluster_endpoint",
-      "confidence_score": 1.0
+      "target": "routes_proposals_generate_proposal_for_cluster_endpoint"
     },
     {
       "relation": "contains",
@@ -4492,9 +4572,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "routes_proposals_get_proposals",
-      "confidence_score": 1.0
+      "target": "routes_proposals_get_proposals"
     },
     {
       "relation": "imports",
@@ -4503,9 +4583,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_cluster_service_fetch_latest_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_latest_clusters"
     },
     {
       "relation": "imports",
@@ -4514,9 +4594,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_cluster_service_fetch_sources_for_cluster",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_sources_for_cluster"
     },
     {
       "relation": "imports",
@@ -4525,9 +4605,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_proposal_heuristics_impact_rationale",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_impact_rationale"
     },
     {
       "relation": "imports",
@@ -4536,9 +4616,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_proposal_heuristics_infer_budget",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_budget"
     },
     {
       "relation": "imports",
@@ -4547,9 +4627,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_proposal_heuristics_infer_issue_type",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_issue_type"
     },
     {
       "relation": "imports",
@@ -4558,9 +4638,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_proposal_heuristics_infer_urgency",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_urgency"
     },
     {
       "relation": "imports",
@@ -4569,9 +4649,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_proposal_heuristics_proposal_communication_plan",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_proposal_communication_plan"
     },
     {
       "relation": "imports",
@@ -4580,9 +4660,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_proposal_heuristics_proposal_recommendations",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_proposal_recommendations"
     },
     {
       "relation": "imports",
@@ -4591,9 +4671,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_proposal_heuristics_responsible_agencies",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_responsible_agencies"
     },
     {
       "relation": "imports",
@@ -4602,9 +4682,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals",
-      "target": "services_thread_service_fetch_latest_threads",
-      "confidence_score": 1.0
+      "target": "services_thread_service_fetch_latest_threads"
     },
     {
       "relation": "rationale_for",
@@ -4612,9 +4692,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals_rationale_1",
-      "target": "routes_proposals",
-      "confidence_score": 1.0
+      "target": "routes_proposals"
     },
     {
       "relation": "calls",
@@ -4743,9 +4823,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals_rationale_30",
-      "target": "routes_proposals_get_proposals",
-      "confidence_score": 1.0
+      "target": "routes_proposals_get_proposals"
     },
     {
       "relation": "calls",
@@ -4863,9 +4943,9 @@
       "source_file": "app/api/routes/proposals.py",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_proposals_rationale_116",
-      "target": "routes_proposals_generate_proposal_for_cluster_endpoint",
-      "confidence_score": 1.0
+      "target": "routes_proposals_generate_proposal_for_cluster_endpoint"
     },
     {
       "relation": "imports",
@@ -4874,9 +4954,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research",
-      "target": "core_database_init_db_sync",
-      "confidence_score": 1.0
+      "target": "core_database_init_db_sync"
     },
     {
       "relation": "imports",
@@ -4885,9 +4965,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research",
-      "target": "research_run_research",
-      "confidence_score": 1.0
+      "target": "research_run_research"
     },
     {
       "relation": "contains",
@@ -4895,9 +4975,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research",
-      "target": "routes_research_download_research_report",
-      "confidence_score": 1.0
+      "target": "routes_research_download_research_report"
     },
     {
       "relation": "contains",
@@ -4905,9 +4985,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research",
-      "target": "routes_research_get_agent_runs",
-      "confidence_score": 1.0
+      "target": "routes_research_get_agent_runs"
     },
     {
       "relation": "contains",
@@ -4915,9 +4995,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research",
-      "target": "routes_research_research_cluster_stream",
-      "confidence_score": 1.0
+      "target": "routes_research_research_cluster_stream"
     },
     {
       "relation": "rationale_for",
@@ -4925,9 +5005,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research_rationale_1",
-      "target": "routes_research",
-      "confidence_score": 1.0
+      "target": "routes_research"
     },
     {
       "relation": "rationale_for",
@@ -4935,9 +5015,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research_rationale_21",
-      "target": "routes_research_research_cluster_stream",
-      "confidence_score": 1.0
+      "target": "routes_research_research_cluster_stream"
     },
     {
       "relation": "calls",
@@ -4967,9 +5047,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research_rationale_36",
-      "target": "routes_research_get_agent_runs",
-      "confidence_score": 1.0
+      "target": "routes_research_get_agent_runs"
     },
     {
       "relation": "calls",
@@ -4999,9 +5079,9 @@
       "source_file": "app/api/routes/research.py",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_research_rationale_90",
-      "target": "routes_research_download_research_report",
-      "confidence_score": 1.0
+      "target": "routes_research_download_research_report"
     },
     {
       "relation": "imports",
@@ -5010,9 +5090,9 @@
       "source_file": "app/api/routes/threads.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_threads",
-      "target": "core_database_init_db_sync",
-      "confidence_score": 1.0
+      "target": "core_database_init_db_sync"
     },
     {
       "relation": "contains",
@@ -5020,9 +5100,9 @@
       "source_file": "app/api/routes/threads.py",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_threads",
-      "target": "routes_threads_get_threads",
-      "confidence_score": 1.0
+      "target": "routes_threads_get_threads"
     },
     {
       "relation": "contains",
@@ -5030,9 +5110,9 @@
       "source_file": "app/api/routes/threads.py",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_threads",
-      "target": "routes_threads_get_threads_geojson",
-      "confidence_score": 1.0
+      "target": "routes_threads_get_threads_geojson"
     },
     {
       "relation": "imports",
@@ -5041,9 +5121,9 @@
       "source_file": "app/api/routes/threads.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_threads",
-      "target": "services_thread_service_fetch_latest_threads",
-      "confidence_score": 1.0
+      "target": "services_thread_service_fetch_latest_threads"
     },
     {
       "relation": "rationale_for",
@@ -5051,9 +5131,9 @@
       "source_file": "app/api/routes/threads.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_threads_rationale_1",
-      "target": "routes_threads",
-      "confidence_score": 1.0
+      "target": "routes_threads"
     },
     {
       "relation": "calls",
@@ -5083,9 +5163,9 @@
       "source_file": "app/api/routes/threads.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_threads_rationale_20",
-      "target": "routes_threads_get_threads",
-      "confidence_score": 1.0
+      "target": "routes_threads_get_threads"
     },
     {
       "relation": "calls",
@@ -5115,9 +5195,9 @@
       "source_file": "app/api/routes/threads.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_threads_rationale_35",
-      "target": "routes_threads_get_threads_geojson",
-      "confidence_score": 1.0
+      "target": "routes_threads_get_threads_geojson"
     },
     {
       "relation": "contains",
@@ -5125,9 +5205,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config",
-      "target": "core_config_get_settings",
-      "confidence_score": 1.0
+      "target": "core_config_get_settings"
     },
     {
       "relation": "contains",
@@ -5135,9 +5215,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config",
-      "target": "core_config_settings",
-      "confidence_score": 1.0
+      "target": "core_config_settings"
     },
     {
       "relation": "rationale_for",
@@ -5145,9 +5225,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_rationale_1",
-      "target": "core_config",
-      "confidence_score": 1.0
+      "target": "core_config"
     },
     {
       "relation": "references",
@@ -5156,9 +5236,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_get_settings",
-      "target": "core_config_settings",
-      "confidence_score": 1.0
+      "target": "core_config_settings"
     },
     {
       "relation": "inherits",
@@ -5166,9 +5246,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings",
-      "target": "basesettings",
-      "confidence_score": 1.0
+      "target": "basesettings"
     },
     {
       "relation": "method",
@@ -5176,9 +5256,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings",
-      "target": "core_config_settings_cors_origins",
-      "confidence_score": 1.0
+      "target": "core_config_settings_cors_origins"
     },
     {
       "relation": "method",
@@ -5186,9 +5266,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings",
-      "target": "core_config_settings_is_sqlite",
-      "confidence_score": 1.0
+      "target": "core_config_settings_is_sqlite"
     },
     {
       "relation": "method",
@@ -5196,9 +5276,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings",
-      "target": "core_config_settings_local_clusters_file",
-      "confidence_score": 1.0
+      "target": "core_config_settings_local_clusters_file"
     },
     {
       "relation": "method",
@@ -5206,9 +5286,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings",
-      "target": "core_config_settings_local_threads_file",
-      "confidence_score": 1.0
+      "target": "core_config_settings_local_threads_file"
     },
     {
       "relation": "method",
@@ -5216,9 +5296,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings",
-      "target": "core_config_settings_local_threads_source_file",
-      "confidence_score": 1.0
+      "target": "core_config_settings_local_threads_source_file"
     },
     {
       "relation": "references",
@@ -5227,9 +5307,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings_local_clusters_file",
-      "target": "path",
-      "confidence_score": 1.0
+      "target": "path"
     },
     {
       "relation": "references",
@@ -5238,9 +5318,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings_local_threads_file",
-      "target": "path",
-      "confidence_score": 1.0
+      "target": "path"
     },
     {
       "relation": "references",
@@ -5249,9 +5329,9 @@
       "source_file": "app/core/config.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings_local_threads_source_file",
-      "target": "path",
-      "confidence_score": 1.0
+      "target": "path"
     },
     {
       "relation": "calls",
@@ -5270,9 +5350,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_create_async_engine_instance",
-      "confidence_score": 1.0
+      "target": "core_database_create_async_engine_instance"
     },
     {
       "relation": "contains",
@@ -5280,9 +5360,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_create_sync_engine",
-      "confidence_score": 1.0
+      "target": "core_database_create_sync_engine"
     },
     {
       "relation": "contains",
@@ -5290,9 +5370,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L312",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_create_tables",
-      "confidence_score": 1.0
+      "target": "core_database_create_tables"
     },
     {
       "relation": "contains",
@@ -5300,9 +5380,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L299",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "contains",
@@ -5310,9 +5390,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L284",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_ensure_columns",
-      "confidence_score": 1.0
+      "target": "core_database_ensure_columns"
     },
     {
       "relation": "contains",
@@ -5320,9 +5400,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L273",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_existing_columns",
-      "confidence_score": 1.0
+      "target": "core_database_existing_columns"
     },
     {
       "relation": "contains",
@@ -5330,9 +5410,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_get_async_session",
-      "confidence_score": 1.0
+      "target": "core_database_get_async_session"
     },
     {
       "relation": "contains",
@@ -5340,9 +5420,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_get_sync_session",
-      "confidence_score": 1.0
+      "target": "core_database_get_sync_session"
     },
     {
       "relation": "contains",
@@ -5350,9 +5430,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L336",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_init_db",
-      "confidence_score": 1.0
+      "target": "core_database_init_db"
     },
     {
       "relation": "contains",
@@ -5360,9 +5440,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L324",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_init_db_sync",
-      "confidence_score": 1.0
+      "target": "core_database_init_db_sync"
     },
     {
       "relation": "contains",
@@ -5370,9 +5450,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L351",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database",
-      "target": "core_database_lifespan",
-      "confidence_score": 1.0
+      "target": "core_database_lifespan"
     },
     {
       "relation": "rationale_for",
@@ -5380,9 +5460,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_1",
-      "target": "core_database",
-      "confidence_score": 1.0
+      "target": "core_database"
     },
     {
       "relation": "references",
@@ -5391,9 +5471,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_create_sync_engine",
-      "target": "app_core_database_py_engine",
-      "confidence_score": 1.0
+      "target": "app_core_database_py_engine"
     },
     {
       "relation": "references",
@@ -5402,9 +5482,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_create_async_engine_instance",
-      "target": "asyncengine",
-      "confidence_score": 1.0
+      "target": "asyncengine"
     },
     {
       "relation": "references",
@@ -5413,9 +5493,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_get_async_session",
-      "target": "asyncsession",
-      "confidence_score": 1.0
+      "target": "asyncsession"
     },
     {
       "relation": "rationale_for",
@@ -5423,9 +5503,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_63",
-      "target": "core_database_get_async_session",
-      "confidence_score": 1.0
+      "target": "core_database_get_async_session"
     },
     {
       "relation": "rationale_for",
@@ -5433,9 +5513,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_72",
-      "target": "core_database_get_sync_session",
-      "confidence_score": 1.0
+      "target": "core_database_get_sync_session"
     },
     {
       "relation": "calls",
@@ -5444,9 +5524,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L288",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_ensure_columns",
-      "target": "core_database_existing_columns",
-      "confidence_score": 1.0
+      "target": "core_database_existing_columns"
     },
     {
       "relation": "references",
@@ -5455,9 +5535,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L273",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_existing_columns",
-      "target": "connection",
-      "confidence_score": 1.0
+      "target": "connection"
     },
     {
       "relation": "imports",
@@ -5466,9 +5546,9 @@
       "source_file": "db.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "db",
-      "target": "core_database_existing_columns",
-      "confidence_score": 1.0
+      "target": "core_database_existing_columns"
     },
     {
       "relation": "calls",
@@ -5477,9 +5557,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L321",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_create_tables",
-      "target": "core_database_ensure_columns",
-      "confidence_score": 1.0
+      "target": "core_database_ensure_columns"
     },
     {
       "relation": "calls",
@@ -5488,9 +5568,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L347",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_init_db",
-      "target": "core_database_ensure_columns",
-      "confidence_score": 1.0
+      "target": "core_database_ensure_columns"
     },
     {
       "relation": "rationale_for",
@@ -5498,9 +5578,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L285",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_285",
-      "target": "core_database_ensure_columns",
-      "confidence_score": 1.0
+      "target": "core_database_ensure_columns"
     },
     {
       "relation": "imports",
@@ -5509,9 +5589,9 @@
       "source_file": "db.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "db",
-      "target": "core_database_ensure_columns",
-      "confidence_score": 1.0
+      "target": "core_database_ensure_columns"
     },
     {
       "relation": "calls",
@@ -5520,9 +5600,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L328",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_init_db_sync",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "imports",
@@ -5531,9 +5611,9 @@
       "source_file": "db.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "db",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "imports",
@@ -5542,9 +5622,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "calls",
@@ -5553,9 +5633,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service_fetch_latest_clusters",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "imports",
@@ -5564,9 +5644,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "calls",
@@ -5575,9 +5655,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_fetch_latest_threads",
-      "target": "core_database_database_available",
-      "confidence_score": 1.0
+      "target": "core_database_database_available"
     },
     {
       "relation": "calls",
@@ -5586,9 +5666,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L330",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_init_db_sync",
-      "target": "core_database_create_tables",
-      "confidence_score": 1.0
+      "target": "core_database_create_tables"
     },
     {
       "relation": "rationale_for",
@@ -5596,9 +5676,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L313",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_313",
-      "target": "core_database_create_tables",
-      "confidence_score": 1.0
+      "target": "core_database_create_tables"
     },
     {
       "relation": "imports",
@@ -5607,9 +5687,9 @@
       "source_file": "db.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "db",
-      "target": "core_database_create_tables",
-      "confidence_score": 1.0
+      "target": "core_database_create_tables"
     },
     {
       "relation": "rationale_for",
@@ -5617,9 +5697,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L325",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_325",
-      "target": "core_database_init_db_sync",
-      "confidence_score": 1.0
+      "target": "core_database_init_db_sync"
     },
     {
       "relation": "calls",
@@ -5628,9 +5708,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L353",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_lifespan",
-      "target": "core_database_init_db",
-      "confidence_score": 1.0
+      "target": "core_database_init_db"
     },
     {
       "relation": "rationale_for",
@@ -5638,9 +5718,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L337",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_337",
-      "target": "core_database_init_db",
-      "confidence_score": 1.0
+      "target": "core_database_init_db"
     },
     {
       "relation": "rationale_for",
@@ -5648,9 +5728,9 @@
       "source_file": "app/core/database.py",
       "source_location": "L352",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_database_rationale_352",
-      "target": "core_database_lifespan",
-      "confidence_score": 1.0
+      "target": "core_database_lifespan"
     },
     {
       "relation": "imports",
@@ -5659,9 +5739,9 @@
       "source_file": "main.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "main",
-      "target": "core_database_lifespan",
-      "confidence_score": 1.0
+      "target": "core_database_lifespan"
     },
     {
       "relation": "contains",
@@ -5669,9 +5749,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models",
-      "target": "core_models_clusterproposal",
-      "confidence_score": 1.0
+      "target": "core_models_clusterproposal"
     },
     {
       "relation": "contains",
@@ -5679,9 +5759,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models",
-      "target": "core_models_complainlist",
-      "confidence_score": 1.0
+      "target": "core_models_complainlist"
     },
     {
       "relation": "contains",
@@ -5689,9 +5769,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models",
-      "target": "core_models_complaint",
-      "confidence_score": 1.0
+      "target": "core_models_complaint"
     },
     {
       "relation": "contains",
@@ -5699,9 +5779,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models",
-      "target": "core_models_proposalresponse",
-      "confidence_score": 1.0
+      "target": "core_models_proposalresponse"
     },
     {
       "relation": "rationale_for",
@@ -5709,9 +5789,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models_rationale_1",
-      "target": "core_models",
-      "confidence_score": 1.0
+      "target": "core_models"
     },
     {
       "relation": "inherits",
@@ -5719,9 +5799,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models_complaint",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -5729,9 +5809,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models_clusterproposal",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -5739,9 +5819,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models_complainlist",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -5749,9 +5829,9 @@
       "source_file": "app/core/models.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_models_proposalresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "contains",
@@ -5759,9 +5839,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service",
-      "target": "services_cluster_service_fetch_latest_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_latest_clusters"
     },
     {
       "relation": "contains",
@@ -5769,9 +5849,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service",
-      "target": "services_cluster_service_fetch_sources_for_cluster",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_sources_for_cluster"
     },
     {
       "relation": "imports",
@@ -5780,9 +5860,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service",
-      "target": "services_utils_source_url",
-      "confidence_score": 1.0
+      "target": "services_utils_source_url"
     },
     {
       "relation": "rationale_for",
@@ -5790,9 +5870,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service_rationale_1",
-      "target": "services_cluster_service",
-      "confidence_score": 1.0
+      "target": "services_cluster_service"
     },
     {
       "relation": "imports",
@@ -5801,9 +5881,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service",
-      "target": "services_cluster_service_fetch_latest_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_latest_clusters"
     },
     {
       "relation": "calls",
@@ -5812,9 +5892,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_fetch_latest_threads",
-      "target": "services_cluster_service_fetch_latest_clusters",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_latest_clusters"
     },
     {
       "relation": "calls",
@@ -5823,9 +5903,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service_fetch_sources_for_cluster",
-      "target": "services_utils_source_url",
-      "confidence_score": 1.0
+      "target": "services_utils_source_url"
     },
     {
       "relation": "rationale_for",
@@ -5833,9 +5913,9 @@
       "source_file": "app/services/cluster_service.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_cluster_service_rationale_66",
-      "target": "services_cluster_service_fetch_sources_for_cluster",
-      "confidence_score": 1.0
+      "target": "services_cluster_service_fetch_sources_for_cluster"
     },
     {
       "relation": "contains",
@@ -5843,9 +5923,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics",
-      "target": "services_proposal_heuristics_impact_rationale",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_impact_rationale"
     },
     {
       "relation": "contains",
@@ -5853,9 +5933,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics",
-      "target": "services_proposal_heuristics_infer_budget",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_budget"
     },
     {
       "relation": "contains",
@@ -5863,9 +5943,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics",
-      "target": "services_proposal_heuristics_infer_issue_type",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_issue_type"
     },
     {
       "relation": "contains",
@@ -5873,9 +5953,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics",
-      "target": "services_proposal_heuristics_infer_urgency",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_urgency"
     },
     {
       "relation": "contains",
@@ -5883,9 +5963,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L117",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics",
-      "target": "services_proposal_heuristics_proposal_communication_plan",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_proposal_communication_plan"
     },
     {
       "relation": "contains",
@@ -5893,9 +5973,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics",
-      "target": "services_proposal_heuristics_proposal_recommendations",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_proposal_recommendations"
     },
     {
       "relation": "contains",
@@ -5903,9 +5983,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L110",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics",
-      "target": "services_proposal_heuristics_responsible_agencies",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_responsible_agencies"
     },
     {
       "relation": "rationale_for",
@@ -5913,9 +5993,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics_rationale_1",
-      "target": "services_proposal_heuristics",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics"
     },
     {
       "relation": "imports",
@@ -5924,9 +6004,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service",
-      "target": "services_proposal_heuristics_infer_issue_type",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_issue_type"
     },
     {
       "relation": "calls",
@@ -5935,9 +6015,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_fetch_latest_threads",
-      "target": "services_proposal_heuristics_infer_issue_type",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_issue_type"
     },
     {
       "relation": "imports",
@@ -5946,9 +6026,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_proposal_heuristics_infer_issue_type",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_issue_type"
     },
     {
       "relation": "calls",
@@ -5957,9 +6037,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core_test_issue_heuristics_cover_expected_categories",
-      "target": "services_proposal_heuristics_infer_issue_type",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_issue_type"
     },
     {
       "relation": "calls",
@@ -5968,9 +6048,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L132",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics_impact_rationale",
-      "target": "services_proposal_heuristics_infer_urgency",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_urgency"
     },
     {
       "relation": "imports",
@@ -5979,9 +6059,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_proposal_heuristics_infer_urgency",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_urgency"
     },
     {
       "relation": "calls",
@@ -5990,9 +6070,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core_test_priority_and_budget_thresholds",
-      "target": "services_proposal_heuristics_infer_urgency",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_urgency"
     },
     {
       "relation": "imports",
@@ -6001,9 +6081,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_proposal_heuristics_infer_budget",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_budget"
     },
     {
       "relation": "calls",
@@ -6012,9 +6092,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core_test_priority_and_budget_thresholds",
-      "target": "services_proposal_heuristics_infer_budget",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_infer_budget"
     },
     {
       "relation": "calls",
@@ -6023,9 +6103,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics_proposal_communication_plan",
-      "target": "services_proposal_heuristics_responsible_agencies",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_responsible_agencies"
     },
     {
       "relation": "imports",
@@ -6034,9 +6114,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_proposal_heuristics_responsible_agencies",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_responsible_agencies"
     },
     {
       "relation": "calls",
@@ -6045,9 +6125,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core_test_new_structured_output_heuristics",
-      "target": "services_proposal_heuristics_responsible_agencies",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_responsible_agencies"
     },
     {
       "relation": "rationale_for",
@@ -6055,9 +6135,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L118",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics_rationale_118",
-      "target": "services_proposal_heuristics_proposal_communication_plan",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_proposal_communication_plan"
     },
     {
       "relation": "imports",
@@ -6066,9 +6146,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_proposal_heuristics_proposal_communication_plan",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_proposal_communication_plan"
     },
     {
       "relation": "calls",
@@ -6077,9 +6157,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core_test_new_structured_output_heuristics",
-      "target": "services_proposal_heuristics_proposal_communication_plan",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_proposal_communication_plan"
     },
     {
       "relation": "rationale_for",
@@ -6087,9 +6167,9 @@
       "source_file": "app/services/proposal_heuristics.py",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_proposal_heuristics_rationale_130",
-      "target": "services_proposal_heuristics_impact_rationale",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_impact_rationale"
     },
     {
       "relation": "imports",
@@ -6098,9 +6178,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "services_proposal_heuristics_impact_rationale",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_impact_rationale"
     },
     {
       "relation": "calls",
@@ -6109,9 +6189,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core_test_new_structured_output_heuristics",
-      "target": "services_proposal_heuristics_impact_rationale",
-      "confidence_score": 1.0
+      "target": "services_proposal_heuristics_impact_rationale"
     },
     {
       "relation": "contains",
@@ -6119,9 +6199,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service",
-      "target": "services_thread_service_fetch_latest_threads",
-      "confidence_score": 1.0
+      "target": "services_thread_service_fetch_latest_threads"
     },
     {
       "relation": "imports",
@@ -6130,9 +6210,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service",
-      "target": "services_utils_source_url",
-      "confidence_score": 1.0
+      "target": "services_utils_source_url"
     },
     {
       "relation": "rationale_for",
@@ -6140,9 +6220,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_rationale_1",
-      "target": "services_thread_service",
-      "confidence_score": 1.0
+      "target": "services_thread_service"
     },
     {
       "relation": "calls",
@@ -6151,9 +6231,9 @@
       "source_file": "app/services/thread_service.py",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_thread_service_fetch_latest_threads",
-      "target": "services_utils_source_url",
-      "confidence_score": 1.0
+      "target": "services_utils_source_url"
     },
     {
       "relation": "contains",
@@ -6161,9 +6241,9 @@
       "source_file": "app/services/utils.py",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_utils",
-      "target": "services_utils_source_url",
-      "confidence_score": 1.0
+      "target": "services_utils_source_url"
     },
     {
       "relation": "rationale_for",
@@ -6171,8 +6251,28 @@
       "source_file": "app/services/utils.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_utils_rationale_1",
-      "target": "services_utils",
+      "target": "services_utils"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "data/local_threads_geojson.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "data_local_threads_geojson",
+      "target": "data_local_threads_geojson_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "data/local_threads_geojson.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "data_local_threads_geojson",
+      "target": "data_local_threads_geojson_type",
       "confidence_score": 1.0
     },
     {
@@ -6214,9 +6314,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "db",
-      "confidence_score": 1.0
+      "target": "db"
     },
     {
       "relation": "imports",
@@ -8405,9 +8505,9 @@
       "source_file": "frontend/vercel.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_vercel",
-      "target": "frontend_vercel_buildcommand",
-      "confidence_score": 1.0
+      "target": "frontend_vercel_buildcommand"
     },
     {
       "relation": "contains",
@@ -8415,9 +8515,9 @@
       "source_file": "frontend/vercel.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_vercel",
-      "target": "frontend_vercel_framework",
-      "confidence_score": 1.0
+      "target": "frontend_vercel_framework"
     },
     {
       "relation": "contains",
@@ -8425,9 +8525,9 @@
       "source_file": "frontend/vercel.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_vercel",
-      "target": "frontend_vercel_headers",
-      "confidence_score": 1.0
+      "target": "frontend_vercel_headers"
     },
     {
       "relation": "contains",
@@ -8435,9 +8535,9 @@
       "source_file": "frontend/vercel.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_vercel",
-      "target": "frontend_vercel_installcommand",
-      "confidence_score": 1.0
+      "target": "frontend_vercel_installcommand"
     },
     {
       "relation": "contains",
@@ -8445,9 +8545,9 @@
       "source_file": "frontend/vercel.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_vercel",
-      "target": "frontend_vercel_schema",
-      "confidence_score": 1.0
+      "target": "frontend_vercel_schema"
     },
     {
       "relation": "imports",
@@ -8518,6 +8618,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "policy_retriever.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "policy_retriever",
+      "target": "policy_retriever_cosine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
       "source_location": "L28",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8543,6 +8653,26 @@
       "confidence_score": 1.0,
       "source": "policy_retriever",
       "target": "policy_retriever_retrieve_policy"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "policy_retriever",
+      "target": "policy_retriever_tf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "policy_retriever",
+      "target": "policy_retriever_tokens",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -8597,6 +8727,72 @@
       "confidence_score": 1.0,
       "source": "policy_retriever_retrieve_policy",
       "target": "policy_retriever_load_docs"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "policy_retriever_retrieve_policy",
+      "target": "policy_retriever_tokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "policy_retriever_retrieve_policy",
+      "target": "policy_retriever_tf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "policy_retriever_tf",
+      "target": "counter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "policy_retriever_cosine",
+      "target": "counter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "worker/clustering.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "worker_clustering_extract_keywords",
+      "target": "counter"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "policy_retriever.py",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "policy_retriever_retrieve_policy",
+      "target": "policy_retriever_cosine",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8869,16 +9065,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
-      "source_location": "L577",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research",
-      "target": "research_build_agent_graph"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
       "source_location": "L162",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8949,16 +9135,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
-      "source_location": "L63",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research",
-      "target": "research_graphstate"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
       "source_location": "L188",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8974,16 +9150,6 @@
       "confidence_score": 1.0,
       "source": "research",
       "target": "research_load_local_cluster_fallback"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
-      "source_location": "L547",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research",
-      "target": "research_make_graph_node"
     },
     {
       "relation": "contains",
@@ -9044,6 +9210,16 @@
       "confidence_score": 1.0,
       "source": "research",
       "target": "research_run_research"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "research.py",
+      "source_location": "L540",
+      "weight": 1.0,
+      "source": "research",
+      "target": "research_run_step",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9162,17 +9338,6 @@
     },
     {
       "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
-      "source_location": "L547",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_make_graph_node",
-      "target": "research_agentstate"
-    },
-    {
-      "relation": "references",
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
@@ -9206,6 +9371,17 @@
     },
     {
       "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "research.py",
+      "source_location": "L540",
+      "weight": 1.0,
+      "source": "research_run_step",
+      "target": "research_agentstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
@@ -9214,27 +9390,6 @@
       "confidence_score": 1.0,
       "source": "research_write_agent_report",
       "target": "research_agentstate"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
-      "source_location": "L63",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_graphstate",
-      "target": "typeddict"
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
-      "source_location": "L547",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_make_graph_node",
-      "target": "research_graphstate"
     },
     {
       "relation": "references",
@@ -9257,17 +9412,6 @@
       "confidence_score": 1.0,
       "source": "research_run_research",
       "target": "research_event"
-    },
-    {
-      "relation": "references",
-      "context": "return_type",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
-      "source_location": "L577",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_build_agent_graph",
-      "target": "any"
     },
     {
       "relation": "references",
@@ -9373,17 +9517,6 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
-      "source_location": "L577",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_build_agent_graph",
-      "target": "research_py_engine"
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
       "source_location": "L84",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -9399,17 +9532,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "research_load_issue_context",
-      "target": "research_py_engine"
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
-      "source_location": "L547",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_make_graph_node",
       "target": "research_py_engine"
     },
     {
@@ -9435,6 +9557,17 @@
       "target": "research_py_engine"
     },
     {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "research.py",
+      "source_location": "L540",
+      "weight": 1.0,
+      "source": "research_run_step",
+      "target": "research_py_engine",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -9455,6 +9588,17 @@
       "confidence_score": 1.0,
       "source": "research_run_research",
       "target": "research_persist_step"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "research.py",
+      "source_location": "L555",
+      "weight": 1.0,
+      "source": "research_run_step",
+      "target": "research_persist_step",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -9538,22 +9682,22 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
-      "source_location": "L579",
+      "source_location": "L235",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "research_build_agent_graph",
-      "target": "research_load_issue_context"
+      "source": "research_load_issue_context",
+      "target": "research_load_local_cluster_fallback"
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
-      "source_location": "L235",
+      "source_location": "L589",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_load_issue_context",
-      "target": "research_load_local_cluster_fallback"
+      "source": "research_run_research",
+      "target": "research_load_issue_context",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -9615,32 +9759,21 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
-      "source_location": "L579",
+      "source_location": "L607",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_build_agent_graph",
-      "target": "research_make_graph_node"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "research.py",
-      "source_location": "L621",
-      "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "research_run_research",
-      "target": "research_build_agent_graph"
+      "target": "research_run_step",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "research.py",
-      "source_location": "L601",
+      "source_location": "L568",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "research_rationale_601",
-      "target": "research_run_research"
+      "source": "research_rationale_568",
+      "target": "research_run_research",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9739,9 +9872,9 @@
       "source_file": "tests/test_core.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_core",
-      "target": "worker_geocoding",
-      "confidence_score": 1.0
+      "target": "worker_geocoding"
     },
     {
       "relation": "calls",
@@ -9771,9 +9904,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "worker_clustering_build_demo_clusters",
-      "confidence_score": 1.0
+      "target": "worker_clustering_build_demo_clusters"
     },
     {
       "relation": "contains",
@@ -9781,9 +9914,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L156",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "worker_clustering_check_existing",
-      "confidence_score": 1.0
+      "target": "worker_clustering_check_existing"
     },
     {
       "relation": "contains",
@@ -9791,9 +9924,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L239",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "worker_clustering_cluster_threads",
-      "confidence_score": 1.0
+      "target": "worker_clustering_cluster_threads"
     },
     {
       "relation": "contains",
@@ -9801,9 +9934,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "worker_clustering_extract_keywords",
-      "confidence_score": 1.0
+      "target": "worker_clustering_extract_keywords"
     },
     {
       "relation": "contains",
@@ -9811,9 +9944,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L165",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "worker_clustering_insert_batches",
-      "confidence_score": 1.0
+      "target": "worker_clustering_insert_batches"
     },
     {
       "relation": "contains",
@@ -9821,9 +9954,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L407",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "worker_clustering_validate_results",
-      "confidence_score": 1.0
+      "target": "worker_clustering_validate_results"
     },
     {
       "relation": "contains",
@@ -9831,9 +9964,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L118",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering",
-      "target": "worker_clustering_write_local_artifacts",
-      "confidence_score": 1.0
+      "target": "worker_clustering_write_local_artifacts"
     },
     {
       "relation": "rationale_for",
@@ -9841,9 +9974,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering_rationale_1",
-      "target": "worker_clustering",
-      "confidence_score": 1.0
+      "target": "worker_clustering"
     },
     {
       "relation": "imports_from",
@@ -9852,9 +9985,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_clustering",
-      "confidence_score": 1.0
+      "target": "worker_clustering"
     },
     {
       "relation": "calls",
@@ -9863,9 +9996,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering_build_demo_clusters",
-      "target": "worker_clustering_extract_keywords",
-      "confidence_score": 1.0
+      "target": "worker_clustering_extract_keywords"
     },
     {
       "relation": "calls",
@@ -9874,9 +10007,9 @@
       "source_file": "worker/clustering.py",
       "source_location": "L314",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_clustering_cluster_threads",
-      "target": "worker_clustering_extract_keywords",
-      "confidence_score": 1.0
+      "target": "worker_clustering_extract_keywords"
     },
     {
       "relation": "imports",
@@ -9885,9 +10018,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_clustering_build_demo_clusters",
-      "confidence_score": 1.0
+      "target": "worker_clustering_build_demo_clusters"
     },
     {
       "relation": "calls",
@@ -9896,9 +10029,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_clustering_build_demo_clusters",
-      "confidence_score": 1.0
+      "target": "worker_clustering_build_demo_clusters"
     },
     {
       "relation": "imports",
@@ -9907,9 +10040,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_clustering_write_local_artifacts",
-      "confidence_score": 1.0
+      "target": "worker_clustering_write_local_artifacts"
     },
     {
       "relation": "calls",
@@ -9918,9 +10051,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_clustering_write_local_artifacts",
-      "confidence_score": 1.0
+      "target": "worker_clustering_write_local_artifacts"
     },
     {
       "relation": "imports",
@@ -9929,9 +10062,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_clustering_insert_batches",
-      "confidence_score": 1.0
+      "target": "worker_clustering_insert_batches"
     },
     {
       "relation": "calls",
@@ -9940,9 +10073,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_clustering_insert_batches",
-      "confidence_score": 1.0
+      "target": "worker_clustering_insert_batches"
     },
     {
       "relation": "imports",
@@ -9951,9 +10084,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_clustering_cluster_threads",
-      "confidence_score": 1.0
+      "target": "worker_clustering_cluster_threads"
     },
     {
       "relation": "calls",
@@ -9962,9 +10095,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_clustering_cluster_threads",
-      "confidence_score": 1.0
+      "target": "worker_clustering_cluster_threads"
     },
     {
       "relation": "imports",
@@ -9973,9 +10106,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_clustering_validate_results",
-      "confidence_score": 1.0
+      "target": "worker_clustering_validate_results"
     },
     {
       "relation": "calls",
@@ -9984,9 +10117,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_clustering_validate_results",
-      "confidence_score": 1.0
+      "target": "worker_clustering_validate_results"
     },
     {
       "relation": "contains",
@@ -9994,9 +10127,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_extract_location_candidate",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_extract_location_candidate"
     },
     {
       "relation": "contains",
@@ -10004,9 +10137,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_extract_location_candidate_locally",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_extract_location_candidate_locally"
     },
     {
       "relation": "contains",
@@ -10014,9 +10147,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L182",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_geocode_text",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_geocode_text"
     },
     {
       "relation": "contains",
@@ -10024,9 +10157,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L174",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_geocoder_importance_score",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_geocoder_importance_score"
     },
     {
       "relation": "contains",
@@ -10034,9 +10167,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L163",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_precision_to_meters",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_precision_to_meters"
     },
     {
       "relation": "contains",
@@ -10044,9 +10177,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L282",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_resolve_coordinates",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_coordinates"
     },
     {
       "relation": "contains",
@@ -10054,9 +10187,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L230",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_resolve_location",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_location"
     },
     {
       "relation": "contains",
@@ -10064,9 +10197,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L214",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding",
-      "target": "worker_geocoding_unresolved_geo",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_unresolved_geo"
     },
     {
       "relation": "rationale_for",
@@ -10074,9 +10207,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_rationale_1",
-      "target": "worker_geocoding",
-      "confidence_score": 1.0
+      "target": "worker_geocoding"
     },
     {
       "relation": "imports_from",
@@ -10085,9 +10218,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_geocoding",
-      "confidence_score": 1.0
+      "target": "worker_geocoding"
     },
     {
       "relation": "calls",
@@ -10096,9 +10229,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L96",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_extract_location_candidate",
-      "target": "worker_geocoding_extract_location_candidate_locally",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_extract_location_candidate_locally"
     },
     {
       "relation": "rationale_for",
@@ -10106,9 +10239,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_rationale_66",
-      "target": "worker_geocoding_extract_location_candidate_locally",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_extract_location_candidate_locally"
     },
     {
       "relation": "rationale_for",
@@ -10116,9 +10249,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_rationale_95",
-      "target": "worker_geocoding_extract_location_candidate",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_extract_location_candidate"
     },
     {
       "relation": "calls",
@@ -10127,9 +10260,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L235",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_resolve_location",
-      "target": "worker_geocoding_extract_location_candidate",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_extract_location_candidate"
     },
     {
       "relation": "calls",
@@ -10138,9 +10271,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L275",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_resolve_location",
-      "target": "worker_geocoding_precision_to_meters",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_precision_to_meters"
     },
     {
       "relation": "calls",
@@ -10149,9 +10282,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L257",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_resolve_location",
-      "target": "worker_geocoding_geocoder_importance_score",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_geocoder_importance_score"
     },
     {
       "relation": "calls",
@@ -10160,9 +10293,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L249",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_resolve_location",
-      "target": "worker_geocoding_geocode_text",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_geocode_text"
     },
     {
       "relation": "calls",
@@ -10171,9 +10304,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L233",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_resolve_location",
-      "target": "worker_geocoding_unresolved_geo",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_unresolved_geo"
     },
     {
       "relation": "rationale_for",
@@ -10181,9 +10314,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L231",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_rationale_231",
-      "target": "worker_geocoding_resolve_location",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_location"
     },
     {
       "relation": "calls",
@@ -10192,9 +10325,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L284",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_resolve_coordinates",
-      "target": "worker_geocoding_resolve_location",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_location"
     },
     {
       "relation": "imports",
@@ -10203,9 +10336,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_geocoding_resolve_location",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_location"
     },
     {
       "relation": "calls",
@@ -10214,9 +10347,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L273",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_fetch_news_threads",
-      "target": "worker_geocoding_resolve_location",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_location"
     },
     {
       "relation": "calls",
@@ -10225,9 +10358,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L333",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_fetch_opendata_threads",
-      "target": "worker_geocoding_resolve_location",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_location"
     },
     {
       "relation": "calls",
@@ -10236,9 +10369,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_make_thread",
-      "target": "worker_geocoding_resolve_location",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_location"
     },
     {
       "relation": "rationale_for",
@@ -10246,9 +10379,9 @@
       "source_file": "worker/geocoding.py",
       "source_location": "L283",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_geocoding_rationale_283",
-      "target": "worker_geocoding_resolve_coordinates",
-      "confidence_score": 1.0
+      "target": "worker_geocoding_resolve_coordinates"
     },
     {
       "relation": "contains",
@@ -10256,9 +10389,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L354",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_ingest_build_demo_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_build_demo_threads"
     },
     {
       "relation": "contains",
@@ -10266,9 +10399,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_ingest_fetch_new_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_new_threads"
     },
     {
       "relation": "contains",
@@ -10276,9 +10409,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L229",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_ingest_fetch_news_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_news_threads"
     },
     {
       "relation": "contains",
@@ -10286,9 +10419,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L294",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_ingest_fetch_opendata_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_opendata_threads"
     },
     {
       "relation": "contains",
@@ -10296,9 +10429,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_ingest_fetch_reddit_url",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_reddit_url"
     },
     {
       "relation": "contains",
@@ -10306,9 +10439,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L167",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_ingest_make_thread",
-      "confidence_score": 1.0
+      "target": "worker_ingest_make_thread"
     },
     {
       "relation": "contains",
@@ -10316,9 +10449,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L204",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest",
-      "target": "worker_ingest_parse_news_feeds_env",
-      "confidence_score": 1.0
+      "target": "worker_ingest_parse_news_feeds_env"
     },
     {
       "relation": "imports_from",
@@ -10327,9 +10460,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_ingest",
-      "confidence_score": 1.0
+      "target": "worker_ingest"
     },
     {
       "relation": "rationale_for",
@@ -10337,9 +10470,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_rationale_1",
-      "target": "worker_ingest",
-      "confidence_score": 1.0
+      "target": "worker_ingest"
     },
     {
       "relation": "calls",
@@ -10348,9 +10481,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_fetch_new_threads",
-      "target": "worker_ingest_fetch_reddit_url",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_reddit_url"
     },
     {
       "relation": "rationale_for",
@@ -10358,9 +10491,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_rationale_90",
-      "target": "worker_ingest_fetch_reddit_url",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_reddit_url"
     },
     {
       "relation": "imports",
@@ -10369,9 +10502,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_ingest_fetch_new_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_new_threads"
     },
     {
       "relation": "calls",
@@ -10380,9 +10513,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_ingest_fetch_new_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_new_threads"
     },
     {
       "relation": "calls",
@@ -10391,9 +10524,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L141",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_fetch_new_threads",
-      "target": "worker_ingest_make_thread",
-      "confidence_score": 1.0
+      "target": "worker_ingest_make_thread"
     },
     {
       "relation": "rationale_for",
@@ -10401,9 +10534,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L110",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_rationale_110",
-      "target": "worker_ingest_fetch_new_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_new_threads"
     },
     {
       "relation": "calls",
@@ -10412,9 +10545,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L238",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_fetch_news_threads",
-      "target": "worker_ingest_parse_news_feeds_env",
-      "confidence_score": 1.0
+      "target": "worker_ingest_parse_news_feeds_env"
     },
     {
       "relation": "imports",
@@ -10423,9 +10556,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_ingest_fetch_news_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_news_threads"
     },
     {
       "relation": "calls",
@@ -10434,9 +10567,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L70",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_ingest_fetch_news_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_news_threads"
     },
     {
       "relation": "rationale_for",
@@ -10444,9 +10577,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L230",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_rationale_230",
-      "target": "worker_ingest_fetch_news_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_news_threads"
     },
     {
       "relation": "imports",
@@ -10455,9 +10588,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_ingest_fetch_opendata_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_opendata_threads"
     },
     {
       "relation": "calls",
@@ -10466,9 +10599,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_ingest_fetch_opendata_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_opendata_threads"
     },
     {
       "relation": "rationale_for",
@@ -10476,9 +10609,9 @@
       "source_file": "worker/ingest.py",
       "source_location": "L295",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_rationale_295",
-      "target": "worker_ingest_fetch_opendata_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_fetch_opendata_threads"
     },
     {
       "relation": "imports",
@@ -10487,9 +10620,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster",
-      "target": "worker_ingest_build_demo_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_build_demo_threads"
     },
     {
       "relation": "calls",
@@ -10498,9 +10631,9 @@
       "source_file": "worker/ingest_and_cluster.py",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "worker_ingest_and_cluster_main",
-      "target": "worker_ingest_build_demo_threads",
-      "confidence_score": 1.0
+      "target": "worker_ingest_build_demo_threads"
     },
     {
       "relation": "references",
@@ -10578,9 +10711,9 @@
       "source_file": "AGENTS.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "agents",
-      "target": "agents_graphify",
-      "confidence_score": 1.0
+      "target": "agents_graphify"
     },
     {
       "relation": "contains",
@@ -10588,9 +10721,9 @@
       "source_file": "README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme",
-      "target": "readme_conflux",
-      "confidence_score": 1.0
+      "target": "readme_conflux"
     },
     {
       "relation": "conceptually_related_to",
@@ -10633,6 +10766,16 @@
       "target": "policy_docs_delhi_sanitation_public_space_delhi_sanitation_and_public_space_notes"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "readme_conflux",
+      "target": "readme_deployment",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -10658,9 +10801,9 @@
       "source_file": "README.md",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_conflux",
-      "target": "readme_quick_start",
-      "confidence_score": 1.0
+      "target": "readme_quick_start"
     },
     {
       "relation": "contains",
@@ -10668,9 +10811,9 @@
       "source_file": "README.md",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_conflux",
-      "target": "readme_tech_stack",
-      "confidence_score": 1.0
+      "target": "readme_tech_stack"
     },
     {
       "relation": "contains",
@@ -10678,9 +10821,9 @@
       "source_file": "README.md",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_conflux",
-      "target": "readme_what_is_conflux",
-      "confidence_score": 1.0
+      "target": "readme_what_is_conflux"
     },
     {
       "relation": "contains",
@@ -10688,9 +10831,9 @@
       "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_architecture_and_data_design",
-      "target": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
-      "confidence_score": 1.0
+      "target": "docs_architecture_and_data_design_conflux_infrastructure_data_design"
     },
     {
       "relation": "implements",
@@ -10713,6 +10856,56 @@
       "target": "daily_ingest_table"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
+      "target": "docs_architecture_and_data_design_1_system_architecture"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
+      "target": "docs_architecture_and_data_design_2_reddit_ingestion_strategy"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
+      "target": "docs_architecture_and_data_design_3_database_schema"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
+      "source_location": "L69",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
+      "target": "docs_architecture_and_data_design_4_data_flow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
+      "target": "docs_architecture_and_data_design_5_tech_stack_summary"
+    },
+    {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -10726,61 +10919,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
-      "target": "docs_architecture_and_data_design_1_system_architecture",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
-      "source_location": "L18",
-      "weight": 1.0,
-      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
-      "target": "docs_architecture_and_data_design_2_reddit_ingestion_strategy",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
-      "source_location": "L25",
-      "weight": 1.0,
-      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
-      "target": "docs_architecture_and_data_design_3_database_schema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
-      "source_location": "L69",
-      "weight": 1.0,
-      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
-      "target": "docs_architecture_and_data_design_4_data_flow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
-      "source_location": "L76",
-      "weight": 1.0,
-      "source": "docs_architecture_and_data_design_conflux_infrastructure_data_design",
-      "target": "docs_architecture_and_data_design_5_tech_stack_summary",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_architecture_and_data_design_3_database_schema",
-      "target": "docs_architecture_and_data_design_table_cluster_results",
-      "confidence_score": 1.0
+      "target": "docs_architecture_and_data_design_table_cluster_results"
     },
     {
       "relation": "contains",
@@ -10788,9 +10931,9 @@
       "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_architecture_and_data_design_3_database_schema",
-      "target": "docs_architecture_and_data_design_table_daily_ingest",
-      "confidence_score": 1.0
+      "target": "docs_architecture_and_data_design_table_daily_ingest"
     },
     {
       "relation": "contains",
@@ -10798,9 +10941,9 @@
       "source_file": "docs/ARCHITECTURE_AND_DATA_DESIGN.md",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_architecture_and_data_design_3_database_schema",
-      "target": "docs_architecture_and_data_design_table_llm_proposals",
-      "confidence_score": 1.0
+      "target": "docs_architecture_and_data_design_table_llm_proposals"
     },
     {
       "relation": "contains",
@@ -10808,9 +10951,9 @@
       "source_file": "docs/deployment.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_deployment",
-      "target": "docs_deployment_deployment",
-      "confidence_score": 1.0
+      "target": "docs_deployment_deployment"
     },
     {
       "relation": "contains",
@@ -10818,8 +10961,18 @@
       "source_file": "docs/deployment.md",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_deployment_deployment",
-      "target": "docs_deployment_fastapi_backend",
+      "target": "docs_deployment_fastapi_backend"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/deployment.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "docs_deployment_deployment",
+      "target": "docs_deployment_fastapi_backend_on_render",
       "confidence_score": 1.0
     },
     {
@@ -10828,9 +10981,9 @@
       "source_file": "docs/deployment.md",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_deployment_deployment",
-      "target": "docs_deployment_frontend_on_vercel",
-      "confidence_score": 1.0
+      "target": "docs_deployment_frontend_on_vercel"
     },
     {
       "relation": "contains",
@@ -10838,9 +10991,9 @@
       "source_file": "docs/deployment.md",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_deployment_deployment",
-      "target": "docs_deployment_vercel_services_option",
-      "confidence_score": 1.0
+      "target": "docs_deployment_vercel_services_option"
     },
     {
       "relation": "contains",
@@ -10848,9 +11001,9 @@
       "source_file": "docs/deployment.md",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_deployment_deployment",
-      "target": "docs_deployment_worker",
-      "confidence_score": 1.0
+      "target": "docs_deployment_worker"
     },
     {
       "relation": "contains",
@@ -10858,9 +11011,9 @@
       "source_file": "frontend/AGENTS.md",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_agents",
-      "target": "frontend_agents_this_is_not_the_next_js_you_know",
-      "confidence_score": 1.0
+      "target": "frontend_agents_this_is_not_the_next_js_you_know"
     },
     {
       "relation": "contains",
@@ -10868,9 +11021,9 @@
       "source_file": "frontend/README.md",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_readme",
-      "target": "frontend_readme_deploy_on_vercel",
-      "confidence_score": 1.0
+      "target": "frontend_readme_deploy_on_vercel"
     },
     {
       "relation": "contains",
@@ -10878,9 +11031,9 @@
       "source_file": "frontend/README.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_readme",
-      "target": "frontend_readme_getting_started",
-      "confidence_score": 1.0
+      "target": "frontend_readme_getting_started"
     },
     {
       "relation": "contains",
@@ -10888,9 +11041,9 @@
       "source_file": "frontend/README.md",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_readme",
-      "target": "frontend_readme_learn_more",
-      "confidence_score": 1.0
+      "target": "frontend_readme_learn_more"
     },
     {
       "relation": "contains",
@@ -10898,9 +11051,9 @@
       "source_file": "policy_docs/delhi_drainage_water.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_docs_delhi_drainage_water",
-      "target": "policy_docs_delhi_drainage_water_delhi_drainage_and_water_infrastructure_notes",
-      "confidence_score": 1.0
+      "target": "policy_docs_delhi_drainage_water_delhi_drainage_and_water_infrastructure_notes"
     },
     {
       "relation": "contains",
@@ -10908,9 +11061,9 @@
       "source_file": "policy_docs/delhi_lighting_safety.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_docs_delhi_lighting_safety",
-      "target": "policy_docs_delhi_lighting_safety_delhi_public_lighting_and_safety_notes",
-      "confidence_score": 1.0
+      "target": "policy_docs_delhi_lighting_safety_delhi_public_lighting_and_safety_notes"
     },
     {
       "relation": "contains",
@@ -10918,9 +11071,9 @@
       "source_file": "policy_docs/delhi_road_safety.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_docs_delhi_road_safety",
-      "target": "policy_docs_delhi_road_safety_delhi_road_and_traffic_safety_notes",
-      "confidence_score": 1.0
+      "target": "policy_docs_delhi_road_safety_delhi_road_and_traffic_safety_notes"
     },
     {
       "relation": "contains",
@@ -10928,9 +11081,9 @@
       "source_file": "policy_docs/delhi_sanitation_public_space.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_docs_delhi_sanitation_public_space",
-      "target": "policy_docs_delhi_sanitation_public_space_delhi_sanitation_and_public_space_notes",
-      "confidence_score": 1.0
+      "target": "policy_docs_delhi_sanitation_public_space_delhi_sanitation_and_public_space_notes"
     }
   ],
   "hyperedges": [],

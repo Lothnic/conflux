@@ -1,12 +1,12 @@
 # Graph Report - conflux  (2026-06-10)
 
 ## Corpus Check
-- 61 files · ~24,800 words
+- 64 files · ~25,687 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 399 nodes · 660 edges · 28 communities (19 shown, 9 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.8)
+- 407 nodes · 667 edges · 32 communities (22 shown, 10 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
@@ -38,11 +38,13 @@
 - [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 22|Community 22]]
 - [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `init_db_sync()` - 20 edges
 2. `compilerOptions` - 16 edges
-3. `run_research()` - 14 edges
+3. `run_research()` - 15 edges
 4. `get_proposals()` - 13 edges
 5. `generate_proposal_for_cluster_endpoint()` - 12 edges
 6. `PlanningAnalysisPanel()` - 12 edges
@@ -54,19 +56,19 @@
 ## Surprising Connections (you probably didn't know these)
 - `_load_local_cluster_fallback()` --calls--> `Path`  [INFERRED]
   research.py → app/core/config.py
+- `extract_keywords()` --calls--> `Counter`  [INFERRED]
+  worker/clustering.py → policy_retriever.py
 - `Conflux` --conceptually_related_to--> `Delhi Drainage and Water Infrastructure Notes`  [INFERRED]
   README.md → policy_docs/delhi_drainage_water.md
 - `Conflux` --conceptually_related_to--> `Delhi Public Lighting and Safety Notes`  [INFERRED]
   README.md → policy_docs/delhi_lighting_safety.md
 - `Conflux` --conceptually_related_to--> `Delhi Road and Traffic Safety Notes`  [INFERRED]
   README.md → policy_docs/delhi_road_safety.md
-- `Conflux` --conceptually_related_to--> `Delhi Sanitation and Public Space Notes`  [INFERRED]
-  README.md → policy_docs/delhi_sanitation_public_space.md
 
 ## Import Cycles
 - None detected.
 
-## Communities (28 total, 9 thin omitted)
+## Communities (32 total, 10 thin omitted)
 
 ### Community 0 - "Backend API & Complaint Processing"
 Cohesion: 0.12
@@ -81,8 +83,8 @@ Cohesion: 0.06
 Nodes (46): MapLayer, MapSection, HeaderProps, IssueBrowser(), IssueBrowserProps, issueTypeOptions(), LocalityPreviewMapProps, MapSectionProps (+38 more)
 
 ### Community 3 - "Policy Research & Agent Pipeline"
-Cohesion: 0.13
-Nodes (35): Any, _load_docs(), PolicyHit, Lightweight local policy retrieval for the planning agent.  This is intentionall, retrieve_policy(), AgentState, assess_geolocation(), _build_agent_graph() (+27 more)
+Cohesion: 0.18
+Nodes (27): Any, AgentState, assess_geolocation(), _call_llm(), _citation_url(), _event(), _fallback_agencies(), _finish_run() (+19 more)
 
 ### Community 4 - "Issue Display & Analysis Components"
 Cohesion: 0.16
@@ -105,16 +107,16 @@ Cohesion: 0.05
 Nodes (49): Engine, AsyncEngine, AsyncSession, Connection, create_async_engine_instance(), create_sync_engine(), create_tables(), database_available() (+41 more)
 
 ### Community 9 - "Delhi Policy Documents & READMEs"
-Cohesion: 0.13
-Nodes (10): Delhi Drainage and Water Infrastructure Notes, Delhi Public Lighting and Safety Notes, Delhi Road and Traffic Safety Notes, Delhi Sanitation and Public Space Notes, Conflux, FastAPI, Next.js, Quick Start (+2 more)
+Cohesion: 0.12
+Nodes (11): Delhi Drainage and Water Infrastructure Notes, Delhi Public Lighting and Safety Notes, Delhi Road and Traffic Safety Notes, Delhi Sanitation and Public Space Notes, Conflux, Deployment, FastAPI, Next.js (+3 more)
 
 ### Community 16 - "Community 16"
 Cohesion: 0.19
 Nodes (12): BaseModel, ComplainList, ClusterProposal, ComplainList, Complaint, ProposalResponse, Conflux API models — Pydantic schemas for request/response validation., cluster_complaints() (+4 more)
 
 ### Community 17 - "Community 17"
-Cohesion: 0.33
-Nodes (5): Deployment, FastAPI Backend, Frontend on Vercel, Vercel Services Option, Worker
+Cohesion: 0.29
+Nodes (6): Deployment, FastAPI Backend, FastAPI Backend on Render, Frontend on Vercel, Vercel Services Option, Worker
 
 ### Community 18 - "Community 18"
 Cohesion: 0.33
@@ -124,22 +126,26 @@ Nodes (5): buildCommand, framework, headers, installCommand, $schema
 Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
+### Community 28 - "Community 28"
+Cohesion: 0.33
+Nodes (9): Counter, _cosine(), _load_docs(), PolicyHit, Lightweight local policy retrieval for the planning agent.  This is intentionall, retrieve_policy(), _tf(), _tokens() (+1 more)
+
 ## Knowledge Gaps
-- **92 isolated node(s):** `allow`, `$schema`, `plugin`, `@opencode-ai/plugin`, `Engine` (+87 more)
+- **96 isolated node(s):** `allow`, `$schema`, `plugin`, `@opencode-ai/plugin`, `Engine` (+91 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `init_db_sync()` connect `Database Layer` to `Community 16`, `Backend API & Complaint Processing`?**
-  _High betweenness centrality (0.088) - this node is a cross-community bridge._
+  _High betweenness centrality (0.084) - this node is a cross-community bridge._
 - **Why does `run_research()` connect `Policy Research & Agent Pipeline` to `Backend API & Complaint Processing`, `Database Layer`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
 - **Why does `Path` connect `Issue Display & Analysis Components` to `Database Layer`, `Policy Research & Agent Pipeline`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
 - **What connects `allow`, `$schema`, `plugin` to the rest of the system?**
-  _145 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _149 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Backend API & Complaint Processing` be split into smaller, more focused modules?**
   _Cohesion score 0.12375533428165007 - nodes in this community are weakly interconnected._
 - **Should `Ingestion Worker & Proposal Generation` be split into smaller, more focused modules?**

@@ -320,7 +320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_proposals",
-      "community": 0,
+      "community": 8,
       "norm_label": "proposals.py"
     },
     {
@@ -330,7 +330,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "routes_proposals_get_proposals",
-      "community": 0,
+      "community": 8,
       "norm_label": "get_proposals()"
     },
     {
@@ -340,7 +340,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "routes_proposals_generate_proposal_for_cluster_endpoint",
-      "community": 0,
+      "community": 8,
       "norm_label": "generate_proposal_for_cluster_endpoint()"
     },
     {
@@ -350,7 +350,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_proposals_rationale_1",
-      "community": 0,
+      "community": 8,
       "norm_label": "proposal-related endpoints \u2014 heuristic fallback + llm-powered generation."
     },
     {
@@ -360,7 +360,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "routes_proposals_rationale_30",
-      "community": 0,
+      "community": 8,
       "norm_label": "return generated infrastructure proposals (llm-powered with heuristic fallback)."
     },
     {
@@ -370,7 +370,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "routes_proposals_rationale_116",
-      "community": 0,
+      "community": 8,
       "norm_label": "generate a groq-powered proposal for a specific cluster on demand."
     },
     {
@@ -630,7 +630,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_database",
-      "community": 8,
+      "community": 28,
       "norm_label": "database.py"
     },
     {
@@ -640,7 +640,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "core_database_create_sync_engine",
-      "community": 8,
+      "community": 28,
       "norm_label": "create_sync_engine()"
     },
     {
@@ -650,7 +650,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "app_core_database_py_engine",
-      "community": 8,
+      "community": 28,
       "norm_label": "engine"
     },
     {
@@ -660,7 +660,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "core_database_create_async_engine_instance",
-      "community": 8,
+      "community": 28,
       "norm_label": "create_async_engine_instance()"
     },
     {
@@ -670,7 +670,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "asyncengine",
-      "community": 8,
+      "community": 28,
       "norm_label": "asyncengine"
     },
     {
@@ -680,7 +680,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "core_database_get_async_session",
-      "community": 8,
+      "community": 28,
       "norm_label": "get_async_session()"
     },
     {
@@ -690,7 +690,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "asyncsession",
-      "community": 8,
+      "community": 28,
       "norm_label": "asyncsession"
     },
     {
@@ -700,7 +700,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "core_database_get_sync_session",
-      "community": 8,
+      "community": 28,
       "norm_label": "get_sync_session()"
     },
     {
@@ -710,7 +710,7 @@
       "source_location": "L273",
       "_origin": "ast",
       "id": "core_database_existing_columns",
-      "community": 8,
+      "community": 28,
       "norm_label": "_existing_columns()"
     },
     {
@@ -720,7 +720,7 @@
       "source_location": "L273",
       "_origin": "ast",
       "id": "connection",
-      "community": 8,
+      "community": 28,
       "norm_label": "connection"
     },
     {
@@ -730,7 +730,7 @@
       "source_location": "L284",
       "_origin": "ast",
       "id": "core_database_ensure_columns",
-      "community": 8,
+      "community": 28,
       "norm_label": "_ensure_columns()"
     },
     {
@@ -750,7 +750,7 @@
       "source_location": "L312",
       "_origin": "ast",
       "id": "core_database_create_tables",
-      "community": 8,
+      "community": 28,
       "norm_label": "create_tables()"
     },
     {
@@ -770,7 +770,7 @@
       "source_location": "L336",
       "_origin": "ast",
       "id": "core_database_init_db",
-      "community": 8,
+      "community": 28,
       "norm_label": "init_db()"
     },
     {
@@ -780,7 +780,7 @@
       "source_location": "L351",
       "_origin": "ast",
       "id": "core_database_lifespan",
-      "community": 8,
+      "community": 28,
       "norm_label": "lifespan()"
     },
     {
@@ -790,7 +790,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_database_rationale_1",
-      "community": 8,
+      "community": 28,
       "norm_label": "database engine, schema, and session management.  this is the single source of t"
     },
     {
@@ -800,7 +800,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "core_database_rationale_63",
-      "community": 8,
+      "community": 28,
       "norm_label": "fastapi dependency for async database sessions."
     },
     {
@@ -810,7 +810,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "core_database_rationale_72",
-      "community": 8,
+      "community": 28,
       "norm_label": "dependency for synchronous database sessions."
     },
     {
@@ -820,7 +820,7 @@
       "source_location": "L285",
       "_origin": "ast",
       "id": "core_database_rationale_285",
-      "community": 8,
+      "community": 28,
       "norm_label": "add any missing columns to existing tables."
     },
     {
@@ -830,7 +830,7 @@
       "source_location": "L313",
       "_origin": "ast",
       "id": "core_database_rationale_313",
-      "community": 8,
+      "community": 28,
       "norm_label": "create schema and apply idempotent column additions."
     },
     {
@@ -850,7 +850,7 @@
       "source_location": "L337",
       "_origin": "ast",
       "id": "core_database_rationale_337",
-      "community": 8,
+      "community": 28,
       "norm_label": "initialize database tables on startup (async, for lifespan)."
     },
     {
@@ -860,7 +860,7 @@
       "source_location": "L352",
       "_origin": "ast",
       "id": "core_database_rationale_352",
-      "community": 8,
+      "community": 28,
       "norm_label": "application lifespan manager."
     },
     {
@@ -970,7 +970,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "services_cluster_service_fetch_sources_for_cluster",
-      "community": 0,
+      "community": 8,
       "norm_label": "fetch_sources_for_cluster()"
     },
     {
@@ -990,7 +990,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "services_cluster_service_rationale_66",
-      "community": 0,
+      "community": 8,
       "norm_label": "fetch thread sources for a cluster from the db."
     },
     {
@@ -1000,7 +1000,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_proposal_heuristics",
-      "community": 0,
+      "community": 8,
       "norm_label": "proposal_heuristics.py"
     },
     {
@@ -1010,7 +1010,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "services_proposal_heuristics_infer_issue_type",
-      "community": 0,
+      "community": 8,
       "norm_label": "infer_issue_type()"
     },
     {
@@ -1020,7 +1020,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "services_proposal_heuristics_infer_urgency",
-      "community": 0,
+      "community": 8,
       "norm_label": "infer_urgency()"
     },
     {
@@ -1030,7 +1030,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "services_proposal_heuristics_infer_budget",
-      "community": 0,
+      "community": 8,
       "norm_label": "infer_budget()"
     },
     {
@@ -1040,7 +1040,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "services_proposal_heuristics_proposal_recommendations",
-      "community": 0,
+      "community": 8,
       "norm_label": "proposal_recommendations()"
     },
     {
@@ -1050,7 +1050,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "services_proposal_heuristics_responsible_agencies",
-      "community": 0,
+      "community": 8,
       "norm_label": "responsible_agencies()"
     },
     {
@@ -1060,7 +1060,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "services_proposal_heuristics_proposal_communication_plan",
-      "community": 0,
+      "community": 8,
       "norm_label": "proposal_communication_plan()"
     },
     {
@@ -1070,7 +1070,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "services_proposal_heuristics_impact_rationale",
-      "community": 0,
+      "community": 8,
       "norm_label": "impact_rationale()"
     },
     {
@@ -1080,7 +1080,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_proposal_heuristics_rationale_1",
-      "community": 0,
+      "community": 8,
       "norm_label": "heuristic fallback logic for proposal generation.  these keyword-matching and th"
     },
     {
@@ -1090,7 +1090,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "services_proposal_heuristics_rationale_118",
-      "community": 0,
+      "community": 8,
       "norm_label": "sequenced stakeholder-outreach steps (heuristic fallback)."
     },
     {
@@ -1100,7 +1100,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "services_proposal_heuristics_rationale_130",
-      "community": 0,
+      "community": 8,
       "norm_label": "one-line justification for the assigned urgency with a rough reach estimate."
     },
     {
@@ -1220,7 +1220,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "db",
-      "community": 8,
+      "community": 0,
       "norm_label": "db.py"
     },
     {
@@ -1230,7 +1230,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "db_rationale_1",
-      "community": 8,
+      "community": 0,
       "norm_label": "backward-compatible shim \u2014 delegates to app.core.database.  new code should impo"
     },
     {
@@ -1554,6 +1554,106 @@
       "norm_label": "config"
     },
     {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "path_route",
+      "community": 32,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "RouteContext",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "path_route_routecontext",
+      "community": 32,
+      "norm_label": "routecontext"
+    },
+    {
+      "label": "HOP_BY_HOP_HEADERS",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "path_route_hop_by_hop_headers",
+      "community": 32,
+      "norm_label": "hop_by_hop_headers"
+    },
+    {
+      "label": "createBackendUrl()",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "path_route_createbackendurl",
+      "community": 32,
+      "norm_label": "createbackendurl()"
+    },
+    {
+      "label": "proxyHeaders()",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "path_route_proxyheaders",
+      "community": 32,
+      "norm_label": "proxyheaders()"
+    },
+    {
+      "label": "responseHeaders()",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "path_route_responseheaders",
+      "community": 32,
+      "norm_label": "responseheaders()"
+    },
+    {
+      "label": "proxy()",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "path_route_proxy",
+      "community": 32,
+      "norm_label": "proxy()"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "path_route_get",
+      "community": 32,
+      "norm_label": "get()"
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "path_route_post",
+      "community": 32,
+      "norm_label": "post()"
+    },
+    {
+      "label": "OPTIONS()",
+      "file_type": "code",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L85",
+      "_origin": "ast",
+      "id": "path_route_options",
+      "community": 32,
+      "norm_label": "options()"
+    },
+    {
       "label": "layout.tsx",
       "file_type": "code",
       "source_file": "frontend/src/app/layout.tsx",
@@ -1700,7 +1800,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_localitypreviewmap",
-      "community": 2,
+      "community": 33,
       "norm_label": "localitypreviewmap.tsx"
     },
     {
@@ -1710,7 +1810,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_localitypreviewmap_localitypreviewmapprops",
-      "community": 2,
+      "community": 33,
       "norm_label": "localitypreviewmapprops"
     },
     {
@@ -1720,7 +1820,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "components_localitypreviewmap_localitypreviewmap",
-      "community": 2,
+      "community": 33,
       "norm_label": "localitypreviewmap()"
     },
     {
@@ -2680,7 +2780,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "policy_retriever",
-      "community": 28,
+      "community": 0,
       "norm_label": "policy_retriever.py"
     },
     {
@@ -2690,7 +2790,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "policy_retriever_policyhit",
-      "community": 28,
+      "community": 0,
       "norm_label": "policyhit"
     },
     {
@@ -2700,7 +2800,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "policy_retriever_load_docs",
-      "community": 28,
+      "community": 0,
       "norm_label": "_load_docs()"
     },
     {
@@ -2710,7 +2810,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "policy_retriever_tokens",
-      "community": 28,
+      "community": 0,
       "norm_label": "_tokens()"
     },
     {
@@ -2720,7 +2820,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "policy_retriever_tf",
-      "community": 28,
+      "community": 0,
       "norm_label": "_tf()"
     },
     {
@@ -2730,7 +2830,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "counter",
-      "community": 28,
+      "community": 0,
       "norm_label": "counter"
     },
     {
@@ -2740,7 +2840,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "policy_retriever_cosine",
-      "community": 28,
+      "community": 0,
       "norm_label": "_cosine()"
     },
     {
@@ -2750,7 +2850,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "policy_retriever_retrieve_policy",
-      "community": 28,
+      "community": 0,
       "norm_label": "retrieve_policy()"
     },
     {
@@ -2760,7 +2860,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "policy_retriever_rationale_1",
-      "community": 28,
+      "community": 0,
       "norm_label": "lightweight local policy retrieval for the planning agent.  this is intentionall"
     },
     {
@@ -3160,7 +3260,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "tests_test_core_test_policy_retriever_returns_relevant_docs",
-      "community": 28,
+      "community": 0,
       "norm_label": "test_policy_retriever_returns_relevant_docs()"
     },
     {
@@ -3200,7 +3300,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "tests_test_core_test_priority_and_budget_thresholds",
-      "community": 0,
+      "community": 8,
       "norm_label": "test_priority_and_budget_thresholds()"
     },
     {
@@ -3210,7 +3310,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "tests_test_core_test_new_structured_output_heuristics",
-      "community": 0,
+      "community": 8,
       "norm_label": "test_new_structured_output_heuristics()"
     },
     {
@@ -6261,9 +6361,9 @@
       "source_file": "data/local_threads_geojson.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "data_local_threads_geojson",
-      "target": "data_local_threads_geojson_features",
-      "confidence_score": 1.0
+      "target": "data_local_threads_geojson_features"
     },
     {
       "relation": "contains",
@@ -6271,9 +6371,9 @@
       "source_file": "data/local_threads_geojson.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "data_local_threads_geojson",
-      "target": "data_local_threads_geojson_type",
-      "confidence_score": 1.0
+      "target": "data_local_threads_geojson_type"
     },
     {
       "relation": "rationale_for",
@@ -6598,6 +6698,162 @@
       "confidence_score": 1.0,
       "source": "frontend_postcss_config",
       "target": "frontend_postcss_config_config"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_createbackendurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_hop_by_hop_headers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_options",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_proxy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_proxyheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_responseheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "path_route",
+      "target": "path_route_routecontext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "path_route_proxy",
+      "target": "path_route_createbackendurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "path_route_proxy",
+      "target": "path_route_proxyheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "path_route_proxy",
+      "target": "path_route_responseheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "path_route_get",
+      "target": "path_route_proxy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "path_route_options",
+      "target": "path_route_proxy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/app/api/[...path]/route.ts",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "path_route_post",
+      "target": "path_route_proxy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -8620,9 +8876,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever",
-      "target": "policy_retriever_cosine",
-      "confidence_score": 1.0
+      "target": "policy_retriever_cosine"
     },
     {
       "relation": "contains",
@@ -8660,9 +8916,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever",
-      "target": "policy_retriever_tf",
-      "confidence_score": 1.0
+      "target": "policy_retriever_tf"
     },
     {
       "relation": "contains",
@@ -8670,9 +8926,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever",
-      "target": "policy_retriever_tokens",
-      "confidence_score": 1.0
+      "target": "policy_retriever_tokens"
     },
     {
       "relation": "rationale_for",
@@ -8735,9 +8991,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever_retrieve_policy",
-      "target": "policy_retriever_tokens",
-      "confidence_score": 1.0
+      "target": "policy_retriever_tokens"
     },
     {
       "relation": "calls",
@@ -8746,9 +9002,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever_retrieve_policy",
-      "target": "policy_retriever_tf",
-      "confidence_score": 1.0
+      "target": "policy_retriever_tf"
     },
     {
       "relation": "references",
@@ -8757,9 +9013,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever_tf",
-      "target": "counter",
-      "confidence_score": 1.0
+      "target": "counter"
     },
     {
       "relation": "references",
@@ -8768,9 +9024,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever_cosine",
-      "target": "counter",
-      "confidence_score": 1.0
+      "target": "counter"
     },
     {
       "relation": "calls",
@@ -8790,9 +9046,9 @@
       "source_file": "policy_retriever.py",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "policy_retriever_retrieve_policy",
-      "target": "policy_retriever_cosine",
-      "confidence_score": 1.0
+      "target": "policy_retriever_cosine"
     },
     {
       "relation": "imports",
@@ -9217,9 +9473,9 @@
       "source_file": "research.py",
       "source_location": "L540",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "research",
-      "target": "research_run_step",
-      "confidence_score": 1.0
+      "target": "research_run_step"
     },
     {
       "relation": "contains",
@@ -9376,9 +9632,9 @@
       "source_file": "research.py",
       "source_location": "L540",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "research_run_step",
-      "target": "research_agentstate",
-      "confidence_score": 1.0
+      "target": "research_agentstate"
     },
     {
       "relation": "references",
@@ -9563,9 +9819,9 @@
       "source_file": "research.py",
       "source_location": "L540",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "research_run_step",
-      "target": "research_py_engine",
-      "confidence_score": 1.0
+      "target": "research_py_engine"
     },
     {
       "relation": "calls",
@@ -9596,9 +9852,9 @@
       "source_file": "research.py",
       "source_location": "L555",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "research_run_step",
-      "target": "research_persist_step",
-      "confidence_score": 1.0
+      "target": "research_persist_step"
     },
     {
       "relation": "calls",
@@ -9695,9 +9951,9 @@
       "source_file": "research.py",
       "source_location": "L589",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "research_run_research",
-      "target": "research_load_issue_context",
-      "confidence_score": 1.0
+      "target": "research_load_issue_context"
     },
     {
       "relation": "calls",
@@ -9761,9 +10017,9 @@
       "source_file": "research.py",
       "source_location": "L607",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "research_run_research",
-      "target": "research_run_step",
-      "confidence_score": 1.0
+      "target": "research_run_step"
     },
     {
       "relation": "rationale_for",
@@ -9771,9 +10027,9 @@
       "source_file": "research.py",
       "source_location": "L568",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "research_rationale_568",
-      "target": "research_run_research",
-      "confidence_score": 1.0
+      "target": "research_run_research"
     },
     {
       "relation": "contains",
@@ -10771,9 +11027,9 @@
       "source_file": "README.md",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_conflux",
-      "target": "readme_deployment",
-      "confidence_score": 1.0
+      "target": "readme_deployment"
     },
     {
       "relation": "references",
@@ -10971,9 +11227,9 @@
       "source_file": "docs/deployment.md",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_deployment_deployment",
-      "target": "docs_deployment_fastapi_backend_on_render",
-      "confidence_score": 1.0
+      "target": "docs_deployment_fastapi_backend_on_render"
     },
     {
       "relation": "contains",
@@ -11087,5 +11343,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "490d5a8ad3893aa11ff87c8d37bbc358276fc745"
+  "built_at_commit": "f2b714c5da2b85629cedd83f81e71a5a640bc619"
 }

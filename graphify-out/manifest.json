@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "frontend/next.config.ts": {
-    "mtime": 1781090895.6650105,
-    "ast_hash": "d71ce21d649572f31bdb706c0749c5b6",
+    "mtime": 1781094356.3758032,
+    "ast_hash": "8dbe4b259cb100f2c3e6391f6753f03e",
     "semantic_hash": ""
   },
   "frontend/package.json": {
@@ -357,6 +357,11 @@
   "requirements-render.txt": {
     "mtime": 1781091827.051225,
     "ast_hash": "c46bac403147077c80916feb0a8fd397",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/api/[...path]/route.ts": {
+    "mtime": 1781094335.9781864,
+    "ast_hash": "384b4e57655b02c4e0475606de939e5c",
     "semantic_hash": ""
   }
 }

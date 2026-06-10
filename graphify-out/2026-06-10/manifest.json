@@ -105,9 +105,9 @@
     "semantic_hash": ""
   },
   "policy_retriever.py": {
-    "mtime": 1780311331.5523932,
-    "ast_hash": "aa097ee1b697917950c7de95bee0549b",
-    "semantic_hash": "aa097ee1b697917950c7de95bee0549b"
+    "mtime": 1781091892.5014317,
+    "ast_hash": "88f0e9f3a61269db6be13d7961069a31",
+    "semantic_hash": ""
   },
   "proposals.py": {
     "mtime": 1780306949.0393806,
@@ -115,9 +115,9 @@
     "semantic_hash": "572c933cd7cf0e11cc8f7a85fcadcd08"
   },
   "research.py": {
-    "mtime": 1780312671.2865489,
-    "ast_hash": "bf4fbdb41ed476ce55431b3041cf217c",
-    "semantic_hash": "bf4fbdb41ed476ce55431b3041cf217c"
+    "mtime": 1781091892.501977,
+    "ast_hash": "07300b474e879b1503bcb3add02b7d91",
+    "semantic_hash": ""
   },
   "tests/test_core.py": {
     "mtime": 1781089155.7010124,
@@ -135,9 +135,9 @@
     "semantic_hash": "dcc1f363f5ea4f5afa87b6eda82bba49"
   },
   "README.md": {
-    "mtime": 1780316237.9225483,
-    "ast_hash": "48f0e99238208cf396766d612207dcf3",
-    "semantic_hash": "48f0e99238208cf396766d612207dcf3"
+    "mtime": 1781091968.4958854,
+    "ast_hash": "8d7bb3747069f78bfe5135f99978d6b1",
+    "semantic_hash": ""
   },
   "docs/ARCHITECTURE_AND_DATA_DESIGN.md": {
     "mtime": 1779892503.583957,
@@ -330,8 +330,33 @@
     "semantic_hash": ""
   },
   "docs/deployment.md": {
-    "mtime": 1781090895.6656473,
-    "ast_hash": "1ba48eefd4cbcc5089e66fd84fec8312",
+    "mtime": 1781091968.4948342,
+    "ast_hash": "7a1cdfba30377ff5824c5d6632a23173",
+    "semantic_hash": ""
+  },
+  "data/local_clusters.json": {
+    "mtime": 1779885995.7771292,
+    "ast_hash": "aaa43da9a69f39f483566d482c75358e",
+    "semantic_hash": ""
+  },
+  "data/local_threads.json": {
+    "mtime": 1779885995.7769716,
+    "ast_hash": "aa28d71d181e3c7f08005e17c6d26266",
+    "semantic_hash": ""
+  },
+  "data/local_threads_geojson.json": {
+    "mtime": 1779885995.7772617,
+    "ast_hash": "8a655bd8c182bb3d8d41ab6532c49984",
+    "semantic_hash": ""
+  },
+  "render.yaml": {
+    "mtime": 1781091827.0515203,
+    "ast_hash": "38c66b951ce8f672155b65c7868dd67e",
+    "semantic_hash": ""
+  },
+  "requirements-render.txt": {
+    "mtime": 1781091827.051225,
+    "ast_hash": "c46bac403147077c80916feb0a8fd397",
     "semantic_hash": ""
   }
 }
