@@ -38,7 +38,7 @@ def fetch_unlocated_threads(limit: int = BACKFILL_BATCH_DEFAULT) -> list[dict]:
     with db.engine.connect() as conn:
         rows = conn.execute(
             sa.text("""
-                SELECT d.thread_id, d.title, d.content
+                SELECT d.thread_id, d.title, d.content, d.subreddit
                 FROM daily_ingest d
                 LEFT JOIN thread_geo tg ON d.thread_id = tg.thread_id
                 WHERE tg.thread_id IS NULL
@@ -49,7 +49,7 @@ def fetch_unlocated_threads(limit: int = BACKFILL_BATCH_DEFAULT) -> list[dict]:
             {"lim": limit},
         ).fetchall()
     return [
-        {"thread_id": r[0], "title": r[1] or "", "content": r[2] or ""}
+        {"thread_id": r[0], "title": r[1] or "", "content": r[2] or "", "source": r[3] or "reddit"}
         for r in rows
     ]
 
@@ -97,8 +97,7 @@ def backfill_coordinates(limit: int = BACKFILL_BATCH_DEFAULT) -> dict:
                         (thread_id, lat, lng, source, location_text, location_method,
                          location_confidence, location_precision_meters, geocoder_provider,
                          geocoder_query, geocoder_raw)
-                    VALUES (:tid, :lat, :lng,
-                            COALESCE((SELECT subreddit FROM daily_ingest WHERE thread_id = :tid), 'reddit'),
+                    VALUES (:tid, :lat, :lng, :src,
                             :loctext, :method, :conf, :precision, 'nominatim', :query, :raw)
                     ON CONFLICT (thread_id) DO UPDATE SET
                         lat = EXCLUDED.lat,
@@ -115,6 +114,7 @@ def backfill_coordinates(limit: int = BACKFILL_BATCH_DEFAULT) -> dict:
                     "tid": thread["thread_id"],
                     "lat": lat,
                     "lng": lng,
+                    "src": thread.get("source", "reddit"),
                     "loctext": geo.get("location_text", ""),
                     "method": geo.get("location_method", "backfill"),
                     "conf": geo.get("location_confidence"),
