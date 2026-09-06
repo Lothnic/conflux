@@ -458,6 +458,12 @@ def test_prune_unlocated_threads_deletes_only_matching_rows(monkeypatch):
             INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
             VALUES ('mapped-news', 'news:toi-delhi', 't', 'c', datetime('now', '-60 days'))
         """))
+        # Prunable despite a cluster mapping: the mapped cluster is unlocated.
+        conn.execute(sa.text("""
+            INSERT INTO cluster_results (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords)
+            VALUES ('cluster_noloc', 1, NULL, NULL, 2, 'kw')
+        """))
+        conn.execute(sa.text("INSERT INTO thread_cluster_map (thread_id, cluster_id) VALUES ('stale-news', 'cluster_noloc')"))
         conn.execute(sa.text("""
             INSERT INTO cluster_results (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords)
             VALUES ('cluster_geo', 0, 28.6, 77.2, 2, 'kw')
@@ -469,6 +475,7 @@ def test_prune_unlocated_threads_deletes_only_matching_rows(monkeypatch):
     stats = backfill_mod.prune_unlocated_threads(older_than_days=45, limit=100)
 
     assert stats["candidates"] == 1
+    assert stats["deleted"] == 1
     with engine.connect() as conn:
         remaining = {r[0] for r in conn.execute(sa.text("SELECT thread_id FROM daily_ingest")).fetchall()}
     assert remaining == {"recent-news", "located-news", "old-reddit", "mapped-news"}

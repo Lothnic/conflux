@@ -296,6 +296,17 @@ def prune_unlocated_threads(
     for chunk_start in range(0, len(thread_ids), 100):
         chunk = thread_ids[chunk_start:chunk_start + 100]
         with db.engine.begin() as conn:
+            # Children first: thread_cluster_map has an FK to daily_ingest.
+            conn.execute(
+                sa.text("DELETE FROM thread_cluster_map WHERE thread_id IN :tids")
+                .bindparams(sa.bindparam("tids", expanding=True)),
+                {"tids": chunk},
+            )
+            conn.execute(
+                sa.text("DELETE FROM thread_geo WHERE thread_id IN :tids")
+                .bindparams(sa.bindparam("tids", expanding=True)),
+                {"tids": chunk},
+            )
             result = conn.execute(
                 sa.text("DELETE FROM daily_ingest WHERE thread_id IN :tids")
                 .bindparams(sa.bindparam("tids", expanding=True)),
