@@ -18,8 +18,12 @@ jobs:
       GEOCODE_CITY_FALLBACK_ENABLED: "0"
       NEWS_INGEST_ENABLED: "1"
       REDDIT_INGEST_ENABLED: "0"
+      GDELT_INGEST_ENABLED: "1"
       TARGET_SUBS: "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai"
       HOURS_BACK: 24
+      DATA_GOV_API_KEY: ${{ secrets.DATA_GOV_API_KEY }}
+      DATA_GOV_RESOURCE_ID: ${{ secrets.DATA_GOV_RESOURCE_ID }}
+      INFRA_EXTRA_KEYWORDS: ${{ secrets.INFRA_EXTRA_KEYWORDS }}
 
     steps:
     - name: Checkout code

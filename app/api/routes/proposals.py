@@ -31,8 +31,6 @@ async def get_proposals(limit: int = 50):
     init_db_sync()
 
     try:
-        from proposals import fetch_stored_proposals
-
         stored = fetch_stored_proposals(engine, limit)
         if not DEMO_MODE:
             stored = [p for p in stored if not str(p["cluster_id"]).startswith("demo-")]
@@ -115,7 +113,7 @@ async def generate_proposal_for_cluster_endpoint(cluster_id: str):
     init_db_sync()
 
     try:
-        from proposals import generate_proposal_for_cluster, store_proposal
+        from app.services.proposal_generator import generate_proposal_for_cluster, store_proposal
 
         cluster_data = None
         member_threads: list[dict] = []

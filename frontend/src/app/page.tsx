@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import IssueBrowser from "@/components/IssueBrowser";
 import PlanningAnalysisPanel from "@/components/PlanningAnalysisPanel";
 import type { ClusterProposal, DashboardData, LoadingState } from "@/lib/types";
-import { getHealth, getProposals, getIngestedThreads } from "@/lib/api";
+import { getHealth, getProposals, getIngestedThreads, getIssueTrends } from "@/lib/api";
 
 const MapSection = dynamic(() => import("@/components/MapSection"), { ssr: false });
 
@@ -18,6 +18,7 @@ export default function Home() {
     threads: [],
     ingestSource: "",
     proposals: [],
+    trends: null,
   });
   const [state, setState] = useState<LoadingState>("loading");
   const [errorMessage, setErrorMessage] = useState("");
@@ -50,7 +51,7 @@ export default function Home() {
 
     async function load() {
       try {
-        const [health, proposals, ingest] = await Promise.all([
+        const [health, proposals, ingest, trends] = await Promise.all([
           getHealth(),
           getProposals().catch(() => []),
           getIngestedThreads().catch(() => ({
@@ -58,6 +59,7 @@ export default function Home() {
             source: "",
             count: 0,
           })),
+          getIssueTrends(14).catch(() => null),
         ]);
 
         if (!cancelled) {
@@ -66,6 +68,7 @@ export default function Home() {
             threads: ingest.threads,
             ingestSource: ingest.source,
             proposals,
+            trends,
           });
           setState("loaded");
         }
@@ -108,6 +111,7 @@ export default function Home() {
         selectedIssue={selectedCluster}
         health={data.health}
         ingestSource={data.ingestSource}
+        trends={data.trends}
         loading={state === "loading"}
         filterIssueType={filterIssueType}
         onFilterChange={setFilterIssueType}

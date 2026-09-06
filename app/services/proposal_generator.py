@@ -3,21 +3,19 @@ LLM-powered proposal generation using Groq API.
 Replaces the heuristic keyword-matching baseline with actual LLM output.
 """
 
-import os
 import json
 import logging
 import sqlalchemy as sa
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
-from dotenv import load_dotenv
 
-load_dotenv()
+from app.core.config import settings
 
 log = logging.getLogger("conflux.proposals")
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_API_KEY = settings.groq_api_key
+GROQ_MODEL = settings.groq_model
+GROQ_API_URL = settings.groq_api_url
 
 SYSTEM_PROMPT = """You are a senior urban infrastructure analyst and municipal budget planner for the city of Delhi, India.
 You analyze clusters of citizen complaints and generate detailed, actionable infrastructure proposals.

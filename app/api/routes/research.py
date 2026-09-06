@@ -12,6 +12,7 @@ from fastapi.responses import Response, StreamingResponse
 import sqlalchemy as sa
 
 from app.core.database import engine, init_db_sync
+from app.services.research_pipeline import run_research
 
 router = APIRouter()
 
@@ -22,7 +23,6 @@ async def research_cluster_stream(cluster_id: str):
     init_db_sync()
 
     async def event_stream():
-        from research import run_research
         for step in run_research(cluster_id, engine):
             yield f"data: {json.dumps(step)}\n\n"
             await asyncio.sleep(0.1)
@@ -90,7 +90,6 @@ async def download_research_report(cluster_id: str, doc_id: str):
     """Download the generated research report as markdown."""
     init_db_sync()
     try:
-        from research import run_research
         doc = None
         for step in run_research(cluster_id, engine):
             if step.get("step") == "document" and step["status"] == "done":

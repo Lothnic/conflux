@@ -82,11 +82,26 @@ export interface ClusterResult {
   location_precision_meters?: number | null;
 }
 
+export interface TrendSeries {
+  issue_type: string;
+  counts: number[];
+  total: number;
+  delta: number;
+  trend: "up" | "down" | "flat";
+}
+
+export interface IssueTrends {
+  days: string[];
+  series: TrendSeries[];
+  total_recent: number;
+}
+
 export interface DashboardData {
   health: HealthCheck | null;
   threads: RedditThread[];
   ingestSource: string;
   proposals: ClusterProposal[];
+  trends: IssueTrends | null;
 }
 
 export type LoadingState = "loading" | "loaded" | "error";

@@ -5,7 +5,7 @@ Cluster-related endpoints.
 from fastapi import APIRouter, HTTPException
 
 from app.core.database import database_available, init_db_sync
-from app.services.cluster_service import fetch_latest_clusters
+from app.services.cluster_service import fetch_issue_trends, fetch_latest_clusters
 
 router = APIRouter()
 
@@ -17,6 +17,16 @@ async def get_clusters(limit: int = 50):
     try:
         clusters = fetch_latest_clusters(limit)
         return {"clusters": clusters}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/clusters/trends")
+async def get_cluster_trends(days: int = 14):
+    """Per-issue daily complaint counts over a trailing window (for sparklines)."""
+    init_db_sync()
+    try:
+        return fetch_issue_trends(days)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

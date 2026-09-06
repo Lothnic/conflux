@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Add parent dir to path for shared db module
+# Add parent dir to path for shared app package
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # ---- Logging ----
@@ -33,11 +33,12 @@ log = logging.getLogger("conflux.worker")
 DEMO_MODE = os.getenv("CONFLUX_DEMO", "0") == "1"
 
 # Import modular components
-import db
+from app.core import database as db
 from worker.ingest import (
     fetch_new_threads,
     fetch_news_threads,
     fetch_opendata_threads,
+    fetch_gdelt_threads,
     build_demo_threads,
 )
 from worker.clustering import (
@@ -65,9 +66,10 @@ def main():
             return
 
         db.create_tables()
-        log.info("--- Step 1: Fetching civic reports (news RSS + Google News + open data; Reddit optional) ---")
+        log.info("--- Step 1: Fetching civic reports (news RSS + Google News + GDELT + open data; Reddit optional) ---")
         threads = fetch_new_threads()
         threads += fetch_news_threads()
+        threads += fetch_gdelt_threads()
         threads += fetch_opendata_threads()
         if not threads:
             log.info("No new threads (already seen or fetch failed). Skipping pipeline.")
@@ -97,7 +99,7 @@ def main():
         validate_results()
 
         log.info("--- Step 5: Proposal Generation ---")
-        from proposals import generate_proposal_for_cluster, store_proposal
+        from app.services.proposal_generator import generate_proposal_for_cluster, store_proposal
         import sqlalchemy as sa
         for c in clusters:
             with db.engine.connect() as conn:

@@ -21,7 +21,7 @@ import umap
 from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
-import db
+from app.core import database as db
 
 load_dotenv()
 

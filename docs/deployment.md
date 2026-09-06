@@ -3,7 +3,7 @@
 Conflux is a split deployment:
 
 - `frontend/` is the public Next.js dashboard and is ready for Vercel.
-- `main.py` is the FastAPI backend. Deploy it as a separate Python web service, or use Vercel Services if your Vercel account has private beta access.
+- `main.py` is the FastAPI entrypoint; all backend code lives in the `app/` package (`app/api/routes`, `app/services`, `app/core`). Deploy it as a separate Python web service, or use Vercel Services if your Vercel account has private beta access.
 - `worker/` runs ingestion, geocoding, embeddings, and clustering. Keep it out of the request path and run it from GitHub Actions or another scheduled worker.
 
 This split keeps the public runtime small. The worker depends on heavy ML packages, while the web API mostly reads prepared data and calls LLM APIs on demand.

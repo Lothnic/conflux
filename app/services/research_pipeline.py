@@ -25,7 +25,7 @@ from urllib.request import Request, urlopen
 
 import sqlalchemy as sa
 from dotenv import load_dotenv
-from policy_retriever import retrieve_policy
+from app.services.policy_retriever import retrieve_policy
 
 load_dotenv()
 

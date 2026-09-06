@@ -11,10 +11,11 @@ import math
 import re
 from collections import Counter
 from dataclasses import dataclass
-from pathlib import Path
+
+from app.core.config import settings
 
 
-POLICY_DIR = Path(__file__).resolve().parent / "policy_docs"
+POLICY_DIR = settings.policy_dir
 TOKEN_RE = re.compile(r"[a-zA-Z][a-zA-Z0-9]+")
 STOP_WORDS = {
     "and", "are", "for", "from", "has", "have", "into", "near", "that",

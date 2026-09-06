@@ -6,7 +6,7 @@ import sqlalchemy as sa
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import db
+from app.core import database as db
 from app.services.proposal_heuristics import (
     impact_rationale,
     infer_budget,
@@ -15,9 +15,16 @@ from app.services.proposal_heuristics import (
     proposal_communication_plan,
     responsible_agencies,
 )
-from proposals import fetch_stored_proposals, store_proposal
-from policy_retriever import retrieve_policy
+from app.services.proposal_generator import fetch_stored_proposals, store_proposal
+from app.services.policy_retriever import retrieve_policy
 from worker import geocoding as worker
+from worker.ingest import (
+    _BASE_INFRA_KEYWORDS,
+    _extra_infra_keywords,
+    _gdelt_record_url,
+    fetch_gdelt_threads,
+    matches_infra,
+)
 
 
 def create_sqlite_test_engine():
@@ -168,6 +175,145 @@ def test_services_fallback_to_local_sample_data_without_database(monkeypatch):
 
     assert threads
     assert any(thread.get("cluster_id") for thread in threads)
+
+
+def test_matches_infra_covers_english_hindi_and_extras(monkeypatch):
+    assert matches_infra("Massive potholes on Ring Road")
+    assert matches_infra("\u0938\u0921\u093c\u0915 \u092a\u0930 \u0917\u0921\u094d\u0922\u093e \u092a\u0921\u093c\u093e \u0939\u0948")
+    assert not matches_infra("Delhi weather is pleasant today")
+
+    monkeypatch.setattr("worker.ingest.INFRA_KEYWORDS", _BASE_INFRA_KEYWORDS + ["water tanker delay"])
+    assert matches_infra("Water tanker delay in Dwarka")
+
+
+def test_extra_infra_keywords_env(monkeypatch):
+    monkeypatch.setenv("INFRA_EXTRA_KEYWORDS", "Water Tanker Delay, billing issue ,")
+    extras = _extra_infra_keywords()
+    assert extras == ["water tanker delay", "billing issue"]
+
+
+def test_gdelt_record_url_prefers_article_url():
+    assert _gdelt_record_url({"url": "https://example.com/a", "sourceurl": "https://src.com"}) == "https://example.com/a"
+    assert _gdelt_record_url({"sourceurl": "https://src.com"}) == "https://src.com"
+    assert _gdelt_record_url({}) == ""
+
+
+def test_gdelt_fetch_disabled_returns_empty(monkeypatch):
+    monkeypatch.setattr("worker.ingest.GDELT_ENABLED", False)
+    assert fetch_gdelt_threads() == []
+
+
+def test_gdelt_fetch_parses_articles(monkeypatch):
+    payload = {
+        "articles": [
+            {
+                "title": "Massive potholes paralyse Ring Road traffic in Delhi",
+                "url": "https://example.news/potholes-ring-road",
+                "domain": "example.news",
+                "seendate": "20260907T081500Z",
+                "sourcecountry": "India",
+                "language": "English",
+            },
+            {
+                "title": "Delhi weather remains pleasant",
+                "url": "https://example.news/weather",
+                "domain": "example.news",
+            },
+        ]
+    }
+
+    captured = {}
+
+    class FakeResponse:
+        def read(self):
+            return json.dumps(payload).encode()
+
+    def fake_urlopen(req, timeout):
+        captured["url"] = req.full_url
+        return FakeResponse()
+
+    monkeypatch.setattr("worker.ingest.urlopen", fake_urlopen)
+    monkeypatch.setattr(
+        "worker.ingest.resolve_location",
+        lambda title, content: {
+            "lat": None,
+            "lng": None,
+            "location_text": "",
+            "location_method": "unresolved",
+            "location_confidence": 0.0,
+            "location_precision_meters": None,
+            "geocoder_provider": "",
+            "geocoder_query": "",
+            "geocoder_raw": "",
+        },
+    )
+
+    threads = fetch_gdelt_threads()
+
+    assert "timespan=" in captured["url"]
+    assert len(threads) == 1
+    thread = threads[0]
+    assert thread["thread_id"].startswith("gdelt-")
+    assert thread["subreddit"] == "news:gdelt:example.news"
+    assert thread["url"] == "https://example.news/potholes-ring-road"
+    assert thread["published_at"].strftime("%Y%m%dT%H%M%S") == "20260907T081500"
+
+
+def test_fetch_issue_trends_buckets_by_day_and_issue(monkeypatch):
+    from app.services import cluster_service
+
+    engine = create_sqlite_test_engine()
+    with engine.begin() as conn:
+        for day_offset, thread_id, cluster_id, keywords, issue_type in [
+            (0, "t-1", "cluster_1", "pothole road", "Road & Traffic"),
+            (0, "t-2", "cluster_1", "pothole road", "Road & Traffic"),
+            (1, "t-3", "cluster_1", "pothole road", "Road & Traffic"),
+            (1, "t-4", "cluster_2", "garbage dump", "Sanitation"),
+            (3, "t-5", "cluster_3", "streetlight dark", None),  # falls back to inference
+        ]:
+            stamp = (cluster_service.datetime.now(cluster_service.timezone.utc) - cluster_service.timedelta(days=day_offset)).strftime("%Y-%m-%d %H:%M:%S")
+            conn.execute(
+                sa.text("""
+                    INSERT INTO daily_ingest (thread_id, subreddit, title, content, flair, upvotes, published_at)
+                    VALUES (:tid, 'delhi', 'title', 'content', '', 0, :pub)
+                """),
+                {"tid": thread_id, "pub": stamp},
+            )
+            conn.execute(
+                sa.text("""
+                    INSERT OR IGNORE INTO cluster_results (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords)
+                    VALUES (:cid, 0, 28.6, 77.2, 1, :kw)
+                """),
+                {"cid": cluster_id, "kw": keywords},
+            )
+            conn.execute(
+                sa.text("INSERT INTO thread_cluster_map (thread_id, cluster_id) VALUES (:tid, :cid)"),
+                {"tid": thread_id, "cid": cluster_id},
+            )
+            if issue_type is not None:
+                conn.execute(
+                    sa.text("""
+                        INSERT OR IGNORE INTO llm_proposals (proposal_id, cluster_id, issue_type, urgency, summary,
+                                                   recommendations, funding_sources, estimated_budget,
+                                                   communication_plan, responsible_agencies, impact_rationale)
+                        VALUES (:pid, :cid, :issue, 'medium', 's', '[]', '[]', '₹1', '[]', '[]', 'r')
+                    """),
+                    {"pid": "p-" + cluster_id, "cid": cluster_id, "issue": issue_type},
+                )
+
+    monkeypatch.setattr(cluster_service, "engine", engine)
+    monkeypatch.setattr(cluster_service, "database_available", lambda: True)
+
+    result = cluster_service.fetch_issue_trends(days=5)
+
+    assert len(result["days"]) == 5
+    series_by_issue = {s["issue_type"]: s for s in result["series"]}
+    assert series_by_issue["Road & Traffic"]["total"] == 3
+    assert series_by_issue["Road & Traffic"]["counts"][-1] == 2  # today: two complaints
+    assert series_by_issue["Sanitation"]["total"] == 1
+    # No LLM proposal for cluster_3: issue type inferred from its keywords.
+    assert series_by_issue["Public Lighting"]["total"] == 1
+    assert result["total_recent"] == 5
 
 
 def test_create_tables_adds_new_daily_ingest_columns_to_existing_schema(monkeypatch):

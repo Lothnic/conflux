@@ -1,6 +1,6 @@
 "use client";
 
-import type { ClusterProposal, HealthCheck, RedditThread } from "@/lib/types";
+import type { ClusterProposal, HealthCheck, IssueTrends, RedditThread } from "@/lib/types";
 import {
   CATEGORY_BG,
   CATEGORY_COLORS,
@@ -13,6 +13,7 @@ import {
   severityLabel,
   severityScore,
 } from "@/lib/issues";
+import Sparkline from "./Sparkline";
 
 interface IssueBrowserProps {
   issues: ClusterProposal[];
@@ -20,6 +21,7 @@ interface IssueBrowserProps {
   selectedIssue: ClusterProposal | null;
   health: HealthCheck | null;
   ingestSource: string;
+  trends: IssueTrends | null;
   loading: boolean;
   collapsed: boolean;
   filterIssueType: string | null;
@@ -27,6 +29,12 @@ interface IssueBrowserProps {
   onSelectIssue: (issue: ClusterProposal | null) => void;
   onToggle: () => void;
 }
+
+const TREND_META = {
+  up: { arrow: "\u2191", color: "#d92d20", label: "worsening" },
+  down: { arrow: "\u2193", color: "#067647", label: "improving" },
+  flat: { arrow: "\u2192", color: "#64748b", label: "steady" },
+} as const;
 
 function issueTypeOptions(issues: ClusterProposal[]): string[] {
   return Array.from(new Set(issues.map((issue) => issue.issue_type))).sort();
@@ -38,6 +46,7 @@ export default function IssueBrowser({
   selectedIssue,
   health,
   ingestSource,
+  trends,
   loading,
   collapsed,
   filterIssueType,
@@ -182,6 +191,8 @@ export default function IssueBrowser({
               const category = issueCategory(issue.issue_type);
               const score = severityScore(issue);
               const selected = selectedIssue?.cluster_id === issue.cluster_id;
+              const trend = trends?.series.find((s) => s.issue_type === issue.issue_type) ?? null;
+              const trendMeta = trend ? TREND_META[trend.trend] : null;
               return (
                 <button
                   key={issue.cluster_id}
@@ -211,6 +222,18 @@ export default function IssueBrowser({
                         <span>{locationConfidenceLabel(issue.location.confidence)}</span>
                         <span>{evidenceCount(issue, threads)} evidence</span>
                       </div>
+                      {trend && trendMeta && (
+                        <div className="mt-1.5 flex items-center gap-2">
+                          <Sparkline counts={trend.counts} color={CATEGORY_COLORS[category]} />
+                          <span
+                            className="rounded px-1 py-0.5 text-[9px] font-bold"
+                            style={{ color: trendMeta.color, background: `${trendMeta.color}14` }}
+                            title={`${trend.total} reports in the last ${trend.counts.length} days, ${trendMeta.label} (${trend.delta >= 0 ? "+" : ""}${trend.delta})`}
+                          >
+                            {trendMeta.arrow} {trend.total} ({trend.delta >= 0 ? "+" : ""}{trend.delta})
+                          </span>
+                        </div>
+                      )}
                       <p className="mt-1 text-[10px] text-slate-400">Reported {reportedDate(issue, threads)}</p>
                     </div>
                   </div>

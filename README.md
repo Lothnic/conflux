@@ -17,7 +17,7 @@ Conflux is a civic-tech AI platform that transforms raw, multilingual citizen co
 
 ## Tech Stack
 
-* **Backend:** FastAPI + Uvicorn
+* **Backend:** FastAPI + Uvicorn (code in the `app/` package; `main.py` is a thin entrypoint)
 * **ML:** sentence-transformers, UMAP, HDBSCAN, Groq proposal generation
 * **Frontend:** Next.js 16 (App Router) + Tailwind CSS
 * **Data:** pyproject.toml managed with `uv`
