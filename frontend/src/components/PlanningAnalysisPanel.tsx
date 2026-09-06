@@ -297,10 +297,23 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
     };
   }
 
+  const hasLocation = typeof issue.location?.lat === "number" && typeof issue.location?.lon === "number";
+
   return (
     <aside className="fixed right-4 top-[72px] bottom-4 z-40 flex w-[456px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-md border border-slate-200 bg-white shadow-xl">
       <div className="border-b border-slate-200 px-5 py-4">
-        <LocalityPreviewMap lat={issue.location.lat} lon={issue.location.lon} title={issueTitle(issue)} />
+        {hasLocation ? (
+          <LocalityPreviewMap lat={issue.location.lat} lon={issue.location.lon} title={issueTitle(issue)} />
+        ) : (
+          <div
+            className="mb-4 flex h-[180px] items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 text-center"
+          >
+            <p className="text-xs leading-5 text-slate-500">
+              Location unresolved — run ingestion with <span className="font-semibold">GROQ_API_KEY</span> set so
+              complaints can be geocoded to Delhi localities.
+            </p>
+          </div>
+        )}
 
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">

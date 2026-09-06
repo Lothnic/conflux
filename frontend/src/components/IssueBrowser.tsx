@@ -54,9 +54,10 @@ export default function IssueBrowser({
   onSelectIssue,
   onToggle,
 }: IssueBrowserProps) {
-  const validIssues = issues.filter(
-    (issue) => issue.location && typeof issue.location.lat === "number" && typeof issue.location.lon === "number"
-  );
+  const hasCoords = (issue: ClusterProposal) =>
+    typeof issue.location?.lat === "number" && typeof issue.location?.lon === "number";
+  const validIssues = issues.filter(hasCoords);
+  const unmappedIssues = issues.filter((issue) => !hasCoords(issue));
   const highSeverity = validIssues.filter((issue) => severityScore(issue) >= 80).length;
   const sources = threads.length;
 
@@ -180,14 +181,14 @@ export default function IssueBrowser({
               </div>
             ))}
           </div>
-        ) : validIssues.length === 0 ? (
+        ) : issues.length === 0 ? (
           <div className="rounded-md border border-dashed border-slate-300 px-4 py-8 text-center">
             <p className="text-sm font-semibold text-slate-700">No mapped issues yet</p>
             <p className="mt-1 text-xs leading-5 text-slate-500">Run ingestion to populate the civic issue desk.</p>
           </div>
         ) : (
           <div className="space-y-2">
-            {validIssues.map((issue) => {
+            {[...validIssues, ...unmappedIssues].map((issue) => {
               const category = issueCategory(issue.issue_type);
               const score = severityScore(issue);
               const selected = selectedIssue?.cluster_id === issue.cluster_id;
@@ -234,7 +235,11 @@ export default function IssueBrowser({
                           </span>
                         </div>
                       )}
-                      <p className="mt-1 text-[10px] text-slate-400">Reported {reportedDate(issue, threads)}</p>
+                      <p className="mt-1 text-[10px] text-slate-400">
+                        {hasCoords(issue)
+                          ? `Reported ${reportedDate(issue, threads)}`
+                          : "Location unresolved — not shown on map"}
+                      </p>
                     </div>
                   </div>
                 </button>
