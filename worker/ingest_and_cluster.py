@@ -31,6 +31,7 @@ logging.basicConfig(
 log = logging.getLogger("conflux.worker")
 
 DEMO_MODE = os.getenv("CONFLUX_DEMO", "0") == "1"
+BACKFILL_GEO_ENABLED = os.getenv("BACKFILL_GEO_ENABLED", "0") == "1"
 
 # Import modular components
 from app.core import database as db
@@ -82,6 +83,15 @@ def main():
         log.info("--- Step 2: Inserting threads ---")
         inserted = insert_batches(threads)
         log.info(f"Inserted {inserted} new threads.")
+
+        log.info("--- Step 2.5: Backfilling geolocation for old unlocated threads ---")
+        if BACKFILL_GEO_ENABLED:
+            from worker.backfill import backfill_coordinates
+
+            stats = backfill_coordinates()
+            log.info("Backfill stats: %s", stats)
+        else:
+            log.info("Backfill disabled (set BACKFILL_GEO_ENABLED=1 to enable).")
 
         log.info("--- Step 3: Clustering ---")
         clusters = cluster_threads()

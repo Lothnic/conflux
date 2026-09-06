@@ -19,6 +19,8 @@ jobs:
       NEWS_INGEST_ENABLED: "1"
       REDDIT_INGEST_ENABLED: "0"
       GDELT_INGEST_ENABLED: "1"
+      BACKFILL_GEO_ENABLED: "1"
+      BACKFILL_LIMIT: "200"
       TARGET_SUBS: "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai"
       HOURS_BACK: 24
       DATA_GOV_API_KEY: ${{ secrets.DATA_GOV_API_KEY }}

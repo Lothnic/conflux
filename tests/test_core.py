@@ -316,6 +316,81 @@ def test_fetch_issue_trends_buckets_by_day_and_issue(monkeypatch):
     assert result["total_recent"] == 5
 
 
+def test_backfill_geocodes_unlocated_threads_and_updates_db(monkeypatch):
+    from worker import backfill as backfill_mod
+
+    engine = create_sqlite_test_engine()
+    with engine.begin() as conn:
+        for tid, title in [
+            ("old-1", "Sewer overflow near Lajpat Nagar market"),
+            ("old-2", "Random post with no location at all"),
+        ]:
+            conn.execute(
+                sa.text("""
+                    INSERT INTO daily_ingest (thread_id, subreddit, title, content, flair, upvotes)
+                    VALUES (:tid, 'delhi', :title, 'body', '', 0)
+                """),
+                {"tid": tid, "title": title},
+            )
+        # old-3 is already located; must not be selected.
+        conn.execute(
+            sa.text("""
+                INSERT INTO daily_ingest (thread_id, subreddit, title, content, flair, upvotes)
+                VALUES ('old-3', 'delhi', 'Pothole in Saket', 'body', '', 0)
+            """)
+        )
+        conn.execute(
+            sa.text("""
+                INSERT INTO thread_geo (thread_id, lat, lng, source) VALUES ('old-3', 28.52, 77.20, 'delhi')
+            """)
+        )
+
+    monkeypatch.setattr(backfill_mod.db, "engine", engine)
+
+    def fake_resolve(title, content):
+        if "Lajpat Nagar" in title:
+            return {
+                "lat": 28.5678, "lng": 77.2432, "location_text": "Lajpat Nagar",
+                "location_method": "ai_extracted_geocoder", "location_confidence": 0.8,
+                "location_precision_meters": 900, "geocoder_provider": "nominatim",
+                "geocoder_query": "Lajpat Nagar, Delhi, India", "geocoder_raw": "{}",
+            }
+        return {
+            "lat": None, "lng": None, "location_text": "", "location_method": "ai_place_extraction",
+            "location_confidence": 0.0, "location_precision_meters": None,
+            "geocoder_provider": "", "geocoder_query": "", "geocoder_raw": "",
+        }
+
+    monkeypatch.setattr(backfill_mod, "resolve_location", fake_resolve)
+
+    stats = backfill_mod.run_backfill(limit=10, recluster=False)
+
+    assert stats == {"candidates": 2, "resolved": 1, "failed": 1}
+
+    with engine.connect() as conn:
+        coords = conn.execute(
+            sa.text("SELECT coordinates FROM daily_ingest WHERE thread_id = 'old-1'")
+        ).scalar_one()
+        geo_row = conn.execute(
+            sa.text("SELECT lat, lng, location_text FROM thread_geo WHERE thread_id = 'old-1'")
+        ).fetchone()
+        # old-2 (still unresolved) got a thread_geo row with NULL coords, blocking repeat churn.
+        unresolved_row = conn.execute(
+            sa.text("SELECT lat, lng FROM thread_geo WHERE thread_id = 'old-2'")
+        ).fetchone()
+        # old-3 was untouched.
+        untouched = conn.execute(
+            sa.text("SELECT COUNT(*) FROM thread_geo WHERE thread_id = 'old-3' AND lat = 28.52")
+        ).scalar_one()
+
+    assert geo_row[0] == 28.5678 and geo_row[2] == "Lajpat Nagar"
+    assert unresolved_row[0] is None
+    assert untouched == 1
+
+    import json as _json
+    assert _json.loads(coords)["lat"] == 28.5678
+
+
 def test_create_tables_adds_new_daily_ingest_columns_to_existing_schema(monkeypatch):
     engine = sa.create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
     with engine.begin() as conn:
