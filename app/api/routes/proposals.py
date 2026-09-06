@@ -11,6 +11,7 @@ import sqlalchemy as sa
 
 from app.core.database import DEMO_MODE, database_available, engine, init_db_sync
 from app.services.cluster_service import fetch_latest_clusters, fetch_sources_for_cluster
+from app.services.proposal_generator import fetch_stored_proposals
 from app.services.thread_service import fetch_latest_threads
 from app.services.proposal_heuristics import (
     infer_issue_type,
