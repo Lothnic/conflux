@@ -391,6 +391,89 @@ def test_backfill_geocodes_unlocated_threads_and_updates_db(monkeypatch):
     assert _json.loads(coords)["lat"] == 28.5678
 
 
+def test_slug_location_candidates_extracts_gazetteer_and_phrases():
+    from worker.backfill import _slug_location_candidates
+
+    hits = _slug_location_candidates("https://example.com/news/delhi/water-crisis-in-lajpat-nagar-market/article")
+    assert "Lajpat Nagar" in hits
+
+    phrase_hits = _slug_location_candidates("https://example.com/cities/delhi-news/potholes-terrorise-mayur-vihar-residents")
+    assert any("Mayur Vihar" in h for h in phrase_hits)
+
+    assert _slug_location_candidates("") == []
+    assert _slug_location_candidates("not-a-url") == []
+
+
+def test_resolve_with_hints_falls_back_to_slug(monkeypatch):
+    from worker import backfill as backfill_mod
+
+    def no_location(title, content):
+        return {
+            "lat": None, "lng": None, "location_text": "", "location_method": "ai_place_extraction",
+            "location_confidence": 0.0, "location_precision_meters": None,
+            "geocoder_provider": "", "geocoder_query": "", "geocoder_raw": "",
+        }
+
+    monkeypatch.setattr(backfill_mod, "resolve_location", no_location)
+    monkeypatch.setattr(backfill_mod, "geocode_text", lambda q: {"lat": 28.5678, "lng": 77.2432, "raw": {}})
+
+    geo = backfill_mod.resolve_with_hints({
+        "thread_id": "t", "title": "Water supply hit in several areas",
+        "content": "short", "url": "https://example.com/delhi/water-crisis-lajpat-nagar-after-pipeline-burst",
+    })
+
+    assert geo["lat"] == 28.5678
+    assert geo["location_method"] == "backfill_url_slug"
+    assert geo["location_text"] == "Lajpat Nagar"
+
+
+def test_prune_unlocated_threads_deletes_only_matching_rows(monkeypatch):
+    from worker import backfill as backfill_mod
+
+    engine = create_sqlite_test_engine()
+    with engine.begin() as conn:
+        # Prunable: old, unlocated, news, never mapped to a geocoded cluster.
+        conn.execute(sa.text("""
+            INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
+            VALUES ('stale-news', 'news:toi-delhi', 't', 'c', datetime('now', '-60 days'))
+        """))
+        # Protected: recent.
+        conn.execute(sa.text("""
+            INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
+            VALUES ('recent-news', 'news:toi-delhi', 't', 'c', datetime('now', '-2 days'))
+        """))
+        # Protected: located (has thread_geo coords).
+        conn.execute(sa.text("""
+            INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
+            VALUES ('located-news', 'news:toi-delhi', 't', 'c', datetime('now', '-60 days'))
+        """))
+        conn.execute(sa.text("INSERT INTO thread_geo (thread_id, lat, lng) VALUES ('located-news', 28.6, 77.2)"))
+        # Protected: reddit source.
+        conn.execute(sa.text("""
+            INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
+            VALUES ('old-reddit', 'delhi', 't', 'c', datetime('now', '-60 days'))
+        """))
+        # Protected: mapped to a geocoded cluster.
+        conn.execute(sa.text("""
+            INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
+            VALUES ('mapped-news', 'news:toi-delhi', 't', 'c', datetime('now', '-60 days'))
+        """))
+        conn.execute(sa.text("""
+            INSERT INTO cluster_results (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords)
+            VALUES ('cluster_geo', 0, 28.6, 77.2, 2, 'kw')
+        """))
+        conn.execute(sa.text("INSERT INTO thread_cluster_map (thread_id, cluster_id) VALUES ('mapped-news', 'cluster_geo')"))
+
+    monkeypatch.setattr(backfill_mod.db, "engine", engine)
+
+    stats = backfill_mod.prune_unlocated_threads(older_than_days=45, limit=100)
+
+    assert stats["candidates"] == 1
+    with engine.connect() as conn:
+        remaining = {r[0] for r in conn.execute(sa.text("SELECT thread_id FROM daily_ingest")).fetchall()}
+    assert remaining == {"recent-news", "located-news", "old-reddit", "mapped-news"}
+
+
 def test_create_tables_adds_new_daily_ingest_columns_to_existing_schema(monkeypatch):
     engine = sa.create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
     with engine.begin() as conn:

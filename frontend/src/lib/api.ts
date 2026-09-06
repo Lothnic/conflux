@@ -27,7 +27,9 @@ export async function getIngestedThreads(): Promise<{
 }
 
 export async function getProposals(): Promise<ClusterProposal[]> {
-  const data = await fetchJSON<{ proposals: ClusterProposal[] }>("/proposals");
+  // Wide enough to include older clusters that are the only ones with geocoded
+  // centroids; the queue renders this list, the map only plots located ones.
+  const data = await fetchJSON<{ proposals: ClusterProposal[] }>("/proposals?limit=200");
   return data.proposals;
 }
 

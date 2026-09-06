@@ -21,6 +21,8 @@ jobs:
       GDELT_INGEST_ENABLED: "1"
       BACKFILL_GEO_ENABLED: "1"
       BACKFILL_LIMIT: "200"
+      PRUNE_UNLOCATED_ENABLED: "1"
+      PRUNE_UNLOCATED_DAYS: "45"
       TARGET_SUBS: "delhi,NewDelhi,india,gurgaon,noida,mumbai,bangalore,pune,hyderabad,kolkata,chennai"
       HOURS_BACK: 24
       DATA_GOV_API_KEY: ${{ secrets.DATA_GOV_API_KEY }}
