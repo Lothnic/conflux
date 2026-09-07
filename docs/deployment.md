@@ -20,6 +20,7 @@ Required settings:
 - Environment variables:
   - `API_URL=https://<your-api-host>`
   - `NEXT_PUBLIC_API_URL=https://<your-api-host>`
+  - `NEXT_PUBLIC_MAPBOX_TOKEN=pk-...` (optional — enables the 3D locality preview in the analysis panel; create a free public token at <https://console.mapbox.com/account/tokens/> and restrict it to your Vercel domain)
 
 The frontend calls `/api/*`; `frontend/next.config.ts` rewrites those requests to `API_URL`.
 
