@@ -507,3 +507,33 @@ def test_create_tables_adds_new_daily_ingest_columns_to_existing_schema(monkeypa
         columns = {row[1] for row in conn.execute(sa.text("PRAGMA table_info(daily_ingest)"))}
 
     assert {"coordinates", "url", "published_at"}.issubset(columns)
+
+
+def test_fetch_sources_for_cluster_orders_by_recency(monkeypatch):
+    from app.services import cluster_service
+
+    engine = create_sqlite_test_engine()
+    with engine.begin() as conn:
+        conn.execute(sa.text("""
+            INSERT INTO cluster_results (cluster_id, cluster_label, centroid_lat, centroid_lng, size, keywords)
+            VALUES ('cluster_recent', 0, 28.6, 77.2, 2, 'kw')
+        """))
+        conn.execute(sa.text("""
+            INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
+            VALUES ('old-thread', 'news:toi-delhi', 'Old story', 'c', datetime('now', '-60 days'))
+        """))
+        conn.execute(sa.text("""
+            INSERT INTO daily_ingest (thread_id, subreddit, title, content, published_at)
+            VALUES ('new-thread', 'news:toi-delhi', 'Fresh story', 'c', datetime('now', '-1 days'))
+        """))
+        # Insert the stale mapping first: without an ORDER BY the DB would
+        # surface the old row first (insertion order), which is the bug.
+        conn.execute(sa.text("INSERT INTO thread_cluster_map (thread_id, cluster_id) VALUES ('old-thread', 'cluster_recent')"))
+        conn.execute(sa.text("INSERT INTO thread_cluster_map (thread_id, cluster_id) VALUES ('new-thread', 'cluster_recent')"))
+
+    monkeypatch.setattr(cluster_service, "engine", engine)
+
+    sources = cluster_service.fetch_sources_for_cluster("cluster_recent", limit=8)
+
+    assert [s["id"] for s in sources] == ["new-thread", "old-thread"]
+    assert sources[0]["published_at"] is not None

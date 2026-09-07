@@ -48,7 +48,7 @@ export interface ClusterProposal {
   communication_plan: string[];
   responsible_agencies: string[];
   impact_rationale: string;
-  sources?: { id: string; subreddit: string; title: string; url?: string }[];
+  sources?: { id: string; subreddit: string; title: string; url?: string; published_at?: string | null }[];
   estimated_budget: string;
   size?: number;
 }

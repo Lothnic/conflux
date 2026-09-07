@@ -155,15 +155,17 @@ def fetch_issue_trends(days: int = 14) -> dict:
 
 
 def fetch_sources_for_cluster(cluster_id: str, limit: int = 8) -> list[dict]:
-    """Fetch thread sources for a cluster from the DB."""
+    """Fetch thread sources for a cluster from the DB, freshest first."""
     try:
         with engine.connect() as conn:
             rows = conn.execute(
                 sa.text("""
-                    SELECT d.thread_id, d.subreddit, d.title, d.url
+                    SELECT d.thread_id, d.subreddit, d.title, d.url,
+                           COALESCE(d.published_at, d.created_at) AS sort_date
                     FROM daily_ingest d
                     JOIN thread_cluster_map tcm ON d.thread_id = tcm.thread_id
                     WHERE tcm.cluster_id = :cid
+                    ORDER BY sort_date DESC
                     LIMIT :lim
                 """),
                 {"cid": cluster_id, "lim": limit},
@@ -174,6 +176,7 @@ def fetch_sources_for_cluster(cluster_id: str, limit: int = 8) -> list[dict]:
                 "subreddit": r[1] or "delhi",
                 "title": r[2],
                 "url": source_url(r[0], r[1], r[3]),
+                "published_at": str(r[4])[:10] if r[4] is not None else None,
             }
             for r in rows
         ]

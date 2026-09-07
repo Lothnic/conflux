@@ -239,12 +239,14 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
         label: sourceLabel(source),
         title: source.title,
         url: sourceHref(source),
+        date: source.published_at ?? null,
       }))
     : linkedThreads.slice(0, 4).map((thread) => ({
         id: thread.id,
         label: "Citizen report",
         title: thread.title,
         url: thread.url,
+        date: thread.created_utc ? thread.created_utc.slice(0, 10) : null,
       }));
 
   function startAnalysis() {
@@ -389,12 +391,18 @@ export default function PlanningAnalysisPanel({ issue, threads, onClose }: Plann
                     rel="noopener noreferrer"
                     className="block px-3 py-2 hover:bg-slate-50"
                   >
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{source.label}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                      {source.label}
+                      {source.date && <span className="ml-1 font-medium normal-case">· {source.date}</span>}
+                    </p>
                     <p className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-[#175cd3]">{source.title}</p>
                   </a>
                 ) : (
                   <div key={source.id} className="px-3 py-2">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{source.label}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                      {source.label}
+                      {source.date && <span className="ml-1 font-medium normal-case">· {source.date}</span>}
+                    </p>
                     <p className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-slate-700">{source.title}</p>
                   </div>
                 )
