@@ -31,7 +31,7 @@ For a free or low-cost deployment, use a Python ASGI host with persistent enviro
 ```bash
 DATABASE_URL=postgresql://...
 GROQ_API_KEY=...
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-120b
 CORS_ALLOWED_ORIGINS=https://<your-vercel-app>.vercel.app
 ```
 
