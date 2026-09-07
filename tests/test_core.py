@@ -509,6 +509,38 @@ def test_create_tables_adds_new_daily_ingest_columns_to_existing_schema(monkeypa
     assert {"coordinates", "url", "published_at"}.issubset(columns)
 
 
+def test_create_tables_adds_llm_proposal_centroid_columns_to_existing_schema(monkeypatch):
+    """Regression: production llm_proposals predates centroid columns, which made
+    every LLM proposal storage fail with UndefinedColumn (heuristic_fallback only)."""
+    engine = sa.create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    with engine.begin() as conn:
+        conn.execute(sa.text("""
+            CREATE TABLE llm_proposals (
+                proposal_id TEXT PRIMARY KEY,
+                cluster_id  TEXT UNIQUE,
+                issue_type  TEXT,
+                urgency     TEXT,
+                summary     TEXT,
+                recommendations TEXT,
+                funding_sources TEXT,
+                estimated_budget TEXT,
+                created_at  TEXT DEFAULT (datetime('now'))
+            )
+        """))
+
+    import app.core.database as database
+
+    monkeypatch.setattr(database, "engine", engine)
+    monkeypatch.setattr(database.settings, "database_url", "sqlite://:memory:")
+
+    database.create_tables()
+
+    with engine.connect() as conn:
+        columns = {row[1] for row in conn.execute(sa.text("PRAGMA table_info(llm_proposals)"))}
+
+    assert {"centroid_lat", "centroid_lng"}.issubset(columns)
+
+
 def test_call_groq_rejects_non_object_json(monkeypatch):
     from app.services import proposal_generator as pg
 

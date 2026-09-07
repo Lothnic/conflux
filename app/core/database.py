@@ -295,6 +295,8 @@ _ADDED_COLUMNS: dict[str, list[tuple[str, str]]] = {
         ("communication_plan", "TEXT"),
         ("responsible_agencies", "TEXT"),
         ("impact_rationale", "TEXT"),
+        ("centroid_lat", "REAL" if settings.is_sqlite else "DOUBLE PRECISION"),
+        ("centroid_lng", "REAL" if settings.is_sqlite else "DOUBLE PRECISION"),
     ],
 }
 
