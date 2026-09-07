@@ -5,6 +5,7 @@ Replaces the heuristic keyword-matching baseline with actual LLM output.
 
 import json
 import logging
+import time
 import sqlalchemy as sa
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
@@ -66,6 +67,10 @@ Provide a component-wise INR budget breakdown that's realistic for Delhi municip
 
 
 
+GROQ_MAX_ATTEMPTS = 3
+GROQ_429_BACKOFF_SECONDS = [5, 15, 30]
+
+
 def call_groq(system_prompt: str, user_prompt: str) -> dict | None:
     if not GROQ_API_KEY:
         log.warning("GROQ_API_KEY not set. Cannot generate LLM proposals.")
@@ -81,19 +86,43 @@ def call_groq(system_prompt: str, user_prompt: str) -> dict | None:
         "response_format": {"type": "json_object"},
     }).encode()
 
-    req = Request(GROQ_API_URL, data=payload, method="POST")
-    req.add_header("Authorization", f"Bearer {GROQ_API_KEY}")
-    req.add_header("Content-Type", "application/json")
-    req.add_header("User-Agent", "Conflux/0.1")
+    for attempt in range(GROQ_MAX_ATTEMPTS):
+        req = Request(GROQ_API_URL, data=payload, method="POST")
+        req.add_header("Authorization", f"Bearer {GROQ_API_KEY}")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("User-Agent", "Conflux/0.1")
 
-    try:
-        resp = urlopen(req, timeout=60)
-        data = json.loads(resp.read().decode())
-        content = data["choices"][0]["message"]["content"]
-        return json.loads(content)
-    except (URLError, HTTPError, json.JSONDecodeError, KeyError) as e:
-        log.error(f"Groq API call failed: {e}")
-        return None
+        try:
+            resp = urlopen(req, timeout=90)
+            data = json.loads(resp.read().decode())
+            choice = data["choices"][0]
+            content = choice["message"]["content"]
+            if not content:
+                # Reasoning models can burn the whole budget on reasoning.
+                log.warning("Groq returned empty content (finish_reason=%s).", choice.get("finish_reason"))
+                return None
+            parsed = json.loads(content)
+            if not isinstance(parsed, dict):
+                log.warning("Groq returned a %s instead of a JSON object; rejecting.", type(parsed).__name__)
+                return None
+            return parsed
+        except HTTPError as e:
+            if e.code == 429 and attempt < GROQ_MAX_ATTEMPTS - 1:
+                retry_after = None
+                try:
+                    retry_after = int(e.headers.get("Retry-After")) if e.headers else None
+                except (TypeError, ValueError):
+                    retry_after = None
+                wait = retry_after if retry_after and 0 < retry_after <= 120 else GROQ_429_BACKOFF_SECONDS[min(attempt, len(GROQ_429_BACKOFF_SECONDS) - 1)]
+                log.warning("Groq rate limited (429); retrying in %ss (attempt %d/%d).", wait, attempt + 1, GROQ_MAX_ATTEMPTS)
+                time.sleep(wait)
+                continue
+            log.error(f"Groq API call failed: {e}")
+            return None
+        except (URLError, json.JSONDecodeError, KeyError, TypeError) as e:
+            log.error(f"Groq API call failed: {e}")
+            return None
+    return None
 
 
 def generate_proposal_for_cluster(cluster_id: str, cluster_keywords: str, cluster_size: int,
@@ -101,7 +130,7 @@ def generate_proposal_for_cluster(cluster_id: str, cluster_keywords: str, cluste
                                    threads: list[dict]) -> dict | None:
     user_prompt = build_prompt(cluster_keywords, cluster_size, cluster_lat, cluster_lng, threads)
     result = call_groq(SYSTEM_PROMPT, user_prompt)
-    if result is None:
+    if not isinstance(result, dict):
         return None
 
     result["cluster_id"] = cluster_id

@@ -12,6 +12,7 @@ Deploy on: GitHub Actions (daily cron, see .github/workflows/)
 
 import os
 import sys
+import time
 import logging
 from pathlib import Path
 
@@ -112,7 +113,8 @@ def main():
         log.info("--- Step 5: Proposal Generation ---")
         from app.services.proposal_generator import generate_proposal_for_cluster, store_proposal
         import sqlalchemy as sa
-        for c in clusters:
+        proposal_spacing = float(os.getenv("PROPOSAL_SPACING_SECONDS", "3"))
+        for idx, c in enumerate(clusters):
             with db.engine.connect() as conn:
                 member_rows = conn.execute(
                     sa.text("""
@@ -127,15 +129,22 @@ def main():
                 {"thread_id": r[0], "subreddit": r[1], "title": r[2], "content": r[3], "upvotes": r[4]}
                 for r in member_rows
             ]
-            proposal = generate_proposal_for_cluster(
-                c["cluster_id"], c["keywords"], c["size"],
-                c.get("centroid_lat"), c.get("centroid_lng"),
-                member_threads
-            )
+            try:
+                proposal = generate_proposal_for_cluster(
+                    c["cluster_id"], c["keywords"], c["size"],
+                    c.get("centroid_lat"), c.get("centroid_lng"),
+                    member_threads
+                )
+            except Exception as e:
+                # One malformed LLM response must never kill the whole run.
+                log.error(f"Proposal generation crashed for cluster {c['cluster_id']}: {e}")
+                proposal = None
             if proposal:
                 store_proposal(db.engine, proposal)
             else:
                 log.warning(f"No LLM proposal generated for cluster {c['cluster_id']}")
+            if proposal_spacing > 0 and idx < len(clusters) - 1:
+                time.sleep(proposal_spacing)
 
         log.info("Worker completed successfully.")
 

@@ -509,6 +509,50 @@ def test_create_tables_adds_new_daily_ingest_columns_to_existing_schema(monkeypa
     assert {"coordinates", "url", "published_at"}.issubset(columns)
 
 
+def test_call_groq_rejects_non_object_json(monkeypatch):
+    from app.services import proposal_generator as pg
+
+    class FakeResp:
+        def read(self):
+            return json.dumps({"choices": [{"message": {"content": "[1, 2, 3]"}}]}).encode()
+
+    monkeypatch.setattr(pg, "GROQ_API_KEY", "test-key")
+    monkeypatch.setattr(pg, "urlopen", lambda req, timeout=90: FakeResp())
+
+    # Regression: a list-shaped response used to crash the whole pipeline.
+    assert pg.call_groq("sys", "user") is None
+    assert pg.generate_proposal_for_cluster("c1", "kw", 2, None, None, []) is None
+
+
+def test_call_groq_retries_on_429_then_succeeds(monkeypatch):
+    from email.message import Message
+    from urllib.error import HTTPError
+    from app.services import proposal_generator as pg
+
+    calls = {"n": 0}
+    sleeps: list[float] = []
+
+    class FakeResp:
+        def read(self):
+            return json.dumps({"choices": [{"message": {"content": "{\"summary\": \"ok\"}"}}]}).encode()
+
+    def fake_urlopen(req, timeout=90):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise HTTPError("https://api.groq.com", 429, "Too Many Requests", Message(), None)
+        return FakeResp()
+
+    monkeypatch.setattr(pg, "GROQ_API_KEY", "test-key")
+    monkeypatch.setattr(pg, "urlopen", fake_urlopen)
+    monkeypatch.setattr(pg.time, "sleep", lambda s: sleeps.append(s))
+
+    result = pg.call_groq("sys", "user")
+
+    assert result == {"summary": "ok"}
+    assert calls["n"] == 3
+    assert len(sleeps) == 2
+
+
 def test_fetch_sources_for_cluster_orders_by_recency(monkeypatch):
     from app.services import cluster_service
 
