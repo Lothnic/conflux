@@ -204,13 +204,18 @@ def test_gdelt_fetch_disabled_returns_empty(monkeypatch):
 
 
 def test_gdelt_fetch_parses_articles(monkeypatch):
+    from datetime import datetime, timedelta, timezone as tz
+
+    # Seen-date must be inside the HOURS_BACK window regardless of when the
+    # suite runs — a hardcoded date silently broke this test at midnight UTC.
+    seendate = (datetime.now(tz.utc) - timedelta(hours=1)).strftime("%Y%m%dT%H%M%S") + "Z"
     payload = {
         "articles": [
             {
                 "title": "Massive potholes paralyse Ring Road traffic in Delhi",
                 "url": "https://example.news/potholes-ring-road",
                 "domain": "example.news",
-                "seendate": "20260907T081500Z",
+                "seendate": seendate,
                 "sourcecountry": "India",
                 "language": "English",
             },
@@ -256,7 +261,7 @@ def test_gdelt_fetch_parses_articles(monkeypatch):
     assert thread["thread_id"].startswith("gdelt-")
     assert thread["subreddit"] == "news:gdelt:example.news"
     assert thread["url"] == "https://example.news/potholes-ring-road"
-    assert thread["published_at"].strftime("%Y%m%dT%H%M%S") == "20260907T081500"
+    assert thread["published_at"].strftime("%Y%m%dT%H%M%S") == seendate[:-1]
 
 
 def test_fetch_issue_trends_buckets_by_day_and_issue(monkeypatch):
@@ -583,6 +588,33 @@ def test_call_groq_retries_on_429_then_succeeds(monkeypatch):
     assert result == {"summary": "ok"}
     assert calls["n"] == 3
     assert len(sleeps) == 2
+
+
+def test_decode_json_column_tolerates_jsonb_lists():
+    from app.services.proposal_generator import _decode_json_column
+
+    # Regression: production Neon stores these columns as JSONB, so psycopg
+    # returns Python lists — json.loads(list) crashed every fetch.
+    assert _decode_json_column(["a", "b"]) == ["a", "b"]
+    assert _decode_json_column('["a", "b"]') == ["a", "b"]
+    assert _decode_json_column(None) == []
+    assert _decode_json_column("") == []
+    assert _decode_json_column("not json") == []
+    assert _decode_json_column("{\"obj\": true}") == []
+
+
+def test_geocoding_model_decoupled_from_groq_model(monkeypatch):
+    import importlib
+    from worker import geocoding as g
+
+    monkeypatch.setenv("GROQ_MODEL", "openai/gpt-oss-120b")
+    monkeypatch.delenv("GEO_LLM_MODEL", raising=False)
+    reloaded = importlib.reload(g)
+    try:
+        assert reloaded.GEO_LLM_MODEL != "openai/gpt-oss-120b"
+    finally:
+        monkeypatch.undo()
+        importlib.reload(g)
 
 
 def test_fetch_sources_for_cluster_orders_by_recency(monkeypatch):

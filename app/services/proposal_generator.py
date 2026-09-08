@@ -186,6 +186,19 @@ def store_proposal(engine: sa.Engine, proposal: dict) -> bool:
         return False
 
 
+def _decode_json_column(value) -> list:
+    """Decode a JSON list column that may be TEXT (str) or JSONB (already a list)."""
+    if not value:
+        return []
+    if isinstance(value, list):
+        return value
+    try:
+        decoded = json.loads(value)
+        return decoded if isinstance(decoded, list) else []
+    except (json.JSONDecodeError, TypeError):
+        return []
+
+
 def fetch_stored_proposals(engine: sa.Engine, limit: int = 50) -> list[dict]:
     try:
         with engine.connect() as conn:
@@ -216,11 +229,11 @@ def fetch_stored_proposals(engine: sa.Engine, limit: int = 50) -> list[dict]:
                 "issue_type": r[2],
                 "urgency": r[3],
                 "summary": r[4],
-                "recommendations": json.loads(r[5]) if r[5] else [],
-                "funding_sources": json.loads(r[6]) if r[6] else [],
+                "recommendations": _decode_json_column(r[5]),
+                "funding_sources": _decode_json_column(r[6]),
                 "estimated_budget": r[7],
-                "communication_plan": json.loads(r[8]) if r[8] else [],
-                "responsible_agencies": json.loads(r[9]) if r[9] else [],
+                "communication_plan": _decode_json_column(r[8]),
+                "responsible_agencies": _decode_json_column(r[9]),
                 "impact_rationale": r[10] or "",
                 "centroid_lat": r[11],
                 "centroid_lng": r[12],

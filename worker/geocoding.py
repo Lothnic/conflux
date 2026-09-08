@@ -33,7 +33,9 @@ LLM_GEOLOCATION_ENABLED = os.getenv("LLM_GEOLOCATION_ENABLED", "1") == "1"
 LOCAL_GEO_FALLBACK_ENABLED = os.getenv("LOCAL_GEO_FALLBACK_ENABLED", "1") == "1"
 
 GEO_LLM_API_KEY = os.getenv("GEO_LLM_API_KEY") or os.getenv("GROQ_API_KEY", "")
-GEO_LLM_MODEL = os.getenv("GEO_LLM_MODEL") or os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+# Geolocation is a trivial JSON-extraction task: default to a cheap, high-throughput
+# model so geocoding doesn't burn the proposal model's (GROQ_MODEL, 120b) free-tier quota.
+GEO_LLM_MODEL = os.getenv("GEO_LLM_MODEL", "openai/gpt-oss-20b")
 GEO_LLM_API_URL = os.getenv("GEO_LLM_API_URL", "https://api.groq.com/openai/v1/chat/completions")
 
 
